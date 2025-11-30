@@ -1,0 +1,453 @@
+\begin{figure}[t!]
+  \centering
+  \small
+  \begin{subfigure}[b]{0.33\textwidth}
+    \centering
+    \resizebox{0.9\linewidth}{!}{
+      \begin{tikzpicture}
+        \begin{axis}[
+            trim axis left,
+            trim axis right,
+            font=\small,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            tickwidth=0pt,
+            tick align=inside,
+            xlabel={Sequence length},
+            width=180pt,height=150pt,
+            ymin=0,
+            ymax=100,
+            symbolic x coords={
+                256,512,1024,2048
+                },
+            xtick=data,
+            ytick={0,25,50,75,100},
+            yticklabels={0,25,50,75,100},
+            ylabel=Accuracy (\%),
+            xlabel style={at={(0.5,0.04)}},
+            ylabel style={at={(0.12,0.5)}},
+            axis line style={opacity=0},
+            legend style={ at={(1,0)}, anchor=south east, legend cell align=left, font=\scriptsize, },
+          ]
+          \addplot[ 
+                        line width=1pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+            ] plot coordinates
+            {
+            (256, 100) 
+            (512, 100) 
+            (1024, 100) 
+            (2048, 42.2) 
+            };
+          \addlegendentry{ KDA}
+
+          \addplot[ 
+                        line width=1pt,
+                        dash pattern={on 3pt off 3pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+            ]
+          plot coordinates
+            {
+            (256, 100) 
+            (512, 100) 
+            (1024, 97) 
+            (2048, 37.1) 
+            };
+          \addlegendentry{ GDN}
+
+          \addplot[ dashed, mark=x, mark size=2pt, draw=orange!80,
+            thick,
+          ] plot coordinates {
+            (256, 100) 
+            (512, 0) 
+            (1024, 0) 
+            (2048, 0) 
+            };
+          \addlegendentry{ Mamba2}
+
+          \draw[semithick, black]
+          (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+          \draw[semithick, black]
+          (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+        \end{axis}
+      \end{tikzpicture}
+      }
+      \resizebox{0.9\linewidth}{!}{
+      \begin{tikzpicture}
+        \begin{axis}[
+            trim axis left,
+            trim axis right,
+            font=\small,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            tickwidth=0pt,
+            tick align=inside,
+            xlabel={Training steps},
+            width=180pt,height=150pt,
+            ymin=0,
+            ymax=100,
+            xmin=0,
+            xmax=22000, % Set the x-axis range
+            xtick={5000,10000,15000,20000}, % Set custom x-axis ticks
+            xticklabels={5K,10K,15K,20K},
+            scaled x ticks=false,
+            ytick={0,25,50,75,100},
+            yticklabels={0,25,50,75,100},
+            ylabel=Accuracy (\%),
+            xlabel style={at={(0.5,0.04)}},
+            ylabel style={at={(0.12,0.5)}},
+            axis line style={opacity=0},
+            legend style={ at={(1,0)}, anchor=south east, legend cell align=left, font=\scriptsize, },
+          ]
+          \addplot[ 
+                        line width=1pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+            ] plot coordinates
+            { (0, 0) (2000, 18.2) (4000, 94.2) (6000, 98.9) (8000, 98.8) (10000, 99.6) (12000, 100) (14000, 100) (16000, 100) (18000, 100) (20000, 100) };
+          \addlegendentry{ KDA}
+
+          \addplot[ 
+                        line width=1pt,
+                        dash pattern={on 3pt off 3pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+            ]
+          plot coordinates
+            { (2000, 0) (4000, 0) (6000, 0) (8000, 30.0) (10000, 61.9) (12000, 76.9) (14000, 82.8) (16000, 98.7) (18000, 99.4) (20000, 97) };
+          \addlegendentry{ GDN}
+
+          \addplot[ dashed, mark=x, mark size=2pt, draw=orange!80,
+            thick,
+          ] plot coordinates { (2000, 0) (4000, 0) (6000, 0) (8000, 0) (10000, 0) (12000, 0) (14000, 0) (16000, 0) (18000, 0) (20000, 0) };
+          \addlegendentry{ Mamba2}
+
+          \draw[semithick, black]
+          (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+          \draw[semithick, black]
+          (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+        \end{axis}
+      \end{tikzpicture}
+    }
+    \caption{Palindrome}
+    \label{fig:palindrome}
+  \end{subfigure} %
+  \hfill
+  \begin{subfigure}[b]{0.33\textwidth}
+    \centering
+    
+    \resizebox{0.9\linewidth}{!}{
+      \begin{tikzpicture}
+        \begin{axis}[
+            trim axis left,
+            trim axis right,
+            font=\small,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            tickwidth=0pt,
+            tick align=inside,
+            xlabel={Sequence length},
+            width=180pt,height=150pt,
+            ymin=0,
+            ymax=100,
+            symbolic x coords={
+                256,512,1024,2048
+                },
+            xtick=data,
+            ytick={0,25,50,75,100},
+            yticklabels={0,25,50,75,100},
+            ylabel=Accuracy (\%),
+            xlabel style={at={(0.5,0.04)}},
+            ylabel style={at={(0.12,0.5)}},
+            axis line style={opacity=0},
+            legend style={ at={(1,0)}, anchor=south east, legend cell align=left, font=\scriptsize, },
+          ]
+          \addplot[ 
+                        line width=1pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+            ] plot coordinates
+            {
+            (256, 100) 
+            (512, 100) 
+            (1024, 100) 
+            (2048, 47.6) 
+            };
+
+          \addplot[ 
+                        line width=1pt,
+                        dash pattern={on 3pt off 3pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+            ]
+          plot coordinates
+            {
+            (256, 100) 
+            (512, 100) 
+            (1024, 78.7) 
+            (2048, 29.1) 
+            };
+
+          \addplot[ dashed, mark=x, mark size=2pt, draw=orange!80,
+            thick,
+          ] plot coordinates {
+            (256, 97.6) 
+            (512, 0) 
+            (1024, 0) 
+            (2048, 0) 
+            };
+
+          \draw[semithick, black]
+          (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+          \draw[semithick, black]
+          (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+        \end{axis}
+      \end{tikzpicture}
+      }
+      
+      \resizebox{0.9\linewidth}{!}{
+      \begin{tikzpicture}
+        \begin{axis}[
+            trim axis left,
+            trim axis right,
+            font=\small,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            tickwidth=0pt,
+            tick align=inside,
+            xlabel={Training steps},
+            width=180pt,height=150pt,
+            ymin=0,
+            ymax=100,
+            xmin=0,
+            xmax=22000, % Set the x-axis range
+            xtick={5000,10000,15000,20000}, % Set custom x-axis ticks
+            xticklabels={5K,10K,15K,20K},
+            scaled x ticks=false,
+            ytick={0,25,50,75,100},
+            yticklabels={0,25,50,75,100},
+            ylabel=\textcolor{white}{Accuracy (\%)},
+            xlabel style={at={(0.5,0.04)}},
+            ylabel style={at={(0.12,0.5)}},
+            axis line style={opacity=0},
+            legend style={ at={(1,0)}, anchor=south east, legend cell align=left, font=\scriptsize, },
+          ]
+          \addplot[ 
+                        line width=1pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+            ] plot coordinates
+            { (0, 0) (2000, 93.4) (4000, 97.6) (6000, 99.1) (8000, 99.7) (10000, 100) (12000, 100) (14000, 100) (16000, 100) (18000, 100) (20000, 100) };
+
+          \addplot[ 
+                        line width=1pt,
+                        dash pattern={on 3pt off 3pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+            ] plot coordinates { (2000, 0) (4000, 0) (6000, 0) (8000, 0) (10000, 0) (12000, 3.5) (14000, 12.9) (16000, 22.6) (18000, 41.7) (20000, 78.7) };
+
+          \addplot[ dashed, mark=x, mark size=2pt, draw=orange!80,
+            thick,
+          ] plot coordinates { (2000, 0) (4000, 0) (6000, 0) (8000, 0) (10000, 0) (12000, 0) (14000, 0) (16000, 0) (18000, 0) (20000, 0) };
+
+          \draw[semithick, black]
+          (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+          \draw[semithick, black]
+          (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+        \end{axis}
+      \end{tikzpicture}
+    }
+    \caption{MQAR}
+    \label{fig:mqar}
+  \end{subfigure} %
+  \hfill
+  \begin{subfigure}[b]{0.33\textwidth}
+    \centering
+    \resizebox{0.9\linewidth}{!}{
+      \begin{tikzpicture}
+        \begin{axis}[
+            trim axis left,
+            trim axis right,
+            font=\small,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            tickwidth=0pt,
+            tick align=inside,
+            xlabel={Sequence length},
+            width=180pt,height=150pt,
+            ymin=0,
+            ymax=100,
+            symbolic x coords={
+                256,512,1024,2048
+                },
+            xtick=data,
+            ytick={0,25,50,75,100},
+            yticklabels={0,25,50,75,100},
+            ylabel=Accuracy (\%),
+            xlabel style={at={(0.5,0.04)}},
+            ylabel style={at={(0.12,0.5)}},
+            axis line style={opacity=0},
+            legend style={ at={(1,0)}, anchor=south east, legend cell align=left, font=\scriptsize, },
+          ]
+          \addplot[ 
+                        line width=1pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+            ] plot coordinates
+            {
+            (256, 100) 
+            (512, 100) 
+            (1024, 100) 
+            (2048, 100) 
+            };
+
+          \addplot[ 
+                        line width=1pt,
+                        dash pattern={on 3pt off 3pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+            ]
+          plot coordinates
+            {
+            (256, 100) 
+            (512, 100) 
+            (1024, 100) 
+            (2048, 100) 
+            };
+
+          \addplot[ dashed, mark=x, mark size=2pt, draw=orange!80,
+            line width=1pt,
+          ] plot coordinates {
+            (256, 100) 
+            (512, 100) 
+            (1024, 0) 
+            (2048, 0) 
+            };
+
+          \draw[semithick, black]
+          (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+          \draw[semithick, black]
+          (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+        \end{axis}
+      \end{tikzpicture}
+      }
+      
+      \resizebox{0.9\linewidth}{!}{
+      \begin{tikzpicture}
+        \begin{axis}[
+            trim axis left,
+            trim axis right,
+            font=\small,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            tickwidth=0pt,
+            tick align=inside,
+            xlabel={Training steps},
+            width=180pt,height=150pt,
+            ymin=0,
+            ymax=100,
+            xmin=0,
+            xmax=22000, % Set the x-axis range
+            xtick={5000,10000,15000,20000}, % Set custom x-axis ticks
+            xticklabels={5K,10K,15K,20K},
+            scaled x ticks=false,
+            ytick={0,25,50,75,100},
+            yticklabels={0,25,50,75,100},
+            ylabel=\textcolor{white}{Accuracy (\%)},
+            xlabel style={at={(0.5,0.04)}},
+            ylabel style={at={(0.12,0.5)}},
+            axis line style={opacity=0},
+            legend style={ at={(1,0)}, anchor=south east, legend cell align=left, font=\scriptsize, },
+          ]
+
+          \addplot[ 
+                        line width=1pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+            ] plot coordinates 
+            { (0, 0) (2000, 58.9) (4000, 98.2) (6000, 99.4) (8000, 99.4) (10000, 99.6) (12000, 100) (14000, 100) (16000, 100) (18000, 100) (20000, 100) };
+
+          \addplot[ 
+                        line width=1pt,
+                        dash pattern={on 3pt off 3pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+            ]
+          plot coordinates
+            { (2000, 0) (4000, 63.3) (6000, 94.4) (8000, 99.2) (10000, 100) (12000, 100) (14000, 100) (16000, 100) (18000, 100) (20000, 100) };
+
+
+          \addplot[ dashed, mark=x, mark size=2pt, draw=orange!80,
+            thick,
+          ] plot coordinates { (2000, 0) (4000, 0) (6000, 0) (8000, 0) (10000, 0) (12000, 0) (14000, 0) (16000, 0) (18000, 0) (20000, 0) };
+
+          \draw[semithick, black]
+          (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+          \draw[semithick, black]
+          (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+        \end{axis}
+      \end{tikzpicture}
+    }
+    \caption{Stack}
+    \label{fig:stack}
+  \end{subfigure} %
+  \caption{Results on synthetic tasks: palindrome, multi query associative recall, and the state tracking.}
+  \label{fig:syn}
+\end{figure}
+

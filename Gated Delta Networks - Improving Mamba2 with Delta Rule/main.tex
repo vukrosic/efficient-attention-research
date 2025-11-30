@@ -1,0 +1,1986 @@
+\documentclass{article}
+% Load xcolor with all needed options first
+% \usepackage[dvips,usenames,dvipsnames]{xcolor}
+\usepackage{iclr2025_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{utils/math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+
+\usepackage{microtype}
+\usepackage{amsthm}
+\usepackage{wasysym} 
+
+
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+\usepackage{breakurl}
+\hypersetup{
+           breaklinks=true,   % splits links across lines
+           colorlinks=true,   % displays links as colored text instead of blocks
+           pdfusetitle=true,  % \title and \author values into pdf metadata
+                              % etc.
+        }
+
+\usepackage{tikz}
+\usepackage{pifont}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{scalefnt}
+\usepackage{float}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{amsmath}  %
+\usepackage{amsthm}
+\usepackage{xcolor, color}
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{wrapfig}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{pgfplots}
+
+\usepgflibrary{patterns}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,decorations.text,patterns,patterns.meta,fit,backgrounds,chains,shadows,math,circuits.ee.IEC,decorations.pathmorphing, decorations.pathreplacing, decorations.shapes}
+\usepgfplotslibrary{fillbetween}
+
+
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\newcommand{\A}{\bm{A}}
+% ready for submission
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{fontawesome}
+\usepackage{hyperref}
+\definecolor{darkblue}{rgb}{0, 0, 0.5}
+\hypersetup{colorlinks, citecolor=darkblue, linkcolor=darkblue, urlcolor=darkblue}
+\usepackage{stmaryrd}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\usepackage{wrapfig,lipsum}
+\usepackage{wasysym}
+\usepackage{marvosym}
+\usepackage{amsmath}         % math
+\usepackage[labelfont=bf,font=small]{caption}
+% \usetikzlibrary{arrows,automata}
+\newcommand{\cmark}{\text{\ding{51}}}
+\newcommand{\xmark}{\text{\ding{55}}}
+
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,decorations.text,patterns,patterns.meta,fit,backgrounds,chains,shadows,math,circuits.ee.IEC,decorations.pathmorphing, decorations.pathreplacing, decorations.shapes}
+
+\definecolor{brickred}{HTML}{b92622}
+\definecolor{midnightblue}{HTML}{005c7f}
+\definecolor{salmon}{HTML}{f1958d}
+\definecolor{burntorange}{HTML}{f19249}
+\definecolor{junglegreen}{HTML}{4dae9d}
+\definecolor{forestgreen}{HTML}{499c5e}
+\definecolor{pinegreen}{HTML}{3d8a75}
+\definecolor{seagreen}{HTML}{6bc1a2}
+\definecolor{limegreen}{HTML}{97c65a}
+\definecolor{violet}{HTML}{8f00ff}
+\definecolor{pastelviolet}{HTML}{cb99c9}
+\definecolor{darkcyan}{HTML}{008B8B}
+\newcommand{\white}[1]{\textcolor{white}{#1}}
+\newcommand{\gray}[1]{\textcolor{gray}{#1}}
+\newcommand{\green}[1]{\textcolor{green}{#1}}
+\newcommand{\brickred}[1]{\textcolor{brickred}{#1}}
+\newcommand{\midnightblue}[1]{\textcolor{midnightblue}{#1}}
+\newcommand{\salmon}[1]{\textcolor{salmon}{#1}}
+\newcommand{\junglegreen}[1]{\textcolor{junglegreen}{#1}}
+\newcommand{\forestgreen}[1]{\textcolor{forestgreen}{#1}}
+\newcommand{\pinegreen}[1]{\textcolor{pinegreen}{#1}}
+\newcommand{\seagreen}[1]{\textcolor{seagreen}{#1}}
+\newcommand{\violet}[1]{\textcolor{violet}{#1}}
+\newcommand{\pastelviolet}[1]{\textcolor{pastelviolet}{#1}}
+\newcommand{\darkcyan}[1]{\textcolor{darkcyan}{#1}}
+
+\input{utils/macro}
+% \input{utils/math_commands}
+% \input{utils/macro}
+\usepackage{graphicx}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\title{Gated Delta Networks: \\
+% : Linear Transformers with Gated Delta Rule 
+Improving Mamba2 with Delta Rule
+}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+\author{Songlin Yang \thanks{Equation contribution. Work done during SY's internship at NVIDIA.} \\
+MIT CSAIL\\
+\texttt{yangsl66@mit.edu} \\
+\And
+Jan Kautz \\
+NVIDIA \\
+\texttt{jkautz@nvidia.com} \\
+\And
+Ali Hatamizadeh $^\star$ \\
+NVIDIA \\
+\texttt{ahatamizadeh@nvidia.com} \\
+}
+
+% \author{
+% \centerline{Songlin Yang$^{1}$\thanks{Equal contributions. Work done during SY's internship at NVIDIA.} \quad Jan Kautz$^{2}$ \quad Ali Hatamizadeh$^{2 *}$} \vspace{1mm}\\
+%  % \vspace{0.7mm} \\
+% \centerline{$^{1}$Massachusetts Institute of Technology}  \vspace{0.8mm} \\
+% \centerline{$^{2}$NVIDIA}  \vspace{0.8mm} \\
+% \centerline{\texttt{yangsl66@mit.edu}} \\
+% \centerline{\texttt{\{jkautz, ahatamizadeh\}@nvidia.com}} \\
+% }
+
+% \author{Songlin Yang~\thanks{ Work done during an internship at NVIDIA Research, LPR Team.} \\
+% Massachusetts Institute of Technology \\
+% \texttt{yangs166@mit.edu} \\
+% \And
+% Jan Kautz, Ali Hatamizadeh \\
+% NVIDIA \\
+% \texttt{\{robot,net\}@wits.ac.za} \\
+% }
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+
+Linear Transformers have gained attention as efficient alternatives to standard Transformers, but their performance in retrieval and long-context tasks has been limited.  To address these limitations, recent work has explored two distinct mechanisms: gating for adaptive memory control and the delta update rule for precise memory modifications. We observe that these mechanisms are complementary—gating enables rapid memory erasure while the delta rule facilitates targeted updates. Building on this insight, we introduce the gated delta rule and develop a parallel training algorithm optimized for modern hardware. Our proposed architecture, Gated DeltaNet, consistently surpasses existing models like Mamba2 and DeltaNet across multiple benchmarks, including language modeling, common-sense reasoning, in-context retrieval, length extrapolation, and long-context understanding. We further enhance performance by developing hybrid architectures that combine Gated DeltaNet layers with sliding window attention or Mamba2 layers, achieving both improved training efficiency and superior task performance. \\
+Code:  \url{https://github.com/NVlabs/GatedDeltaNet}
+
+
+
+
+
+
+
+
+
+
+             
+\end{abstract}
+
+\section{Introduction}
+
+
+% The advent of Transformers has revolutionized the field of Large Language Models (LLMs), demonstrating remarkable capabilities across diverse tasks. At the core of these models lies the attention mechanism, which has proven indispensable for precise sequence modeling. This mechanism leverages the parallel processing power of modern GPUs, making it particularly effective during the training phase. Nevertheless, the computational demands of self-attention, which scales quadratically with sequence length, pose significant challenges for both training and inference processes. To address these limitations, researchers have developed various strategies to enhance efficiency, especially when dealing with extended sequences. These approaches include optimizing the storage of previous key-value pairs and refining the computation of intermediate features to better align with hardware capabilities. Despite these advancements, managing the stored information for lengthy sequences remains a complex undertaking. 
+
+% In response to these challenges, an alternative approach has emerged in the form of Linear Transformers \citep{katharopoulos2020transformers}. These models substitute the conventional softmax-based attention with a mechanism that utilizes the dot product of key and query vectors, potentially with some kernelization. This innovation allows for a reformulation of attention as a linear recurrent neural network, significantly reducing memory requirements during inference. While initial versions of Linear Transformers struggled to match the performance of their traditional counterparts in language modeling tasks, recent iterations incorporating data-dependent forgetting mechanisms (i.e., the gating mechanism well-known in LSTM) have shown promising results, e.g., Mamba2 \citet{mamba2}. These enhanced Linear Transformers, along with related models that can be reformulated in a similar manner, are now being considered as viable alternatives to standard Transformers. However, it's important to note that these models still face difficulties with tasks that heavily rely on associative recall, an area where traditional Transformers continue to excel. This limitation is particularly relevant for practical applications that depend on efficient information retrieval and utilization.
+
+
+%TODO: Ali will re-generate this figure based on 1.3B models and a PDF format
+% \begin{wrapfigure}{r}{0.5\textwidth}
+% \vspace{-4.mm}
+% \vspace{-2.mm}
+%   \begin{center}
+% \includegraphics[width=0.8\linewidth,]{figures/reason_vs_ar.png}
+%   \end{center}
+% \caption{\small Comparison of Gated DeltaNet variants against other models in terms of  associative-recall vs reasoning performance on common benchmarks. Gated DeltaNet-based models achieve a new Pareto front and significantly outperform Transformer-based and hybrid models. }\label{fig:hat} 
+% \vspace{-2mm}
+% \end{wrapfigure} 
+
+The Transformer architecture has significantly advanced the capabilities of Large Language Models (LLMs), showcasing exceptional performance across a wide range of tasks due to its effective attention mechanism. This mechanism excels in precise sequence modeling and leverages the parallel processing capabilities of modern GPUs during training. However, the self-attention component scales quadratically with sequence length, leading to substantial computational demands that pose challenges for both training and inference.
+
+To mitigate these issues, researchers have explored alternatives such as linear Transformers \citep{katharopoulos2020transformers}, which replace traditional softmax-based attention with kernelized dot-product-based linear attention, substantially reducing memory requirements during inference by reframing as a linear RNN with matrix-valued states. While early versions of linear Transformers underperformed in language modeling tasks compared to standard Transformers, recent enhancements—such as incorporating data-dependent gating mechanisms akin to those in LSTMs, exemplified by models like GLA \citep{yang_gated_2023} and Mamba2 \citep{mamba2}—have shown promising improvements. However, challenges persist in managing information over long sequences, particularly for in-context retrieval tasks where traditional Transformers maintain their advantage \citep{zoology, arora_simple_2024, jelassi_repeat_2024, wen_rnns_2024, akyurek_-context_2024}.
+
+This phenomenon is not surprising: linear Transformers can be interpreted as implementing an outer-product-based key-value association memory, reminiscent of tensor product representation \citep{DBLP:journals/ai/Smolensky90}. 
+However, the number of orthogonal key-value pairs they can store is \emph{bounded} by the model's dimensionality. When the sequence length exceeds this dimension, ``memory collisions`` become inevitable, hindering exact retrieval \citep{linear-xmr-fastweight}.
+
+Mamba2 addresses this limitation by introducing a simple gated update rule, $\rmS_t = \alpha_t \rmS_{t-1} + \vv_t\vk_t^\intercal$, which uniformly decays all key-value associations at each time step by a dynamic ratio, $\alpha_t \in (0,1)$. However, this approach does not account for the varying importance of different key-value associations, potentially leading to inefficient memory utilization. If the model needs to forget a specific key-value association, all key-value associations are equally forgotten, making the process less targeted and efficient.
+
+In contrast, the linear Transformer with the delta rule \citep{widrow_adaptive_1988}, known as DeltaNet \citep{linear-xmr-fastweight, yang2024parallelizing}, selectively updates memory by (softly) replacing an old key-value pair with the incoming one in a sequential manner. This method has demonstrated impressive performance in synthetic benchmarks for in-context retrieval. However, since this process only modifies a single key-value pair at a time, the model lacks the ability to rapidly clear outdated or irrelevant information, especially during context switches where previous data needs to be erased. Consequently, DeltaNet has been found to perform moderately on real-world tasks 
+ \citep{yang2024parallelizing}, likely due to the absence of a robust memory-clearing mechanism.
+
+Recognizing the complementary advantages of the gated update rule and the delta rule in memory management, we propose the \emph{gated delta rule}, a simple and intuitive mechanism that combines both approaches. This unified rule enables flexible memory control: it can promptly clear memory by setting $\alpha_t \rightarrow 0$, while selectively updating specific content without affecting other information by setting $\alpha_t \rightarrow 1$ (effectively switching to the pure delta rule).
+
+The remaining challenge lies in implementing the gated delta rule in a hardware-efficient manner. Building upon \citet{yang2024parallelizing}'s efficient algorithm that parallelizes the delta rule computation using the WY representation \citep{bischof_wy_1985}, we carefully extend their approach to incorporate the gating terms. Our extension preserves the benefits of chunkwise parallelism \citep{hua_transformer_2022, sun2023retentive, yang_gated_2023, yang2024parallelizing}, enabling hardware-efficient training.
+
+Our resulting architecture, Gated DeltaNet,  consistently outperforms both Mamba2 and DeltaNet across a comprehensive suite of benchmarks, including language modeling, commonsense reasoning, in-context retrieval, length extrapolation, and long-context understanding. Building on these results, we also develop hybrid architectures that strategically combine Gated DeltaNet layers with sliding window attention or Mamba2 layers, further enhancing both training efficiency and model performance.
+
+
+
+\section{Preliminary}
+\subsection{Mamba2: Linear Attention with decay}
+It is known that the linear transformer \citep{katharopoulos_transformers_2020}  can be formulated as the following linear recurrence when excluding normalization and query/key activations:
+\begin{align*}
+    \rmS_t = \rmS_{t-1} + \vv_t \vk_t^\intercal  \in \mathbb{R}^{d_v \times d_k}, \qquad \qquad
+    \vo_t = \rmS_t \vq_t \in \mathbb{R}^{d_v}
+\end{align*}
+where \( d_k \) and \( d_v \) represent the (head) dimensions for query/key and value, respectively. By expanding the recurrence, we can express it in both vector form (left) and matrix form (right) as follows:
+\begin{align*}
+    \vo_t = \sum_{i=1}^t (\vv_i \vk_i^\intercal) \vq_t = \sum_{i=1}^t \vv_i (\vk_i^\intercal \vq_t) \in \mathbb{R}^{d_v},  \qquad    
+    \rmO = (\rmQ \rmK^\intercal  \odot \rmM) \rmV \in \mathbb{R}^{L \times d_v}
+\end{align*}
+where \( L \) is the sequence length, and \(\rmM \in \mathbb{R}^{L\times L}\) is the causal mask defined by \(\rmM_{ij} = 0\) when \(i < j\), and \(1\) otherwise.  
+% The equivalent recurrent and parallel form make it clear that: (1) linear attention simply removes the softmax operator from the traditional attention and (ii) linear attention implements a linear recurrence 
+
+However, this vanilla linear attention underperforms Transformers in language modeling by a large margin. To address this, it is common to add a decay term to forget historical information. Here we take Mamba2 \citep{mamba2} as an example, which can be represented by the following linear recurrence (up to specific parameterization):
+\[
+\rmS_t = {\color{blue}\alpha_t} \rmS_{t-1} + \vv_t \vk_t^\intercal, \qquad \vo_t = \rmS_t \vq_t
+\]
+where ${\color{blue}\alpha_t \in (0,1)}$ is a data-dependent scalar-valued decay term that varies with $t$.
+Define the cumulative decay product $\color{blue}{\gamma_j = \prod_{i=1}^j \alpha_i}$, and by expanding the recurrence, we can express the result in both a vector form (left) and a matrix parallel form (right):
+\[
+\vo_t = \sum_{i=1}^t \left({ {\color{blue}\frac{\gamma_t}{\gamma_i}}} \vv_i \vk_i^\intercal  \right) \vq_t = \sum_{i=1}^t \vv_i \left( {\color{blue} \frac{\gamma_t}{\gamma_i}} \vk_i^\intercal \vq_t \right), \qquad 
+\rmO = \left( \left(\rmQ \rmK^\intercal \right) \odot { {\color{blue}\Gamma}} \right) \rmV
+\]
+Here, ${\color{blue}\Gamma \in \mathbb{R}^{L\times L}}$ is a decay-aware causal mask where
+$\color{blue}{\Gamma_{ij} = \frac{\gamma_i}{\gamma_j}}$  \text{if} $i \ge j$ and ${\color{blue}\Gamma_{ij} = 0}$ otherwise.
+The equivalence between these parallel and recurrent forms is also referred to as the state space duality (SSD) described in \citet{mamba2}. This recurrence structure appears in several other architectures including Gated RFA \citep{peng_random_2021}, xLSTM \citep{beck2024xlstm}, and Gated RetNet \citep{Sun2024YouOC}. When $\gamma_t$ is data-independent, the formulation reduces to RetNet \citep{sun2023retentive} and Lightning-Attention \citep{lightning2}. Furthermore, if $\gamma_t$ is extended to be matrix-valued rather than scalar-valued, efficient training algorithms remain possible when parameterized with an outer-product structure, as demonstrated by \citet{yang_gated_2023} and used by \citet{yang_gated_2023, peng_eagle_2024, qin2024hgrn2, Zhang2024GatedSA, chou2024metala,he2025rodimus,lu2025reglarefininggatedlinear}.
+
+% It is also possible to use more fine-grained data-dependent decay term that could be possibly be trained in hardware-efficient manner, as in \citet{yang_gated_2023, Zhang2024GatedSA, qin2024hgrn2, peng_eagle_2024, } as long 
+ 
+\paragraph{Chunkwise training} 
+ However, both the recurrent and parallel forms are not ideal for efficient training \citep{hua_transformer_2022,yang_gated_2023}, which motivates the use of the chunkwise parallel form \citep{hua_transformer_2022, sun2023retentive} for hardware-efficient, linear-time training, as introduced below.
+To summarize, the chunkwise parallel form splits inputs and outputs into several chunks of size \( C \), and computes outputs for each chunk based on the final state of the previous chunk and the query/key/value blocks of the current chunk. Following the notation of \citet{sun_retentive_2023, yang_gated_2023, yang2024parallelizing}, we take the query block, \(\vq\), as an example. We denote \(\rmQ_{[t]} := \vq_{tC+1:(t+1)C+1}\) as the query block for chunk \( t \), and \(\vq_{[t]}^r := \vq_{tC+r}\) as the \( r \)-th query within chunk \( t \). The initial state of chunk \( t \) is defined as \(\rmS_{[t]} := \rmS_{[t]}^0 = \rmS_{[t-1]}^C\). By partially expanding the recurrence, we have
+\vspace{-3mm}
+\begin{align*}
+     \rmS_{[t]}^r = \rmS_{[t]} + \sum_{i=1}^r \vv_{[t]}^{i} \vk_{[t]}^{i\intercal} \in \mathbb{R}^{d_v\times d_k}, \qquad 
+     \vo_{[t]}^r = \rmS_{[t]}^r\vq_{[t]}^r = \rmS_{[t]}\vq_{[t]}^r + \sum_{i=1}^r \vv_{[t]}^{i} \left(\vk_{[t]}^{i\intercal} \vq_{[t]}^{r} \right)  \in \mathbb{R}^{d_v}
+ \end{align*}
+ \vspace{-3mm}
+Equivalently, in matrix form:
+\vspace{1mm}
+\begin{align*}
+\rmS_{[t+1]} = \rmS_{[t]} + \rmV_{[t]} \rmK_{[t]}^\intercal \in \mathbb{R}^{d_v \times d_k}, \qquad 
+\rmO_{[t]} = \rmQ_{[t]} \rmS_{[t]}^\intercal  + \left(\rmQ_{[t]}\rmK_{[t]}^\intercal \odot \rmM\right) \rmV_{[t]}  \in \mathbb{R}^{C \times d_v}
+\end{align*}
+% \vspace{-1mm}
+where \(\rmM \in \mathbb{R}^{C\times C}\) is the causal mask. The above equations are rich in matrix multiplications (matmuls), allowing for tensor-core-based hardware optimization.
+This chunkwise algorithm could be easily extended to linear attention with decay:
+\begin{align}
+    \rmS_{[t+1]} = {\color{blue}
+\overrightarrow{\rmS_{[t]}}}
++ \rmV_{[t]}^\intercal 
+    {\color{blue}
+\overrightarrow{\rmK_{[t]}}} \in \mathbb{R}^{d_v \times d_k} 
+,  && 
+    \rmO_{[t]} = {\color{blue}{\overleftarrow{ \rmQ_{[t]}}}} \rmS_{[t]}^\intercal + \left(\rmQ_{[t]} \rmK_{[t]}^\intercal \odot {\color{blue}\Gamma_{[t]}}\right)\rmV_{[t]} \in \mathbb{R}^{C\times d_v}
+    \label{eq:mamba2-update-o}
+\end{align}
+where ${\color{blue}(\Gamma_{[t]})_{ij} = \frac{\gamma_{[t]}^i}{\gamma_{[t]}^j}, \gamma_{[t]}^j = \prod_{j=tC+1}^{tC+j} \alpha_j}$.~\footnote{Here we slightly abuse the notation of $\gamma$ to denote the cumulative product for each chunk (starting with the first position of each chunk separately) instead of the entire sequence.}  Here we use the left arrow ($\overleftarrow{\cdot}$) or the right arrow ($\overrightarrow{\cdot}$) to denote a variable decaying to the first position and the last position of each chunk, respectively, \begin{align}    {\color{blue}\overleftarrow{\vq_{[t]}^r}} &= {\color{blue}\gamma_{[t]}^r} \vq_{[t]}^r && \text{decaying each vector to the first position of  chunk $t$} \nonumber \\ 
+{\color{blue}\overrightarrow{\vk_{[t]}^r}} &= {\color{blue}\frac{\gamma_{[t
+]}^{C}}{\gamma_{[t]}^r}} \vk_{[t]}^r  && \text{decaying each vector to the last position of  chunk $t$} \nonumber \\ 
+{\color{blue}\overrightarrow{\rmS_{[t]}}} &= {\color{blue}\gamma_{[t]}^C}\rmS_{[t]}  && \text{decaying the state matrix over the entire chunk $t$} 
+\label{eq:def_notation}
+\end{align}
+and likewise for other variables (e.g., ${\color{blue}\overrightarrow{\vv}}$). The SSD decomposition algorithm introduced in Mamba2 is largely equivalent to this chunkwise algorithm. For a more generalized approach, \citet{yang_gated_2023} proposed an extended chunkwise algorithm for linear attention that incorporates fine-grained decay mechanisms.
+\vspace{-2mm}
+\subsection{Delta Networks: Linear Attention with Delta Rule}
+The delta update rule \citep{widrow_adaptive_1988, schlag_linear_2021} \emph{dynamically} erases the value ($\vv_t^{\text{old}}$) associated with the current input key ($\vk_t$) and writes a new value ($\vv_t^{\text{new}}$), which is a linear combination of the current input value and the old value
+based on the ``writing strength'' $\beta_t \in (0,1)$.\footnote{It is possible to set $\beta_t \in (0, 2)$ to allow negative eigenvalue to unlock the state tracking abilities of DeltaNet \citep{Grazzi2024UnlockingSI,siems2025deltaproductincreasingexpressivitydeltanet}.}
+\begin{align*}
+    \rmS_t &= \rmS_{t-1} - \underbrace{\left(\rmS_{t-1} \vk_t\right)}_{\vv_{t}^{\text{old}}}  \vk_t^\intercal + \underbrace{\left(\beta_t \vv_t + (1-\beta_t)\rmS_{t-1}\vk_t)\right)}_{\vv_{t}^{\text{new}}}  \vk_t^\intercal 
+    % = \rmS_{t-1} + \underbrace{\vu_t}_{\vv_{t}^{\text{new}} - \vv_{t}^{\text{old}}} \vk_t^\intercal  
+= \rmS_{t-1} \left(\rmI - \beta_t \vk_t \vk_t^\intercal \right)  + \beta_t  \vv_t \vk_t^\intercal 
+% \in \mathbb{R}^{d_v\times d_k}
+\end{align*}
+As shown above, DeltaNet implements a first-order linear recurrence with generalized Householder transition matrices $\left(\rmI - \beta_t \vk_t \vk_t^\intercal \right)$. Despite demonstrating superior associative recall and language modeling performance \citep{linear-xmr-fastweight}, DeltaNet received limited attention due to computational inefficiency until \citet{yang2024parallelizing} introduced a hardware-efficient chunkwise training algorithm, as detailed below.
+\vspace{-2mm}
+\paragraph{Chunkwise parallel form.}
+By partially expanding the recurrence, we have
+\begin{align}
+ \rmS_{[t]}^r = \rmS_{[t]} \underbrace{\left(\prod_{i=1}^r \rmI - \beta_{[t]}^i \vk_{[t]}^i \vk_{[t]}^{i\intercal} \right)}_{:= \rmP_{[t]}^r} + \underbrace{\sum_{i=1}^{r} \left( \beta^i_{[t]} \vv^i_{[t]} \vk_{[t]}^{i\intercal}\prod_{j=i+1}^{r}  \left(\rmI - \beta_{[t]}^j \vk^j_{[t]} \vk_{[t]}^{j\intercal} \right) \right)}_{:= \rmH_{[t]}^r}    
+ \label{eq:delta_rule_expand}
+\end{align}
+where $\rmP_{[t]}^j$ involves cumulative products of generalized Householder matrices, 
+% allowing for
+% \citet{yang2024parallelizing} show these take the form of (generalized) Householder matrices, allowing 
+ % efficient computation through the 
+ which could be optimized by the classical WY representation~\citep{bischof_wy_1985}:\begin{align}
+    \rmP_{[t]}^{r} &= \rmI - \sum_{i=1}^{r}\vw_{[t]}^i\vk_{[t]}^{i\intercal}  \in \mathbb{R}^{d_k \times d_k} 
+     &&\vw_{[t]}^r = \beta_{[t]}^r \left(\vk_{[t]}^r -  \sum_{i=1}^{r-1} \left(\vw_{[t]}^i (\vk_{[t]}^{i\intercal}\vk_{[t]}^r) \right) \right) \in \mathbb{R}^{d_k} 
+     \label{eq:wy-pw}
+    \end{align}
+    Likewise, $\rmH_{[t]}^r$ could be represented as:
+    \vspace{-2mm}
+    \begin{align}
+ \rmH_{[t]}^{r} &= \sum_{i=1}^{r} \vu_{[t]}^i \vk_{[t]}^{i\intercal}  \in \R^{d_v \times d_k}  &&   \vu_{[t]}^r = \beta_{[t]}^r \left(\vv_{[t]}^r -  \sum_{i=1}^{r-1} \left(\vu_{[t]}^i (\vk_{[t]}^{i\intercal}\vk_{[t]}^r) \right) \right)\in \mathbb{R}^{d_v}
+ \label{eq:wy-ph}
+    \end{align}
+and in matrix form: $\rmP_{[t]}=\rmI-\rmW_{[t]}^\top\rmK_{[t]} \in \mathbb{R}^{d_k \times d_k}$, $\rmH_{[t]}=\rmU_{[t]}^\top\rmK_{[t]} \in \mathbb{R}^{d_v\times d_k}$. By using the UT transform \citep{Joffrain2006AccumulatingHT}, we can further write $\rmW$ and $\rmU$ in matrix form:\begin{align}
+   \rmT_{[t]} = \left[\rmI + \operatorname{strictLower}\left(\operatorname{diag}(\beta_{[t]})\rmK_{[t]} \rmK_{[t]}^\intercal\right)\right]^{-1}\operatorname{diag}\left(\beta_{[t]}\right) 
+   \in \mathbb{R}^{C \times C} 
+   \label{eq:inverse}\\
+   \rmW_{[t]}= \rmT_{[t]} \rmK_{[t]}  
+   \in \mathbb{R}^{C \times d_k}, \qquad
+   \rmU_{[t]}=\rmT_{[t]}\rmV_{[t]} 
+   \in \mathbb{R}^{C \times d_v}
+   \label{eq:wu=akv}
+\end{align}
+Substituting these back into Eq.~\ref{eq:delta_rule_expand} yields a hardware-efficient chunkwise algorithm for DeltaNet that leverages matmuls, enabling tensor core based GPU optimization:\begin{align}
+\rmS_{[t+1]} &= \rmS_{[t]}\rmP_{[t]}+\rmH_{[t]} =  \rmS_{[t]} + \left(\rmU_{[t]} - \rmW_{[t]}\rmS_{[t]}^{\intercal}\right)^\intercal \rmK_{[t]} \label{eq:delta_chunk_h} & \in \mathbb{R}^{d_v \times d_k} \\
+    \rmO_{[t]} &= \rmQ_{[t]} \rmS_{[t]}^\intercal + (\rmQ_{[t]} \rmK_{[t]}^{\intercal} \odot \rmM) \left(\rmU_{[t]} - \rmW_{[t]} \rmS_{[t]}^\intercal\right)  &\in \mathbb{R}^{C \times d_v}\label{eq:delta_chunk_o}
+\end{align}
+\vspace{-5mm}
+\section{Gated Delta Networks}
+\vspace{-2mm}
+\subsection{Formulation: Gated Delta Rule}
+\label{sec:online-learning}
+The proposed gated delta rule is simple yet effective:
+\begin{align}
+\rmS_t = \rmS_{t-1} \left( {\color{blue}{\alpha_t}}  (\rmI - \beta_t \vk_t\vk_t^\intercal) \right) + \beta_t \vv_t \vk_t^\intercal
+\label{eq:gated_delta_rule}
+\end{align}
+where the data-dependent gating term $\color{blue}{\alpha_t} \in (0,1)$ controls state decay. This formulation unifies the advantages of both gating mechanisms and the delta rule: the gating term enables adaptive memory management, while the delta update structure facilitates effective key-value association learning. 
+
+We present a formal analysis of the gated delta rule through the lens of the online learning framework introduced by \cite{longhorn}. In this framework, recurrent state updates emerge as \emph{closed-form} solutions to an online learning problem, as shown in Table~\ref{tab:online-learning-rnn}. Recent linear RNN architectures typically incorporate a regularization term in their online learning objective to prevent state divergence from previous values, thereby enabling memory retention.
+However, this retention mechanism becomes problematic when the state becomes saturated with information. In such cases, each state would encode a superposition of multiple information pieces, making precise retrieval challenging. To address this limitation, Mamba2 and Gated DeltaNet introduce an adaptive scaling factor $\alpha_t$ that relaxes the regularization term, allowing controlled deviations between $\rmS_t$ and $\rmS_{t-1}$. This modification enables dynamic memory management through selective forgetting, which could be useful in filtering out irrelevant information (see \S \ref{sec:case_study}).
+
+On the other hand, Linear Attention (LA) and Mamba2 use a simple negative inner-product loss -$\langle\rmS_t \vk_t, \vv_t\rangle$, while Longhorn \citep{longhorn} uses a more expressive online regression objective $\|\rmS_t\vk_t - \vv_t\|^2$ for better modeling of key-value associations. The resulting Longhorn's update rule closely resembles the delta update rule,~\footnote{The theoretical distinction lies in the optimization approach: Longhorn uses implicit online learning \citep{Kulis2010ImplicitOL} to derive closed-form globally optimal updates, while DeltaNet optimizes the same objective through one-step explicit gradient descent, as noted by \citet{longhorn}.
+} suggesting the superiority of the (gated) delta rule over Mamba2 in in-context associative recall.
+
+From the perspective of fast weight programming \citep{Irie2022TheDF} and test-time training \citep{ttt} and regression \citep{wang2025testtimeregressionunifyingframework}, the hidden state $\rmS$ can be interpreted as a (fast) weight matrix, with the delta rule optimizing the online regression objective $\mathcal{L}(\rmS_t)=\frac{1}{2} \| \rmS_t\vk_t - \vv_t \|^2$ via \emph{test-time} stochastic gradient descent (SGD):
+\begin{align*}
+\rmS_{t+1} &= \rmS_{t} - \beta_t \nabla \mathcal{L}(\rmS_t) 
+= \rmS_{t} - \beta_t (\rmS_t\vk_t - \vv_t)\vk_t^\intercal = \rmS_{t}\left(\rmI-\beta_t\vk_t\vk_t^\intercal\right) + \beta_t \vv_t\vk_t^\intercal
+\end{align*}
+where $\beta_t$ represents the (adaptive) learning rate. From this perspective, the gated delta rule can be viewed as incorporating an adaptive weight decay term $\alpha_t$ into the SGD update, a technique widely used in deep learning \citep{Krogh1991ASW,Andriushchenko2023WhyDW}. Concurrently, Titans \citep{behrouz2024titanslearningmemorizetest} demonstrated the effectiveness of incorporating weight decay mechanisms in RNN test-time SGD updates. 
+\begin{table}[t]
+\caption{Comparison of different linear RNN models and their corresponding online learning objectives using the framework from \cite{longhorn}. For convenience, we simplify Longhorn's vector-valued $\bbeta$ to scalar $\beta$. 
+}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular*}{\linewidth}{@{}l@{\quad}p{0.41\linewidth}@{\quad}p{0.49\linewidth}@{}}
+\toprule
+\textbf{Method} & \textbf{Online Learning Objective} & \textbf{Online Update} \\
+\midrule
+\text{LA} & $\displaystyle  \|\rmS_t - \rmS_{t-1}\|_F^2 - 2\langle\rmS_t \vk_t, \vv_t\rangle$ & $\displaystyle \rmS_t = \rmS_{t-1} + \vv_t \vk_t^T$ \\
+\text{Mamba2} & $\displaystyle  \|\rmS_t - \alpha_t \rmS_{t-1}\|_F^2 - 2\langle\rmS_t \vk_t, \vv_t\rangle$ & $\displaystyle \rmS_t = \alpha_t \rmS_{t-1} + \vv_t \vk_t^T$ \\
+\text{Longhorn} & $\displaystyle \|\rmS_t - \rmS_{t-1}\|_F^2 - \beta_t \|\rmS_t \vk_t - \vv_t \|^2$ & $\displaystyle \rmS_t = \rmS_{t-1}(\rmI - \epsilon \vk_t \vk_t^T) + \epsilon_t \vv_t \vk_t^T,  \epsilon_t=\frac{\beta_t}{1+\beta_t\vk_t^\top\vk_t}$  \\
+\text{DeltaNet} & $\displaystyle  \|\rmS_t - \rmS_{t-1}\|_F^2 - 2\langle\rmS_t \vk_t, \beta_t\left(\vv_t- \rmS_{t-1}\vk_t \right)\rangle$ & $\displaystyle \rmS_t = \rmS_{t-1}(\rmI - \beta_t \vk_t \vk_t^T) + \beta_t \vv_t \vk_t^T$ \\
+\text{Gated DeltaNet} & $\displaystyle \|\rmS_t - \alpha_t \rmS_{t-1}\|_F^2 - 2\langle\rmS_t \vk_t, \beta_t\left(\vv_t- \alpha_t\rmS_{t-1}\vk_t \right)\rangle$ & $\displaystyle \rmS_t = \rmS_{t-1}\left(\alpha_t(\rmI - \beta_t \vk_t \vk_t^T)\right) + \beta_t \vv_t \vk_t^T$ \\
+\bottomrule
+\end{tabular*}
+\label{tab:online-learning-rnn}
+\end{table}
+ \begin{table}[t!]
+ \vspace{-3mm}
+ \caption{Zero-shot performance comparison on S-NIAH benchmark suite for 1.3B models (see \S\ref{sec:setup} for setups) 
+}
+\vspace{-2mm}
+\centering
+\resizebox{0.7\textwidth}{!}{%
+\begin{tabular}{ll|cccc|cccc|ccc}
+\toprule
+& & \multicolumn{4}{c|}{S-NIAH-1} & \multicolumn{4}{c|}{S-NIAH-2} & \multicolumn{3}{c}{S-NIAH-3} \\
+& & \multicolumn{4}{c|}{(pass-key retrieval)} & \multicolumn{4}{c|}{(number in haystack)} & \multicolumn{3}{c}{(uuid in haystack)} \\
+\cmidrule{3-13}
+Model & & 1K & 2K & 4K & 8K & 1K & 2K & 4K & 8K & 1K & 2K & 4K \\
+\midrule
+DeltaNet & & 97.4 & 96.8 & \textbf{99.0} & \textbf{98.8} & 98.4 & 45.6 & 18.6 & 14.4 & 85.2 & 47.0 & 22.4 \\
+Mamba2 & & \textbf{99.2} & \textbf{98.8} & 65.4 & 30.4 & 99.4 & 98.8 & 56.2 & 17.0 & 64.4 & 47.6 & 4.6 \\
+\textbf{Gated DeltaNet} & & 98.4 & 88.4 & 91.4 & 91.8 & \textbf{100.0} & \textbf{99.8} & \textbf{92.2} & \textbf{29.6} & \textbf{86.6} & \textbf{84.2} & \textbf{27.6} \\
+\bottomrule
+\end{tabular}
+}
+\label{tab:niah-results}
+\vspace{-4mm}
+\end{table}
+\vspace{-2mm}
+\subsection{Case study: Single Needle in a Haystack (S-NIAH)} 
+\label{sec:case_study}
+\vspace{-1mm}
+To better understand the complementary strength between the delta rule and the gated rule, we present a case study on the Single Needle-In-A-Haystack (S-NIAH) benchmark suite from RULER \citep{hsieh2024ruler}, where a key-value pair acts as a needle in the haystack (context) and the model must recall the value when given the key. 
+ Table~\ref{tab:niah-results} presents the results and we draw three main observations:\vspace{-1mm}
+\paragraph{{Decay hurts memory retention}.} In the simplest S-NIAH-1 setting with repeated synthetic context, models memorize minimal information, testing long-term retention.
+DeltaNet achieves near-perfect performance across all sequence lengths. Mamba2 degrades significantly beyond 2K sequences since it decays historical information too quickly, while Gated DeltaNet's degradation is less severe thanks to the use of delta rule.
+\vspace{-1mm}
+\paragraph{Gating facilitates filtering.} In S-NIAH-2/3 with real-world-essay context, models store all potentially relevant information, testing efficient memory management. With fixed state size, lack of clearance causes memory collision—information becomes superimposed and indistinguishable. DeltaNet's performance drops significantly at longer sequences due to poor memory clearance. Mamba2 and Gated DeltaNet maintain better performance through gating mechanisms that filter irrelevant information.
+\vspace{-1mm}
+\paragraph{Delta rule helps memorization.} In S-NIAH-3, values change from numbers to UUIDs, testing complex pattern memorization. Mamba2's performance drops quickly, while Gated DeltaNet performs better, verifying that the delta rule indeed has better memorization ability.
+\vspace{-3mm}
+\subsection{Algorithm: Hardware-efficient Chunkwise training}
+In this subsection, we derive a hardware-efficient chunkwise algorithm for training Gated DeltaNet. By partially expanding the recurrence in Eq.~\ref{eq:gated_delta_rule}, we have
+\begin{align*}
+ \rmS_{[t]}^r = \rmS_{[t]} \underbrace{\left(\prod_{i=1}^r 
+{\color{blue}{\alpha_{[t]}^i}}\left(\rmI - \beta_{[t]}^i \vk_{[t]}^i \vk_{[t]}^{i\intercal} \right)\right)}_{:= \mathbf{F}_{[t]}^r} + \underbrace{\sum_{i=1}^{r} \left( \beta^i_{[t]} \vv^i_{[t]} \vk_{[t]}^{i\intercal}\prod_{j=i+1}^{r} {\color{blue}{\alpha_{[t]}^j}} \left(\rmI - \beta_{[t]}^j \vk^j_{[t]} \vk_{[t]}^{j\intercal} \right) \right)}_{:= \rmG_{[t]}^r}
+\end{align*}
+\vspace{-1.5mm}
+It is easy to see that $\mathbf{F}_{[t]}^r = {\color{blue}\gamma_{[t]}^r} \rm{P}_{[t]}^r = {\color{blue}\overleftarrow{\rm{P}_{[t]}^r}}$. As for $\rmG_{[t]}^r$, we adapt Eq.~\ref{eq:wy-ph} as follows,
+\begin{align*}
+\rmG_{[t]}^r = \sum_{i=1}^r {\color{blue} \frac{\gamma_{[t]}^r}{\gamma_{[t]}^i} } \tilde{\vu}_{[t]}^i \vk_{[t]}^{i\intercal} \in\mathbb{R}^{d_v \times d_k}
+&&\tilde{\vu}_{[t]}^r = \beta_{[t]}^r \left(\vv_{[t]}^r - \sum_{i=1}^{r-1} \left( \tilde{\vu}_{[t]}^i ({\color{blue}\frac{\gamma_{[t]}^{r}}{\gamma_{[t]}^i}} \vk_{[t]}^{i\intercal}\vk_{[t]}^r)\right)\right) \in \mathbb{R}^{d_v}
+\label{eq:wy_recurrent}
+\end{align*}
+(see \S\ref{sec:extended_wy_proof} for a proof). By UT transform, we have the matrix form:\begin{align*}
+\widetilde{\rmU_{[t]}} = \left[\rmI + \operatorname{strictLower} \left(\operatorname{diag}\left(\beta_{[t]}\right) ({\color{blue}\Gamma_{[t]} } \odot \rmK_{[t]} \rmK_{[t]}^\intercal )\right) \right]^{-1} \operatorname{diag}\left(\beta_{[t]}\right) \rmV_{[t]} && \in \mathbb{R}^{C \times d_v}
+\end{align*}
+Similar to how Mamba2 extends linear attention (Eq.~\ref{eq:mamba2-update-o}), we can adapt DeltaNet's chunkwise algorithm (Eq.~\ref{eq:delta_chunk_h}-\ref{eq:delta_chunk_o}) for Gated DeltaNet to enable hardware-efficient training as follows:
+\begin{align*}
+\rmS_{[t+1]} &= {\color{blue}  \overrightarrow{\rmS_{[t]}}} +  \left({ \widetilde{\rmU_{[t]}}} - {\color{blue} 
+\overleftarrow{\rmW_{[t]}}} \rmS_{[t]}^\intercal\right)^\intercal {\color{blue}
+\overrightarrow{\rmK_{[t]}}} &&\in \mathbb{R}^{d_v \times d_k}
+% \label{eq:gated_delta_chunk_s}
+\\
+    \rmO_{[t]} &= 
+    {\color{blue} 
+\overleftarrow{\rmQ_{[t]}}}
+    \rmS_{[t]}^\intercal + (\rmQ_{[t]} \rmK_{[t]}^{\intercal} \odot \mathbf{M})
+\left({{\widetilde{\rmU^{}_{[t]}}}} -  
+    {\color{blue}     \overleftarrow{\rmW_{[t]}}}\rmS_{[t]}^\intercal\right) &&\in \mathbb{R}^{C \times d_v}
+% \label{eq:gated_delta_chunk_o}
+\end{align*}
+where $\color{blue} \overleftarrow{\vq_{[t]}^r}=\gamma_{[t]}^r \color{black}\vq_{[t]}^r$, $\color{blue} \overleftarrow{\vw_{[t]}^r}=\gamma_{[t]}^r \color{black}\vw_{[t]}^r$, $\color{blue} \overrightarrow{\vk_{[t]}^r}=\frac{\gamma_{[t]}^C}{\gamma_{[t]}^r} \color{black}\vk_{[t]}^r$, and $\color{blue} \overrightarrow{\rmS_{[t]}}= \gamma_{[t]}^C \color{black}\rmS_{[t]}$ like we defined in Eq.~\ref{eq:def_notation}.
+\vspace{-2mm}
+\subsection{Gated Delta Networks and Hybrid Models}
+ \label{sec:arch_design}
+\paragraph{Token mixer block.}
+The basic Gated DeltaNet follows Llama's macro architecture, stacking token mixer layers with SwiGLU MLP layers, but replaces self-attention with gated delta rule token mixing. Fig.~\ref{fig:gated_deltanet_model} (right) shows its block design. For the gated delta rule (Eq.~\ref{eq:gated_delta_rule}), queries, keys and values $\{\vq, \vk, \vv\}$ are generated through linear projection, short convolution and SiLU, with L2 normalization applied to $\vq, \vk$ for training stability. $\alpha, \beta$ use linear projection only.\footnote{We use Mamba2's parameterization for $\alpha$ but omit it for brevity.}  Following \citet{sun2023retentive}, the output is processed through normalization and gating before applying output projection.
+ \input{figures/model}
+\paragraph{Hybrid models.} Linear transformers have limitations in modeling local shifts and comparisons, and their fixed state size makes it hard for retrieval tasks~\citep{arora_simple_2024}. Following recent hybrid architectures like Griffin~\citep{de_griffin_2024} and Samba~\citep{ren2024samba}, we combine linear recurrent layers with sliding window attention (SWA), resulting in GatedDeltaNet-H1. We also stack Mamba2, GatedDeltaNet and SWA, resulting in GatedDeltaNet-H2.
+\section{Experiments}
+\label{sec:exp}
+%Note 9/28: I re-wrote this section. Pleas revise if needed.
+\paragraph{Setup}
+\label{sec:setup}
+Our experiments encompass a comprehensive comparison of recent state-of-the-art architectures, including pure Transformer models, RNN-based approaches, and hybrid architectures. We evaluate against the following baselines: RetNet \citep{sun2023retentive}, HGRN2 \citep{qin2024hgrn2}, Mamba \citep{gu_mamba_2023}, Mamba2 \citep{pmlr-v235-dao24a}, Samba \citep{ren2024samba}, and DeltaNet \citep{yang2024parallelizing}.
+For fair comparison, all models are trained under identical conditions with 1.3B parameters on 100B tokens sampled from the FineWeb-Edu dataset \citep{penedo2024fineweb}. We use the AdamW optimizer with a peak learning rate of 4e-4, weight decay of 0.1, and gradient clipping of 1.0. The learning rate follows a cosine annealing schedule with a 1B token warm-up period and batch size of 0.5M tokens. All models employ the Llama2 tokenizer with a vocabulary size of 32,000. For sequence modeling, we set the training length to 4K tokens, with Samba and our hybrid models using a sliding window size of 2K.  See \S~\ref{sec:evaluation} for evaluation settings  and \S~\ref{sec:ablation_study} for ablation studies.
+
+%GLA \citep{yang_gated_2023}
+
+
+
+
+
+\begin{table*}[t!]
+\vspace{0mm}
+\centering
+\scriptsize
+\addtolength{\tabcolsep}{-2.5pt}    
+\begin{tabular}{l|cc|ccccccccc}
+\toprule
+% \text{} & & \midrule \\
+\textbf{Model}  & \textbf{Wiki.}  &  \textbf{LMB.} &  \textbf{LMB.} & \textbf{PIQA} &    \textbf{Hella.} & \textbf{Wino.} & \textbf{ARC-e} &  \textbf{ARC-c} &  \textbf{SIQA}  & \textbf{BoolQ} &  \textbf{Avg.} \\
+ & ppl $\downarrow$  &  ppl $\downarrow$  &  acc $\uparrow$  & acc $\uparrow$ &   acc\_n $\uparrow$  & acc $\uparrow$  & acc $\uparrow$ & acc\_n $\uparrow$ &  acc $\uparrow$  & acc $\uparrow$ &     \\
+\midrule
+\midrule
+\textit{Recurrent models} \\
+\hspace{2mm} RetNet & 19.08 & 17.27 & 40.52 & 70.07 & 49.16 &	54.14 & 67.34	& 33.78 &  \textbf{40.78}  & \underline{60.39}  & 52.02 \\
+\hspace{2mm} HGRN2 & 19.10 & 17.69 & 39.54 & 70.45 & 49.53 &	52.80 & 69.40	& 35.32 &  \underline{40.63}  & 56.66  & 51.79 \\
+\hspace{2mm} Mamba & 17.92 & 15.06 & 43.98 & 71.32 & 52.91 &	52.95 & 69.52	& 35.40 &  37.76  & \textbf{61.13}  & 53.12 \\
+\hspace{2mm} Mamba2 & \underline{16.56} & \underline{12.56} & \underline{45.66} & \underline{71.87} & \underline{55.67} &	\underline{55.24} & \textbf{72.47}	& \underline{37.88} &  40.20  & 60.13  & \underline{54.89} \\
+\hspace{2mm} DeltaNet & 17.71 & 16.88 & 42.46 & 70.72 & 50.93 &	53.35 & 68.47	& 35.66 &  40.22  & 55.29  & 52.14 \\
+\hspace{2mm} Gated DeltaNet & \textbf{16.42} & \textbf{12.17} & \textbf{46.65} & \textbf{72.25} & \textbf{55.76} &\textbf{57.45} & \underline{71.21}	& \textbf{38.39} &  \underline{40.63}  & 60.24  & \textbf{55.32} \\
+\midrule
+\textit{Attention or hybrid models} \\ 
+\hspace{2mm} Transformer++ & 18.53 & 18.32 & 42.60 & 70.02 & 50.23 &	53.51 & 68.83	& 35.10 &  40.66  & 57.09  & 52.25 \\
+\hspace{2mm} Samba & 16.13 & 13.29 & 44.94 & 70.94 & 53.42 &	55.56 & 68.81	& 36.17 &  39.96  & \underline{62.11}  & 54.00 \\
+\hspace{2mm} Gated DeltaNet-H1 & \underline{16.07} & \textbf{12.12} & \underline{47.73} & \textbf{72.57} & \underline{56.53} &\textbf{58.40} & \underline{71.75}	& \textbf{40.10} &  \underline{41.40}  & \textbf{63.21} &  \textbf{56.40} \\
+\hspace{2mm}  Gated DeltaNet-H2 & \textbf{15.91} &\underline{12.55} & \textbf{48.76} & \underline{72.19} & \textbf{56.88} &	\underline{57.77} & \underline{71.33}	 &\underline{39.07} &  \textbf{41.91}  & 61.55   & \underline{56.18}  \\
+\bottomrule
+\end{tabular}
+\addtolength{\tabcolsep}{2.5pt}    
+\centering
+\caption{
+Performance comparison on language modeling and zero-shot common-sense reasoning.
+}
+\label{tab:commonsense_results}
+\vspace{-4mm}
+\end{table*}
+\label{sec:lang_model}
+\begin{wraptable}{r}{0.55\linewidth}
+\vspace{0mm}
+\centering
+\scriptsize
+\addtolength{\tabcolsep}{-5pt}  
+\vspace{-0.2mm}
+\begin{tabular}{l|ccccccc}
+\toprule
+\textbf{Models} &  \textbf{SWDE} & \textbf{SQD} &    \textbf{{FDA}} & \textbf{TQA} & \textbf{NQ} & \textbf{Drop} & \textbf{Avg} \\
+\midrule
+\midrule
+\textit{Recurrent models} \\
+\hspace{2mm} RetNet  & 14.0 &28.5 & 7.0 & 54.4 & 16.2 & 17.3&22.9 \\
+\hspace{2mm} HGRN2  & 8.3 & 25.3 &	4.8 & 51.2	& 14.2 &16.9& 20.1 \\
+\hspace{2mm} Mamba   & 9.8 & 25.8 &3.7	 & 54.3	&14.9 &17.4 & 21.0  \\
+\hspace{2mm} Mamba2 &  \underline{19.1} &  \underline{33.6} & \textbf{25.3} & \textbf{61.0} &  \textbf{20.8} &  \underline{19.2} & \underline{29.8}\\
+\hspace{2mm} DeltaNet  &17.9  &30.9 & 18.4 & 53.9 & 17.3& 18.6  & 26.2\\
+\hspace{2mm} Gated DeltaNet & \textbf{25.4} & \textbf{34.8} & \underline{23.7} & \underline{60.0} & \underline{20.0} & \textbf{19.8}&\textbf{30.6}\\
+\midrule
+\textit{Attention or hybrid models} \\
+\hspace{2mm} Transformer++ &  \text{29.5} & 38.0 & \textbf{52.2} & 58.3	& 22.5	& \text{21.6} & 37.0  \\
+\hspace{2mm} Samba &  33.0 & 39.2 & 50.5 & 57.7 & 23.5 & 20.2 &37.3 \\
+\hspace{2mm} Gated DeltaNet-H1 &  \underline{35.6} & \underline{39.7}& \underline{52.0} & \underline{60.1} & \underline{24.6} & \underline{22.2} & \underline{39.0}
+\\
+\hspace{2mm} Gated DeltaNet-H2 &   \textbf{38.2} & \textbf{40.4} & 50.7& \textbf{63.3}&\textbf{24.8} &\textbf{23.3} & \textbf{40.1}\\
+\bottomrule
+\end{tabular}
+\addtolength{\tabcolsep}{2.5pt}    
+\caption{Accuracy on recall-world retrieval tasks with input truncated to 2K tokens. SQD: SQUADE. TQA: Trivial QA. 
+}
+\label{tab:recall_results}
+\vspace{-5mm}
+\end{wraptable}
+\paragraph{Common-sense reasoning}  
+In Table~\ref{tab:commonsense_results}, we present the language modeling perplexity and \textbf{zero-shot} accuracy on commonsense reasoning benchmarks for models with 400M and 1.3B parameters. Gated DeltaNet consistently outperforms other linear models, including RetNet, HGRN2, Mamba, Mamba2, and DeltaNet, at both scales. As expected, the hybrid variant further enhances performance.
+\paragraph{In-context retrieval on real-world data}
+ Table \ref{tab:recall_results} presents results on real-world recall-intensive tasks used by \citet{arora-2024-jrt}. As expected, linear recurrent models show a significant performance gap compared to Transformers, while hybrid models combining linear recurrence and attention outperform pure attention models in retrieval tasks.
+ 
+For pure recurrent models, despite DeltaNet's superior performance on synthetic in-context retrieval tasks \citep{yang2024parallelizing}, its real-world retrieval performance lags behind Mamba2, consistent with our observations in S-NIAH-2 and S-NIAH-3 (Table~\ref{tab:niah-results}). Gated DeltaNet outperforms both DeltaNet and Mamba2 thanks to its gated delta rule, though the improvement margin is smaller than in Table \ref{tab:niah-results}. We attribute this reduced performance gap to instruction-unaligned small language models being prone to repetition errors, which are the primary source of errors in these tasks (cf. \citet[][Appendix E]{arora-2024-jrt}). Since this issue is largely independent of the update rule choice, the performance differences between models are less pronounced compared to Table \ref{tab:niah-results}. 
+\begin{figure}[htbp]
+\centering
+\scalebox{0.78}{
+\begin{tikzpicture}
+\pgfplotscreateplotcyclelist{custom}{%
+{orange!90!red,mark=*,mark size=1.2pt,solid,line width=0.8pt},%   {purple!80!black,mark=square*,mark size=1.2pt,solid,line width=0.8pt},%
+   {cyan!70!blue,mark=triangle*,mark size=1.2pt,solid,line width=0.8pt},%
+   {violet!90!black,mark=diamond*,mark size=1.2pt,solid,line width=0.8pt},%
+   {blue,mark=pentagon*,mark size=1.3pt,solid,line width=0.8pt},%
+   {green!60!black,mark=x,mark size=1.5pt,solid,line width=0.8pt},%
+   {brown!80!black,mark=otimes,mark size=1.5pt,solid,line width=0.8pt}%
+}% Base axis settings to be used in all plots
+\pgfplotsset{
+    every axis/.append style={
+        xmode=log,
+        log basis x=2,
+        xtick={4096,8192,14336,20480},
+        xticklabels={4k,8k,14k,20k},
+        xmin=4096,
+        xmax=20480,
+        % xlabel={Length},
+        scaled x ticks=false,
+        x tick label style={rotate=0}
+    }
+}
+
+% GovReport (top left)
+\begin{axis}[
+    at={(0.5cm,6cm)},
+    width=5.5cm,    % Reduced from 6cm
+    height=4.5cm,   % Reduced from 5cm
+    % xlabel={Length},
+    ylabel={Perplexity},
+    title={GovReport},
+    xmode=log,
+    log basis x=2,
+    xtick={4096,8192,14336,20480},
+    xticklabels={4k,8k,14k,20k},
+    cycle list name=custom,
+    legend style={at={(0.59,-0.2)},  
+                 anchor=north,
+                 legend columns=4},
+    legend to name=commonlegend
+]
+\addplot coordinates {(4096,9.06) (6144,8.54) (8192,8.70) (10240,8.86) (12288,8.79) (14336,8.73) (16384,8.64) (18432,8.36) (20480,8.01)};
+\addplot coordinates {(4096,8.36) (6144,7.54) (8192,7.61) (10240,7.72) (12288,7.67) (14336,7.71) (16384,7.71) (18432,7.94) (20480,7.36)};
+\addplot coordinates {(4096,8.08) (6144,7.41) (8192,7.45) (10240,7.62) (12288,7.76) (14336,8.01) (16384,8.19) (18432,8.71) (20480,8.16)};
+\addplot coordinates {(4096,7.92) (6144,7.13) (8192,7.26) (10240,7.37) (12288,7.30) (14336,7.26) (16384,7.23) (18432,7.44) (20480,6.70)};
+\addplot coordinates {(4096,7.52) (6144,6.81) (8192,6.84) (10240,6.91) (12288,6.84) (14336,6.77) (16384,6.75) (18432,6.85) (20480,6.36)};
+\addplot coordinates {(4096,7.47) (6144,6.68) (8192,6.77) (10240,6.90) (12288,6.84) (14336,6.81) (16384,6.78) (18432,6.88) (20480,6.34)};
+\addplot coordinates {(4096,7.40) (6144,6.58) (8192,6.65) (10240,6.76) (12288,6.72) (14336,6.71) (16384,6.67) (18432,6.75) (20480,6.26)};
+\legend{Mamba1,DeltaNet,Mamba2,Samba,GatedDeltaNet,GatedDeltaNet-H1,GatedDeltaNet-H2}
+\end{axis}
+% Base axis settings to be used in all plots
+\pgfplotsset{
+    every axis/.append style={
+        xmode=log,
+        log basis x=2,
+        xtick={4096,8192,14336,20480},
+        xticklabels={4k,8k,14k,20k},
+        xmin=4096,
+        xmax=20480,
+        xlabel={},
+        scaled x ticks=false,
+        x tick label style={rotate=0}
+    }
+}
+% QMSum (top middle)
+\begin{axis}[
+    at={(6cm,6cm)},  % Adjusted from 6.5cm to 6cm
+    width=5.5cm,    % Reduced from 6cm
+    height=4.5cm,   % Reduced from 5cm
+    xlabel={},
+    title={QMSum},
+    xmode=log,
+    log basis x=2,
+    xtick={4096,8192,14336,20480},
+    xticklabels={4k,8k,14k,20k},
+    cycle list name=custom
+]
+\addplot coordinates {(4096,17.73) (6144,15.58) (8192,15.58) (10240,15.73) (12288,15.96) (14336,15.87) (16384,15.84) (18432,15.85) (20480,15.94)};
+\addplot coordinates {(4096,15.95) (6144,13.83) (8192,13.71) (10240,13.77) (12288,13.97) (14336,13.90) (16384,13.94) (18432,14.15) (20480,14.40)};
+\addplot coordinates {(4096,15.13) (6144,13.45) (8192,13.42) (10240,13.57) (12288,13.96) (14336,14.04) (16384,14.18) (18432,14.22) (20480,14.41)};
+\addplot coordinates {(4096,15.97) (6144,13.94) (8192,14.00) (10240,14.10) (12288,14.31) (14336,14.15) (16384,14.14) (18432,14.11) (20480,14.21)};
+\addplot coordinates {(4096,14.82) (6144,12.96) (8192,12.87) (10240,12.91) (12288,13.06) (14336,12.93) (16384,12.90) (18432,12.86) (20480,12.96)};
+\addplot coordinates {(4096,14.57) (6144,12.68) (8192,12.65) (10240,12.72) (12288,12.90) (14336,12.77) (16384,12.72) (18432,12.71) (20480,12.80)};
+\addplot coordinates {(4096,14.69) (6144,12.60) (8192,12.53) (10240,12.68) (12288,12.78) (14336,12.75) (16384,12.72) (18432,12.70) (20480,12.79)};
+\end{axis}
+
+% Base axis settings [rest of the settings remain the same]
+\pgfplotsset{
+    every axis/.append style={
+        xmode=log,
+        log basis x=2,
+        xtick={4096,8192,14336,20480},
+        xticklabels={4k,8k,14k,20k},
+        xmin=4096,
+        xmax=20480,
+        scaled x ticks=false,
+        x tick label style={rotate=0}
+    }
+}
+
+% Modified legend style
+\pgfplotsset{
+    legend style={
+        at={(0.59,-0.2)},
+        anchor=north,
+        legend columns=4,
+        draw=black!30,
+        fill=white,
+        text=black,  % Set legend text color to black
+        font=\normalsize,
+        /tikz/every even column/.append style={column sep=0.5cm},
+        cells={anchor=west},  % Align legend entries to the left
+        legend image post style={xscale=0.8}  % Scale down legend symbols
+    }
+}
+
+
+% NarrativeQA (top right)
+\begin{axis}[
+    at={(11.5cm,6cm)},  % Adjusted from 13cm to 12cm
+    width=5.5cm,    % Reduced from 6cm
+    height=4.5cm,   % Reduced from 5cm
+    % xlabel={Length},
+    title={NarrativeQA},
+    xmode=log,
+    log basis x=2,
+    xtick={4096,8192,14336,20480},
+    xticklabels={4k,8k,20k},
+    cycle list name=custom
+]
+\addplot coordinates {(4096,19.28) (6144,18.04) (8192,17.98) (10240,18.00) (12288,18.04) (14336,18.02) (16384,17.95) (18432,18.08) (20480,18.30)};
+\addplot coordinates {(4096,19.24) (6144,17.71) (8192,17.58) (10240,17.58) (12288,17.65) (14336,17.72) (16384,17.75) (18432,18.20) (20480,18.63)};
+\addplot coordinates {(4096,19.84) (6144,19.19) (8192,19.05) (10240,19.04) (12288,19.45) (14336,19.67) (16384,19.64) (18432,20.12) (20480,20.37)};
+\addplot coordinates {(4096,17.46) (6144,16.05) (8192,15.97) (10240,15.97) (12288,16.02) (14336,16.02) (16384,15.97) (18432,16.10) (20480,16.30)};
+\addplot coordinates {(4096,17.86) (6144,16.49) (8192,16.36) (10240,16.34) (12288,16.34) (14336,16.30) (16384,16.21) (18432,16.35) (20480,16.54)};
+\addplot coordinates {(4096,17.58) (6144,16.19) (8192,16.11) (10240,16.12) (12288,16.13) (14336,16.09) (16384,16.02) (18432,16.12) (20480,16.31)};
+\addplot coordinates {(4096,18.09) (6144,16.76) (8192,16.79) (10240,16.80) (12288,16.83) (14336,16.79) (16384,16.72) (18432,16.81) (20480,17.03)};
+\end{axis}
+
+% Qasper (bottom left)
+\begin{axis}[
+    at={(0.5cm,1.5cm)},
+    width=5.5cm,    % Reduced from 6cm
+    height=4.5cm,   % Reduced from 5cm
+    xlabel={Length},
+    ylabel={Perplexity},
+    title={Qasper},
+    xmode=log,
+    log basis x=2,
+    xtick={4096,8192,14336,20480},
+    xticklabels={4k,8k,14k,20k},
+    cycle list name=custom
+]
+\addplot coordinates {(4096,19.82) (6144,17.38) (8192,17.96) (10240,18.07) (12288,17.09) (14336,17.69) (16384,17.34) (18432,18.22) (20480,18.61)};
+\addplot coordinates {(4096,15.65) (6144,13.05) (8192,13.42) (10240,13.38) (12288,12.81) (14336,13.24) (16384,12.95) (18432,13.56) (20480,13.67)};
+\addplot coordinates {(4096,17.46) (6144,15.33) (8192,15.70) (10240,16.07) (12288,15.20) (14336,15.89) (16384,15.73) (18432,16.65) (20480,17.12)};
+\addplot coordinates {(4096,16.53) (6144,13.80) (8192,14.23) (10240,14.21) (12288,13.69) (14336,14.15) (16384,13.92) (18432,14.49) (20480,14.57)};
+\addplot coordinates {(4096,16.47) (6144,13.84) (8192,14.10) (10240,14.07) (12288,13.38) (14336,13.86) (16384,13.56) (18432,14.13) (20480,14.37)};
+\addplot coordinates {(4096,15.65) (6144,13.05) (8192,13.42) (10240,13.38) (12288,12.81) (14336,13.24) (16384,12.95) (18432,13.56) (20480,13.67)};
+\addplot coordinates {(4096,15.91) (6144,13.17) (8192,13.54) (10240,13.50) (12288,12.88) (14336,13.35) (16384,13.08) (18432,13.80) (20480,13.99)};
+\end{axis}
+
+% CodeParrot (bottom middle)
+\begin{axis}[
+    at={(6cm,1.5cm)},  % Adjusted from 6.5cm to 6cm
+    width=5.5cm,    % Reduced from 6cm
+    height=4.5cm,   % Reduced from 5cm
+    xlabel={Length},
+    title={CodeParrot},
+    xmode=log,
+    log basis x=2,
+    xtick={4096,8192,14336,20480},
+    xticklabels={4k,8k,14k,20k},
+    cycle list name=custom
+]
+\addplot coordinates {(4096,19.26) (6144,15.92) (8192,15.46) (10240,15.12) (12288,14.64) (14336,14.27) (16384,13.69) (18432,12.71) (20480,12.19)};
+\addplot coordinates {(4096,13.71) (6144,9.64) (8192,9.19) (10240,9.07) (12288,8.98) (14336,8.93) (16384,8.80) (18432,8.60) (20480,8.51)};
+\addplot coordinates {(4096,12.76) (6144,9.31) (8192,9.09) (10240,9.12) (12288,9.04) (14336,8.91) (16384,8.74) (18432,8.27) (20480,8.03)};
+\addplot coordinates {(4096,11.85) (6144,7.56) (8192,7.30) (10240,7.19) (12288,7.06) (14336,6.92) (16384,6.70) (18432,6.30) (20480,6.07)};
+\addplot coordinates {(4096,11.82) (6144,8.35) (8192,7.98) (10240,7.86) (12288,7.72) (14336,7.57) (16384,7.36) (18432,6.94) (20480,6.75)};
+\addplot coordinates {(4096,10.64) (6144,6.92) (8192,6.69) (10240,6.66) (12288,6.53) (14336,6.40) (16384,6.23) (18432,5.91) (20480,5.75)};
+\addplot coordinates {(4096,10.99) (6144,7.25) (8192,7.03) (10240,6.98) (12288,6.88) (14336,6.74) (16384,6.57) (18432,6.24) (20480,6.03)};
+\end{axis}
+
+% PG19 (bottom right)
+\begin{axis}[
+    at={(11.5cm,1.5cm)},  % Adjusted from 13cm to 12cm
+    width=5.5cm,    % Reduced from 6cm
+    height=4.5cm,   % Reduced from 5cm
+    xlabel={Length},
+    title={PG19},
+    xmode=log,
+    log basis x=2,
+    xtick={4096,8192,14336,20480},
+    xticklabels={4k,8k,14k,20k},
+    cycle list name=custom
+]
+\addplot coordinates {(4096,15.36) (6144,14.54) (8192,14.30) (10240,14.44) (12288,14.54) (14336,14.44) (16384,14.53) (18432,14.46) (20480,14.65)};
+\addplot coordinates {(4096,14.17) (6144,13.09) (8192,12.88) (10240,13.00) (12288,13.08) (14336,13.14) (16384,13.28) (18432,13.57) (20480,13.85)};
+\addplot coordinates {(4096,13.70) (6144,12.72) (8192,12.51) (10240,12.61) (12288,12.62) (14336,12.57) (16384,12.59) (18432,12.61) (20480,12.71)};
+\addplot coordinates {(4096,14.06) (6144,13.17) (8192,13.11) (10240,13.22) (12288,13.29) (14336,13.24) (16384,13.28) (18432,13.30) (20480,13.42)};
+\addplot coordinates {(4096,13.72) (6144,12.78) (8192,12.61) (10240,12.80) (12288,12.97) (14336,13.00) (16384,13.09) (18432,13.19) (20480,13.35)};
+\addplot coordinates {(4096,13.70) (6144,12.70) (8192,12.54) (10240,12.67) (12288,12.69) (14336,12.62) (16384,12.66) (18432,12.63) (20480,12.75)};
+\addplot coordinates {(4096,13.46) (6144,12.46) (8192,12.31) (10240,12.46) (12288,12.53) (14336,12.52) (16384,12.55) (18432,12.55) (20480,12.67)};
+\end{axis}
+
+% Reference the common legend
+\node at (8cm,-0.5cm) {\ref{commonlegend}};  % Adjusted from 6.5cm to 6cm
+
+\end{tikzpicture}
+}
+\caption{Length extrapolation on six long benchmarks.  }
+\label{fig:ppl_ex}
+\end{figure}
+
+% \begin{figure}[htbp]
+% \centering
+% \scalebox{0.78}{
+% \begin{tikzpicture}
+% \pgfplotscreateplotcyclelist{custom}{%
+%     {orange,mark=*,solid},%         % Mamba1
+%     {purple!40,mark=square*,solid},% % DeltaNet
+%     {cyan,mark=star,solid},%
+%     {violet,mark=diamond*,solid},%
+%     {blue,mark=pentagon*,solid},%
+%     {green!50!black,mark=triangle*,solid},%
+%     {brown,mark=+,solid}%
+% }
+
+% % Base axis settings to be used in all plots
+% \pgfplotsset{
+%     every axis/.append style={
+%         xmode=log,
+%         log basis x=2,
+%         xtick={4096,8192,14336,20480},
+%         xticklabels={4k,8k,14k,20k},
+%         xmin=4096,
+%         xmax=20480,
+%         xlabel={Length},
+%         scaled x ticks=false,
+%         x tick label style={rotate=0}
+%     }
+% }
+
+% % GovReport (top left)
+% \begin{axis}[
+%     at={(0,6cm)},
+%     width=5.5cm,    % Reduced from 6cm
+%     height=4.5cm,   % Reduced from 5cm
+%     xlabel={Length},
+%     ylabel={Perplexity},
+%     title={GovReport},
+%     xmode=log,
+%     log basis x=2,
+%     xtick={4096,8192,14336,20480},
+%     xticklabels={4k,8k,14k,20k},
+%     cycle list name=custom,
+%     legend style={at={(0.59,-0.2)},  
+%                  anchor=north,
+%                  legend columns=4},
+%     legend to name=commonlegend
+% ]
+% \addplot coordinates {(4096,9.06) (6144,8.54) (8192,8.70) (10240,8.86) (12288,8.79) (14336,8.73) (16384,8.64) (18432,8.36) (20480,8.01)};
+% \addplot coordinates {(4096,8.36) (6144,7.54) (8192,7.61) (10240,7.72) (12288,7.67) (14336,7.71) (16384,7.71) (18432,7.94) (20480,7.36)};
+% \addplot coordinates {(4096,8.08) (6144,7.41) (8192,7.45) (10240,7.62) (12288,7.76) (14336,8.01) (16384,8.19) (18432,8.71) (20480,8.16)};
+% \addplot coordinates {(4096,7.92) (6144,7.13) (8192,7.26) (10240,7.37) (12288,7.30) (14336,7.26) (16384,7.23) (18432,7.44) (20480,6.70)};
+% \addplot coordinates {(4096,7.52) (6144,6.81) (8192,6.84) (10240,6.91) (12288,6.84) (14336,6.77) (16384,6.75) (18432,6.85) (20480,6.36)};
+% \addplot coordinates {(4096,7.47) (6144,6.68) (8192,6.77) (10240,6.90) (12288,6.84) (14336,6.81) (16384,6.78) (18432,6.88) (20480,6.34)};
+% \addplot coordinates {(4096,7.40) (6144,6.58) (8192,6.65) (10240,6.76) (12288,6.72) (14336,6.71) (16384,6.67) (18432,6.75) (20480,6.26)};
+% \legend{Mamba1,DeltaNet,Mamba2,Samba,GatedDeltaNet,GatedDeltaNet-H1,GatedDeltaNet-H2}
+% \end{axis}
+
+% % Base axis settings to be used in all plots
+% \pgfplotsset{
+%     every axis/.append style={
+%         xmode=log,
+%         log basis x=2,
+%         xtick={4096,8192,14336,20480},
+%         xticklabels={4k,8k,14k,20k},
+%         xmin=4096,
+%         xmax=20480,
+%         xlabel={Length},
+%         scaled x ticks=false,
+%         x tick label style={rotate=0}
+%     }
+% }
+
+% % QMSum (top middle)
+% \begin{axis}[
+%     at={(6cm,6cm)},  % Adjusted from 6.5cm to 6cm
+%     width=5.5cm,    % Reduced from 6cm
+%     height=4.5cm,   % Reduced from 5cm
+%     xlabel={Length},
+%     title={QMSum},
+%     xmode=log,
+%     log basis x=2,
+%     xtick={4096,8192,14336,20480},
+%     xticklabels={4k,8k,14k,20k},
+%     cycle list name=custom
+% ]
+% \addplot coordinates {(4096,17.73) (6144,15.58) (8192,15.58) (10240,15.73) (12288,15.96) (14336,15.87) (16384,15.84) (18432,15.85) (20480,15.94)};
+% \addplot coordinates {(4096,15.95) (6144,13.83) (8192,13.71) (10240,13.77) (12288,13.97) (14336,13.90) (16384,13.94) (18432,14.15) (20480,14.40)};
+% \addplot coordinates {(4096,15.13) (6144,13.45) (8192,13.42) (10240,13.57) (12288,13.96) (14336,14.04) (16384,14.18) (18432,14.22) (20480,14.41)};
+% \addplot coordinates {(4096,15.97) (6144,13.94) (8192,14.00) (10240,14.10) (12288,14.31) (14336,14.15) (16384,14.14) (18432,14.11) (20480,14.21)};
+% \addplot coordinates {(4096,14.82) (6144,12.96) (8192,12.87) (10240,12.91) (12288,13.06) (14336,12.93) (16384,12.90) (18432,12.86) (20480,12.96)};
+% \addplot coordinates {(4096,14.57) (6144,12.68) (8192,12.65) (10240,12.72) (12288,12.90) (14336,12.77) (16384,12.72) (18432,12.71) (20480,12.80)};
+% \addplot coordinates {(4096,14.69) (6144,12.60) (8192,12.53) (10240,12.68) (12288,12.78) (14336,12.75) (16384,12.72) (18432,12.70) (20480,12.79)};
+% \end{axis}
+
+% % Base axis settings to be used in all plots
+% \pgfplotsset{
+%     every axis/.append style={
+%         xmode=log,
+%         log basis x=2,
+%         xtick={4096,8192,14336,20480},
+%         xticklabels={4k,8k,14k,20k},
+%         xmin=4096,
+%         xmax=20480,
+%         xlabel={Length},
+%         scaled x ticks=false,
+%         x tick label style={rotate=0}
+%     }
+% }
+
+% % NarrativeQA (top right)
+% \begin{axis}[
+%     at={(12cm,6cm)},  % Adjusted from 13cm to 12cm
+%     width=5.5cm,    % Reduced from 6cm
+%     height=4.5cm,   % Reduced from 5cm
+%     xlabel={Length},
+%     title={NarrativeQA},
+%     xmode=log,
+%     log basis x=2,
+%     xtick={4096,8192,14336,20480},
+%     xticklabels={4k,8k,14k,20k},
+%     cycle list name=custom
+% ]
+% \addplot coordinates {(4096,19.28) (6144,18.04) (8192,17.98) (10240,18.00) (12288,18.04) (14336,18.02) (16384,17.95) (18432,18.08) (20480,18.30)};
+% \addplot coordinates {(4096,19.24) (6144,17.71) (8192,17.58) (10240,17.58) (12288,17.65) (14336,17.72) (16384,17.75) (18432,18.20) (20480,18.63)};
+% \addplot coordinates {(4096,19.84) (6144,19.19) (8192,19.05) (10240,19.04) (12288,19.45) (14336,19.67) (16384,19.64) (18432,20.12) (20480,20.37)};
+% \addplot coordinates {(4096,17.46) (6144,16.05) (8192,15.97) (10240,15.97) (12288,16.02) (14336,16.02) (16384,15.97) (18432,16.10) (20480,16.30)};
+% \addplot coordinates {(4096,17.86) (6144,16.49) (8192,16.36) (10240,16.34) (12288,16.34) (14336,16.30) (16384,16.21) (18432,16.35) (20480,16.54)};
+% \addplot coordinates {(4096,17.58) (6144,16.19) (8192,16.11) (10240,16.12) (12288,16.13) (14336,16.09) (16384,16.02) (18432,16.12) (20480,16.31)};
+% \addplot coordinates {(4096,18.09) (6144,16.76) (8192,16.79) (10240,16.80) (12288,16.83) (14336,16.79) (16384,16.72) (18432,16.81) (20480,17.03)};
+% \end{axis}
+
+% % Qasper (bottom left)
+% \begin{axis}[
+%     at={(0,0cm)},
+%     width=5.5cm,    % Reduced from 6cm
+%     height=4.5cm,   % Reduced from 5cm
+%     xlabel={Length},
+%     ylabel={Perplexity},
+%     title={Qasper},
+%     xmode=log,
+%     log basis x=2,
+%     xtick={4096,8192,14336,20480},
+%     xticklabels={4k,8k,14k,20k},
+%     cycle list name=custom
+% ]
+% \addplot coordinates {(4096,19.82) (6144,17.38) (8192,17.96) (10240,18.07) (12288,17.09) (14336,17.69) (16384,17.34) (18432,18.22) (20480,18.61)};
+% \addplot coordinates {(4096,15.65) (6144,13.05) (8192,13.42) (10240,13.38) (12288,12.81) (14336,13.24) (16384,12.95) (18432,13.56) (20480,13.67)};
+% \addplot coordinates {(4096,17.46) (6144,15.33) (8192,15.70) (10240,16.07) (12288,15.20) (14336,15.89) (16384,15.73) (18432,16.65) (20480,17.12)};
+% \addplot coordinates {(4096,16.53) (6144,13.80) (8192,14.23) (10240,14.21) (12288,13.69) (14336,14.15) (16384,13.92) (18432,14.49) (20480,14.57)};
+% \addplot coordinates {(4096,16.47) (6144,13.84) (8192,14.10) (10240,14.07) (12288,13.38) (14336,13.86) (16384,13.56) (18432,14.13) (20480,14.37)};
+% \addplot coordinates {(4096,15.65) (6144,13.05) (8192,13.42) (10240,13.38) (12288,12.81) (14336,13.24) (16384,12.95) (18432,13.56) (20480,13.67)};
+% \addplot coordinates {(4096,15.91) (6144,13.17) (8192,13.54) (10240,13.50) (12288,12.88) (14336,13.35) (16384,13.08) (18432,13.80) (20480,13.99)};
+% \end{axis}
+
+% % CodeParrot (bottom middle)
+% \begin{axis}[
+%     at={(6cm,0cm)},  % Adjusted from 6.5cm to 6cm
+%     width=5.5cm,    % Reduced from 6cm
+%     height=4.5cm,   % Reduced from 5cm
+%     xlabel={Length},
+%     title={CodeParrot},
+%     xmode=log,
+%     log basis x=2,
+%     xtick={4096,8192,14336,20480},
+%     xticklabels={4k,8k,14k,20k},
+%     cycle list name=custom
+% ]
+% \addplot coordinates {(4096,19.26) (6144,15.92) (8192,15.46) (10240,15.12) (12288,14.64) (14336,14.27) (16384,13.69) (18432,12.71) (20480,12.19)};
+% \addplot coordinates {(4096,13.71) (6144,9.64) (8192,9.19) (10240,9.07) (12288,8.98) (14336,8.93) (16384,8.80) (18432,8.60) (20480,8.51)};
+% \addplot coordinates {(4096,12.76) (6144,9.31) (8192,9.09) (10240,9.12) (12288,9.04) (14336,8.91) (16384,8.74) (18432,8.27) (20480,8.03)};
+% \addplot coordinates {(4096,11.85) (6144,7.56) (8192,7.30) (10240,7.19) (12288,7.06) (14336,6.92) (16384,6.70) (18432,6.30) (20480,6.07)};
+% \addplot coordinates {(4096,11.82) (6144,8.35) (8192,7.98) (10240,7.86) (12288,7.72) (14336,7.57) (16384,7.36) (18432,6.94) (20480,6.75)};
+% \addplot coordinates {(4096,10.64) (6144,6.92) (8192,6.69) (10240,6.66) (12288,6.53) (14336,6.40) (16384,6.23) (18432,5.91) (20480,5.75)};
+% \addplot coordinates {(4096,10.99) (6144,7.25) (8192,7.03) (10240,6.98) (12288,6.88) (14336,6.74) (16384,6.57) (18432,6.24) (20480,6.03)};
+% \end{axis}
+
+% % PG19 (bottom right)
+% \begin{axis}[
+%     at={(12cm,0cm)},  % Adjusted from 13cm to 12cm
+%     width=5.5cm,    % Reduced from 6cm
+%     height=4.5cm,   % Reduced from 5cm
+%     xlabel={Length},
+%     title={PG19},
+%     xmode=log,
+%     log basis x=2,
+%     xtick={4096,8192,14336,20480},
+%     xticklabels={4k,8k,14k,20k},
+%     cycle list name=custom
+% ]
+% \addplot coordinates {(4096,15.36) (6144,14.54) (8192,14.30) (10240,14.44) (12288,14.54) (14336,14.44) (16384,14.53) (18432,14.46) (20480,14.65)};
+% \addplot coordinates {(4096,14.17) (6144,13.09) (8192,12.88) (10240,13.00) (12288,13.08) (14336,13.14) (16384,13.28) (18432,13.57) (20480,13.85)};
+% \addplot coordinates {(4096,13.70) (6144,12.72) (8192,12.51) (10240,12.61) (12288,12.62) (14336,12.57) (16384,12.59) (18432,12.61) (20480,12.71)};
+% \addplot coordinates {(4096,14.06) (6144,13.17) (8192,13.11) (10240,13.22) (12288,13.29) (14336,13.24) (16384,13.28) (18432,13.30) (20480,13.42)};
+% \addplot coordinates {(4096,13.72) (6144,12.78) (8192,12.61) (10240,12.80) (12288,12.97) (14336,13.00) (16384,13.09) (18432,13.19) (20480,13.35)};
+% \addplot coordinates {(4096,13.70) (6144,12.70) (8192,12.54) (10240,12.67) (12288,12.69) (14336,12.62) (16384,12.66) (18432,12.63) (20480,12.75)};
+% \addplot coordinates {(4096,13.46) (6144,12.46) (8192,12.31) (10240,12.46) (12288,12.53) (14336,12.52) (16384,12.55) (18432,12.55) (20480,12.67)};
+% \end{axis}
+
+% % Reference the common legend
+% \node at (8cm,-2cm) {\ref{commonlegend}};  % Adjusted from 6.5cm to 6cm
+
+% \end{tikzpicture}
+% }
+% \caption{Long sequence perplexity evaluation on various tasks.}
+% \label{fig:ppl_ex}
+% \end{figure}
+
+\paragraph{Length extrapolation on long sequences.} As shown in Fig.\ref{fig:ppl_ex}, we evaluate the models' capacity to extrapolate to sequences of up to 20K tokens across six long-context benchmarks. Gated DeltaNet achieves the lowest overall perplexity across tasks among RNN models. While we observe mixed results in length extrapolation, Gated DeltaNet exhibits relatively more robust performance, suggesting better memory management. The hybrid models further improve upon this by leveraging attention for local context modeling, which reduces the memory management burden on their recurrent components. Future work will explore these models' capabilities on even longer sequences.
+
+
+%Following \citet{sun2024you}
+% As observed in \citet{yang2024parallelizing} and illustrated in Fig.~\ref{figure:pg19-results}, DeltaNet struggles to extrapolate to sequences longer than its training length (in this case, 4K tokens). We speculate that this limitation arises from its slow forgetting mechanism, which hinders the model's ability to efficiently clear outdated memory content. As a result, when the evaluated sequence length exceeds the training length, the model's memory becomes saturated, leaving no room to accommodate new information.
+
+
+% \begin{wrapfigure}{r}{0.5\textwidth}
+% \vspace{-6mm}
+% \centering
+% \resizebox{0.5\textwidth}{!}{%
+% \begin{tikzpicture}
+%     \begin{axis}[
+%             width=11cm,
+%             height=6cm,
+%             % grid=both,
+%             ymajorgrids=true,
+%             xmajorgrids=true,
+%             tickwidth=0pt,
+%             tick align=inside,
+%             axis line style={opacity=0},
+%             % minor grid style={gray!25},
+%             % major grid style={gray!25},
+%             xtick={2048, 8192, 14336, 20480, 26624, 32768},
+%             ytick={14, 16, 18},
+%             xticklabels={2, 8, 14, 20, 26, 32},
+%             xlabel={\footnotesize Position Bucket (K)},
+%             scaled ticks=false,
+%             ylabel={\footnotesize PPL ($\downarrow$)},
+%             ylabel style={font=\footnotesize,at={(0.05,0.5)}},
+%             ymax=19,
+%             ymin=12.5,
+%             legend entries={Mamba, DeltaNet, Mamba2, Gated DeltaNet},
+%             % legend pos=south east,
+%             legend style={
+%                     font=\scriptsize,
+%                     legend columns=2,
+%                     legend cell align=left,
+%                     at={(0.5,1.)},
+%                     anchor=north,
+%                 },
+%             % restrict y to domain=8.6:10,
+%             % clip=true,
+%         ]
+
+%         \addplot+[
+%             mark=asterisk, draw=gray, thick, 
+%             mark size=1.8pt,
+%             mark options={fill=gray, fill opacity=1.0, solid},
+%             opacity=1.0,
+%         ] coordinates {
+%                 ( 2048, 18.50)
+%                 ( 4096, 15.26)
+%                 ( 6144, 15.16)
+%                 ( 8192, 15.14)
+%                 (10240, 15.17)
+%                 (12288, 15.18)
+%                 (14336, 15.22)
+%                 (16384, 15.23)
+%                 (18432, 15.21)
+%                 (20480, 15.21)
+%                 (22528, 15.21)
+%                 (24576, 15.18)
+%                 (26624, 15.18)
+%                 (28672, 15.16)
+%                 (30720, 15.15)
+%                 (32768, 15.15)
+%             };
+
+%         \addplot[
+%             densely dashdotted,
+%             mark=square*, draw=red!50, thick,
+%             mark size=0.8pt,
+%             mark options={fill=red!50, fill opacity=1.0, solid},
+%             opacity=1.0,
+%         ] coordinates {
+%                 ( 2048, 16.44)
+%                 ( 4096, 13.73)
+%                 ( 6144, 13.71)
+%                 ( 8192, 13.75)
+%                 (10240, 13.86)
+%                 (12288, 13.97)
+%                 (14336, 14.14)
+%                 (16384, 14.30)
+%                 (18432, 14.44)
+%                 (20480, 14.63)
+%                 (22528, 14.85)
+%                 (24576, 15.05)
+%                 (26624, 15.32)
+%                 (28672, 15.60)
+%                 (30720, 15.90)
+%                 (32768, 16.15)
+%             };
+
+%         \addplot[
+%             dotted,
+%             mark=x, draw=blue!70, thick,
+%             mark size=2pt,
+%             mark options={
+%                     % fill=white,
+%                     fill opacity=0.5,
+%                     solid},
+%             opacity=1.0,
+%         ] coordinates {
+%                 ( 2048, 15.58)
+%                 ( 4096, 13.30)
+%                 ( 6144, 13.31)
+%                 ( 8192, 13.40)
+%                 (10240, 13.56)
+%                 (12288, 13.69)
+%                 (14336, 13.83)
+%                 (16384, 13.89)
+%                 (18432, 13.91)
+%                 (20480, 13.94)
+%                 (22528, 13.96)
+%                 (24576, 13.94)
+%                 (26624, 13.94)
+%                 (28672, 13.94)
+%                 (30720, 13.95)
+%                 (32768, 13.96)
+%             };
+
+%         \addplot[
+%             densely dashed,
+%             mark=pentagon*, draw=orange!70, thick,
+%             mark size=1.2pt,
+%             mark options={
+%                     fill=orange!70,
+%                     fill opacity=1.0, solid
+%                 },
+%             opacity=1.0,
+%         ] coordinates {
+%                 ( 2048, 15.45)
+%                 ( 4096, 13.09)
+%                 ( 6144, 13.12)
+%                 ( 8192, 13.14)
+%                 (10240, 13.17)
+%                 (12288, 13.19)
+%                 (14336, 13.23)
+%                 (16384, 13.24)
+%                 (18432, 13.22)
+%                 (20480, 13.22)
+%                 (22528, 13.22)
+%                 (24576, 13.18)
+%                 (26624, 13.18)
+%                 (28672, 13.17)
+%                 (30720, 13.17)
+%                 (32768, 13.17)
+%             };
+
+%         \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0);
+%         \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1);
+%     \end{axis}
+% \end{tikzpicture}
+% }
+% \caption{Length extrapolation results in PG19 training set.}
+% \label{figure:pg19-results}
+% \vspace{-4mm}
+% \end{wrapfigure}
+
+% Similarly, Mamba2 faces a related issue, with perplexity increasing as sequence length grows, though to a lesser extent than DeltaNet, due to its forgetting mechanism. This suggests that while the simple gated update rule improves memory management, it does not fully solve the challenge of handling extended contexts. In contrast, Mamba1 does not exhibit a significant increase in perplexity with longer sequences, thanks to its more fine-grained gating mechanism, which allows for different decay rates for each hidden dimension. However, this fine-grained control prevents efficient use of tensor cores and limits the state size, ultimately resulting in higher perplexity due to these computational constraints.
+
+% Gated DeltaNet demonstrates clear advantages over these approaches, due to the superiority of the gated delta rule in memory management. This enables the model to effectively process much longer sequences with a finite state size, making it more adaptable to extended contexts.
+
+
+\paragraph{Long context understanding} As demonstrated in Table~\ref{tab:long_bench}, we evaluated the models' performance on LongBench~\citep{bai2023longbench}. In recurrent models, Gated DeltaNet shows consistent advantages, especially in single-doc QA, few-shot in-context learning, and Code tasks,  demonstrating its superior capabilities in retrieval, in-context learning, and state tracking, respectively.
+
+
+\begin{table}[t]
+\centering
+\setlength{\tabcolsep}{3.5pt}  % Reduce horizontal spacing
+\scriptsize  % Make font smaller than \small
+\begin{tabular}{l|ccc|ccc|ccc|ccc|cc|c}
+\toprule
+& \multicolumn{3}{c|}{{Single-Doc QA}} & \multicolumn{3}{c|}{Multi-Doc QA} & \multicolumn{3}{c|}{Summarization} & \multicolumn{3}{c|}{Few-shot} & \multicolumn{2}{c|}{Code} & Avg \\
+    % \cline{1-16}
+ Model & {\tiny NQA} & {\tiny QQA} & {\tiny MFQ} 
+          & {\tiny HQA} & {\tiny 2WM} & {\tiny Mus} 
+          & {\tiny GvR} & {\tiny QMS} & {\tiny MNs}
+          & {\tiny TRC} & {\tiny TQA} & {\tiny SSM} 
+          & {\tiny LCC} & {\tiny RBP} &  \\\midrule
+\textit{Recurrent models}\\
+RetNet & 12.1 & 10.7 & 19.1 & 10.7 & \textbf{18.0} & 5.8 & 4.8 & 15.8 & 7.9 & 19.0 & 18.0 & \underline{12.8} & 14.1 & 17.9 & 13.2 \\
+HGRN2 & 10.7 & \underline{12.1} & 19.1 & 11.3 & 15.7 & \underline{6.0} & 5.2 & 15.1 & \textbf{9.2} & 16.0 & 15.8 & 10.3 & \underline{18.6} & \underline{20.8} & 13.5 \\
+Mamba & \underline{13.0} & 10.1 & 20.4 & 10.1 & \underline{16.7} & \underline{6.0} & \underline{7.2} & \underline{15.9} & \underline{8.4} & \underline{23.1} & 21.9 & 11.2 & 17.9 & 19.0 & \underline{14.6} \\
+DeltaNet & 12.9 & 10.8 & \underline{21.5} & \underline{10.9} & 13.2 & 5.1 & 6.5 & 13.5 & 7.2 & 15.5 & \underline{23.3} & {11.6} & 17.6 & 20.3 & 13.6 \\
+Mamba2 & 11.1 & 11.3 & 18.6 & 11.8 & 15.1 & \textbf{6.7} & {6.7} & 14.5 & 7.4 & 13.0 & \textbf{23.6} & 8.4 & 17.9 & 20.6 & 13.5 \\
+\textbf{Gated DeltaNet} & \textbf{14.1} & \textbf{14.0} & \textbf{23.3} & \textbf{13.7} & 14.4 & 5.8 & \textbf{7.5} & \textbf{16.4} & 7.9 & \textbf{30.0} & 22.4 & \textbf{23.0} & \textbf{18.7} & \textbf{22.1} & \textbf{16.6} \\
+\midrule
+\textit{Attention or hyrbid models} \\
+Transformer++ & 11.8 & 9.3 & 10.0 & 10.9 & 4.2 & 6.1 & 7.4 & 15.8 & 6.6 & 16.9 & 13.5 & 3.9 & 17.2 & 18.7 & 11.0 \\
+Samba & 12.5 & \underline{12.9} & 25.4 & 11.2 & 19.7 & \underline{6.8} & \underline{9.1} & 15.7 & 11.0 & 20.0 & \underline{22.7} & {22.8} & \underline{18.1} & \underline{21.1} & \underline{15.9} \\
+\textbf{Gated DeltaNet-H1} & \textbf{14.5} & 12.3 & \underline{26.6} & \underline{12.6} & \textbf{23.6} & 6.1 & \underline{9.1} & \underline{16.1} & \underline{12.8} & \underline{33.5} & \textbf{23.9} & \underline{26.8} & 15.5 & 19.2 & 17.8 \\
+\textbf{Gated DeltaNet-H2} & \underline{12.7} & \textbf{13.0} & \textbf{27.1} & \textbf{12.7} & \underline{20.6} & \textbf{7.5} & \textbf{10.4} & \textbf{16.2} & \textbf{13.0} & \textbf{40.5} & \underline{22.7} & \textbf{27.9} & \textbf{19.9} & \textbf{22.1} & \textbf{18.4} \\\bottomrule
+\end{tabular}
+\caption{Accuracy on 14 tasks from LongBench~\citep{bai2023longbench}: Narrative QA, QasperQA, MultiField QA, HotpotQA, 2WikiMulti QA, Musique, GovReport, QMSum, MultiNews, TRec, Trivia QA, SamSum, LCC, and RepoBench-P by order.
+  }
+\label{tab:long_bench}
+\end{table}
+
+\begin{figure}
+\centering
+\definecolor{nvgreen}{RGB}{118,185,0}  % NVIDIA green #76b900
+\definecolor{gdngreen}{RGB}{92,114,50}  % GatedDeltaNet green #5c7232
+\scalebox{0.8}{
+\begin{tikzpicture}
+\begin{axis}[
+    width=12cm,
+    height=8cm,
+    xlabel={Sequence Length $\times$ Batch Size},
+    ylabel={Thousands Token Per Second (Kt/s)},
+    grid=major,
+    legend style={
+        at={(0.02,0.02)}, 
+        anchor=south west,
+        cells={anchor=west},
+        font=\small,
+        row sep=2pt,
+        legend columns=2
+    },
+    legend cell align={left},
+    xtick={1,2,3,4},
+    xticklabels={2K$\times$16, 4K$\times$8, 8K$\times$4, 16K$\times$2},
+    ymin=22,
+    ymax=60,
+    ytick={25,30,35,40,45,50,55,60},
+    yticklabels={25,30,35,40,45,50,55,60}
+]
+% Transformer
+\addplot[blue, mark=*, very thick] coordinates {
+    (1, 55.0)
+    (2, 47.6)
+    (3, 37.9)
+    (4, 26.5)
+};
+% DeltaNet
+\addplot[purple!40, mark=square*, very thick] coordinates {
+    (1, 45.9)
+    (2, 45.6)
+    (3, 45.6)
+    (4, 45.2)
+};
+% GatedDeltaNet (#5c7232)
+\addplot[color=gdngreen, mark=triangle*, very thick] coordinates {
+    (1, 46.1)
+    (2, 45.7)
+    (3, 45.8)
+    (4, 45.9)
+};
+\addplot[orange, mark=diamond*, very thick] coordinates {
+    (1, 38.2)
+    (2, 38.1)
+    (3, 37.8)
+    (4, 37.6)
+};
+\addplot[red, mark=pentagon*, very thick] coordinates {
+    (1, 48.1)
+    (2, 48.2)
+    (3, 48.2)
+    (4, 48.1)
+};
+\addplot[color=nvgreen, mark=*, very thick] coordinates {
+    (1, 54.6)
+    (2, 53.4)
+    (3, 52.5)
+    (4, 52.5)
+};
+\addplot[gray, mark=*, very thick] coordinates {
+    (1, 45.0)
+    (2, 44.0)
+    (3, 43.3)
+    (4, 42.8)
+};
+\addplot[green!90, mark=*, very thick] coordinates {
+    (1, 50.0)
+    (2, 49.6)
+    (3, 49.4)
+    (4, 49.0)
+};
+\legend{
+    Transformer++,
+    DeltaNet,
+    Gated DeltaNet,
+    Mamba1,
+    Mamba2,
+    Gated DeltaNet-H1,
+    Samba,
+    Gated DeltaNet-H2,
+}
+\end{axis}
+\end{tikzpicture}
+}
+\caption{Training throughput comparison of 1.3B models on a single H100 GPU.}
+\label{fig:throughput}
+\end{figure}
+
+% \begin{figure}
+% \centering
+% \definecolor{nvgreen}{RGB}{118,185,0}  % NVIDIA green #76b900
+% \definecolor{gdngreen}{RGB}{92,114,50}  % GatedDeltaNet green #5c7232
+% \scalebox{0.72}{
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=12cm,
+%     height=8cm,
+%     xlabel={Sequence Length $\times$ Batch Size},
+%     ylabel={Token Per Second (Kt/s)},
+%     xmode=log,
+%     log ticks with fixed point,
+%     grid=major,
+%     legend style={
+%         at={(0.02,0.02)}, 
+%         anchor=south west,
+%         cells={anchor=west},
+%         font=\small,
+%         row sep=2pt,
+%         legend columns=2
+%     },
+%     legend cell align={left},
+%     xtick={1,2,3,4},
+%     xticklabels={2K$\times$16, 4K$\times$4, 8K$\times$2, 16K$\times$2},
+%     ymin=22,
+%     ymax=60,
+%     ytick={25,30,35,40,45,50,55,60},
+%     yticklabels={25K,30K,35K,40K,45K,50K,55K,60K}
+% ]
+% % Transformer
+% \addplot[blue, mark=*, very thick] coordinates {
+%     (1, 55.0)
+%     (2, 47.6)
+%     (3, 37.9)
+%     (4, 26.5)
+% };
+% % DeltaNet
+% \addplot[purple, mark=square*, very thick] coordinates {
+%     (1, 45.9)
+%     (2, 45.6)
+%     (3, 45.6)
+%     (4, 45.2)
+% };
+% % GatedDeltaNet (#5c7232)
+% \addplot[color=gdngreen, mark=triangle*, very thick] coordinates {
+%     (1, 46.1)
+%     (2, 45.7)
+%     (3, 45.8)
+%     (4, 45.9)
+% };
+% \addplot[orange, mark=diamond*, very thick] coordinates {
+%     (1, 38.2)
+%     (2, 38.1)
+%     (3, 37.8)
+%     (4, 37.6)
+% };
+% \addplot[red, mark=pentagon*, very thick] coordinates {
+%     (1, 48.1)
+%     (2, 48.2)
+%     (3, 48.2)
+%     (4, 48.1)
+% };
+% \addplot[color=nvgreen, mark=*, very thick] coordinates {
+%     (1, 55.6)
+%     (2, 53.4)
+%     (3, 52.5)
+%     (4, 52.5)
+% };
+% \addplot[gray, mark=*, very thick] coordinates {
+%     (1, 45.0)
+%     (2, 44.0)
+%     (3, 43.3)
+%     (4, 42.8)
+% };
+% \legend{
+%     Transformer++,
+%     DeltaNet,
+%     Gated DeltaNet,
+%     Mamba1,
+%     Mamba2,
+%     Gated DeltaNet-H1,
+%     Samba
+% }
+% \end{axis}
+% \end{tikzpicture}
+% }
+% \caption{Training throughput comparison of 1.3B models on a single H100 GPU.}
+% \label{fig:throughput}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \definecolor{nvgreen}{RGB}{118,185,0}  % NVIDIA green #76b900
+% \definecolor{gdngreen}{RGB}{92,114,50}  % GatedDeltaNet green #5c7232
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=12cm,
+%     height=8cm,
+%     xlabel={Sequence length $\times$ Batch size},
+%     ylabel={Tokens per second (Kt/s)},
+%     xmode=log,
+%     log ticks with fixed point,
+%     grid=major,
+%     legend style={
+%         at={(0.02,0.02)}, 
+%         anchor=south west,
+%         cells={anchor=west},
+%         font=\small,
+%         row sep=2pt,
+%         legend columns=2
+%     },
+%     legend cell align={left},
+%     xtick={1,2,3,4},
+%     xticklabels={2K$\times$16, 4K$\times$4, 8K$\times$2, 16K$\times$2},
+%     ymin=22,
+%     ymax=60,
+%     ytick={25,30,35,40,45,50,55,60},
+%     yticklabels={25K,30K,35K,40K,45K,50K,55K,60K}
+% ]
+
+% % Transformer
+% \addplot[blue, mark=*, thick] coordinates {
+%     (1, 55.0)
+%     (2, 47.6)
+%     (3, 37.9)
+%     (4, 26.5)
+% };
+
+% % DeltaNet
+% \addplot[purple, mark=square*, thick] coordinates {
+%     (1, 45.9)
+%     (2, 45.6)
+%     (3, 45.6)
+%     (4, 45.2)
+% };
+
+% % GatedDeltaNet (#5c7232)
+% \addplot[color=gdngreen, mark=triangle*, thick] coordinates {
+%     (1, 46.1)
+%     (2, 45.7)
+%     (3, 45.8)
+%     (4, 45.9)
+% };
+
+% % Mamba1
+% \addplot[orange, mark=diamond*, thick] coordinates {
+%     (1, 38.2)
+%     (2, 38.1)
+%     (3, 37.8)
+%     (4, 37.6)
+% };
+
+% % Mamba2
+% \addplot[red, mark=pentagon*, thick] coordinates {
+%     (1, 48.1)
+%     (2, 48.2)
+%     (3, 48.2)
+%     (4, 48.1)
+% };
+
+% % GatedDeltaNet-H2 (NVIDIA green)
+% \addplot[color=nvgreen, mark=*, thick] coordinates {
+%     (1, 55.6)
+%     (2, 53.4)
+%     (3, 52.5)
+%     (4, 52.5)
+% };
+
+% % Samba
+% \addplot[gray, mark=*, thick] coordinates {
+%     (1, 45.0)
+%     (2, 44.0)
+%     (3, 43.3)
+%     (4, 42.8)
+% };
+
+% \legend{
+%     Transformer,
+%     DeltaNet,
+%     GatedDeltaNet,
+%     Mamba1,
+%     Mamba2,
+%     GatedDeltaNet-H2,
+%     Samba
+% }
+
+% \end{axis}
+% \end{tikzpicture}
+% \caption{Training throughput comparison of 1.3B models on a single H100 GPU.}
+% \label{fig:throughput}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=12cm,
+%     height=8cm,
+%     xlabel={Sequence length $\times$ Batch size},
+%     ylabel={Tokens per second (Kt/s)},
+%     xmode=log,
+%     log ticks with fixed point,
+%     grid=major,
+%     legend style={
+%         at={(0.02,0.02)}, 
+%         anchor=south west,
+%         cells={anchor=west}
+%     },
+%     legend cell align={left},
+%     xtick={1,2,3,4},
+%     xticklabels={2K$\times$16, 4K$\times$4, 8K$\times$2, 16K$\times$2},
+%     ymin=0,
+%     ymax=60,
+%     ytick={0,15,30,45,60},
+%     yticklabels={0, 15K, 30K, 45K, 60K}
+% ]
+
+% % Transformer
+% \addplot[blue, mark=*, thick] coordinates {
+%     (1, 55.0)
+%     (2, 47.6)
+%     (3, 37.9)
+%     (4, 26.5)
+% };
+
+% % DeltaNet
+% \addplot[red, mark=square*, thick] coordinates {
+%     (1, 45.9)
+%     (2, 45.6)
+%     (3, 45.6)
+%     (4, 45.2)
+% };
+
+% % GatedDeltaNet
+% \addplot[orange, mark=triangle*, thick] coordinates {
+%     (1, 46.1)
+%     (2, 45.7)
+%     (3, 45.8)
+%     (4, 45.9)
+% };
+
+% % Mamba1
+% \addplot[magenta, mark=diamond*, thick] coordinates {
+%     (1, 38.2)
+%     (2, 38.1)
+%     (3, 37.8)
+%     (4, 37.6)
+% };
+
+% % Mamba2
+% \addplot[red, mark=pentagon*, thick] coordinates {
+%     (1, 48.1)
+%     (2, 48.2)
+%     (3, 48.2)
+%     (4, 48.1)
+% };
+
+% % GatedDeltaNet-H2
+% \addplot[cyan, mark=*, thick] coordinates {
+%     (1, 55.6)
+%     (2, 53.4)
+%     (3, 52.5)
+%     (4, 52.5)
+% };
+
+% % Samba
+% \addplot[gray, mark=*, thick] coordinates {
+%     (1, 45.0)
+%     (2, 44.0)
+%     (3, 43.3)
+%     (4, 42.8)
+% };
+
+% \legend{
+%     Transformer,
+%     DeltaNet,
+%     GatedDeltaNet,
+%     Mamba1,
+%     Mamba2,
+%     GatedDeltaNet-H2,
+%     Samba
+% }
+
+% \end{axis}
+% \end{tikzpicture}
+% \caption{Training throughput comparison of 1.3B models on a single H100 GPU.}
+% \label{fig:throughput}
+% \end{figure}
+
+
+
+% \begin{figure}
+% \centering
+% \definecolor{bred}{RGB}{255,0,0}
+% \definecolor{bblue}{RGB}{0,0,255}
+% \definecolor{bcyan}{RGB}{0,255,255}
+% \definecolor{bgreen}{RGB}{0,255,0}
+% \resizebox{0.52\columnwidth}{!}{  
+% \begin{tikzpicture}
+% \begin{axis}[
+%     footnotesize,
+%     ymajorgrids,
+%     yminorgrids,
+%     tick align=inside,
+%     axis line style={opacity=0},
+%     tickwidth=0pt,
+%     width=8.8cm, height=6cm,    
+%     enlarge x limits=0.12,      
+%     ybar=2*\pgflinewidth,      
+%     bar width=3.2pt,           
+%     legend style={
+%         at={(1.0, 1.35)},
+%         anchor=north east,
+%         legend columns=3,       
+%         /tikz/every even column/.append style={
+%             column sep=0.05cm,
+%             row sep=-0.05cm
+%         },
+%         font=\tiny
+%     },
+%     legend cell align={left},
+%     symbolic x coords={A1,A2,A3,A4,A5,A6,B1,B2,B3,B4,B5,B6,C1,C2,C3,C4,C5,C6,D1,D2,D3,D4,D5,D6,E1,E2,E3,E4,E5,E6},
+%     xtick={A3,B3,C3,D3,E3},    
+%     xticklabels={
+%         2K$\times$16,
+%         4K$\times$4,
+%         8K$\times$2,
+%         16K$\times$2,
+%         32K$\times$1
+%     },
+%     x tick label style={font=\scriptsize, align=center},
+%     y tick label style={font=\scriptsize, align=center},
+%     xlabel={\scriptsize Training length$\times$Batch size},
+%     xlabel style={font=\scriptsize,at={(0.5,-0.1)}},
+%     scaled ticks=false,
+%     ymin=0, ymax=60,
+%     ytick={0,15,30,45,60},
+%     yticklabels={0, 15K, 30K, 45K,60K},
+%     ylabel={\scriptsize Tokens per second (Kt/s)},
+%     ylabel style={font=\scriptsize,at={(-0.1,0.5)}},
+%     axis y line*=left
+% ]
+% \addplot[
+%     draw=black,
+%     thick,
+%     fill=red!20,
+%     postaction={
+%         pattern={Lines[angle=45,distance={1.2pt/sqrt(2)},line width=.8pt]},
+%         pattern color=red,
+%     }
+% ] coordinates { 
+%     (A3, 55.0)
+%     (B3, 47.6)
+%     (C3, 37.9)
+%     (D3, 26.5)
+%     (E3, 16.6)
+% };
+% \addplot[
+%     draw=black,
+%     thick,
+%     pattern=crosshatch,
+%     pattern color=blue!80
+% ] coordinates {
+%     (A3, 48.1)
+%     (B3, 48.2)
+%     (C3, 48.2)
+%     (D3, 48.1)
+%     (E3, 48.2)
+% };
+% \addplot[
+%     draw=black,
+%     thick,
+%     fill=green!40
+% ] coordinates {
+%     (A3, 55.6)
+%     (B3, 53.4)
+%     (C3, 52.5)
+%     (D3, 52.5)
+%     (E3, 48.9)
+% };
+% \addplot[
+%     draw=black,
+%     thick,
+%     fill=gray!40
+% ] coordinates {
+%     (A3, 45.0)
+%     (B3, 44.0)
+%     (C3, 43.3)
+%     (D3, 42.8)
+%     (E3, 45.5)
+% };
+% \addplot[
+%     draw=black,
+%     thick,
+%     fill=orange!40
+% ] coordinates {
+%     (A3, 45.9)
+%     (B3, 45.6)
+%     (C3, 45.6)
+%     (D3, 45.2)
+%     (E3, 43.0)
+% };
+% \addplot[
+%     draw=black,
+%     thick,
+%     fill=red!40
+% ] coordinates {
+%     (A3, 46.1)
+%     (B3, 45.7)
+%     (C3, 45.8)
+%     (D3, 45.9)
+%     (E3, 41.7)
+% };
+% \legend{
+%     \textcolor{black}{Transformer++},
+%     \textcolor{black}{Mamba2},
+%     \textcolor{black}{Gated DeltaNet-H1},
+%     \textcolor{black}{Samba},
+%     \textcolor{black}{DeltaNet},
+%     \textcolor{black}{GatedDeltaNet}
+% }
+% \end{axis}
+% \end{tikzpicture}
+% }
+% \caption{Training throughput of 1.3B models on a single H100 GPU.}
+% \label{fig:speed}
+% \end{figure}
+% The hybrid models show even stronger performance on multi-field tasks, with Gated DeltaNet-H2 reaching 27.08\% on MultiFieldQA-en. For code-related tasks, Gated DeltaNet demonstrates superior performance with 18.72\% on LCC and 22.05\% on RepoBench-P. These results suggest that the gated delta rule effectively enhances the model's ability to process and understand long-range dependencies in various contexts.
+
+\paragraph{Throughput Comparison.} The training throughput comparison across different models is presented in Fig.~\ref{fig:throughput}. As our analysis shows, the proposed gated delta rule introduces only marginal overhead compared to the original delta rule, with Gated DeltaNet achieving essentially the same throughput as DeltaNet. Both are slightly slower than Mamba2 (2-3K tokens/sec) due to their more expressive transition matrices.
+
+The Transformer++ achieves the best performance in the 2K context window domain, thanks to the highly optimized Flash-Attention-2 kernel \citep{flashattention2}. Consequently, hybrid approaches combining 2K window-size SWA attention with other token mixers demonstrate higher throughput than standalone mixers: Samba  outperforms Mamba, while Gated DeltaNet-H1 and -H2 
+ outperform Gated DeltaNet. Notably, Gated DeltaNet-H1 maintains compelling training throughput across all sequence lengths, even on short sequences.
+
+
+
+% \begin{wrapfigure}{r}{0.8\textwidth}
+% \centering
+% \definecolor{nvgreen}{RGB}{118,185,0}  % NVIDIA green #76b900
+% \definecolor{gdngreen}{RGB}{92,114,50}  % GatedDeltaNet green #5c7232
+% \begin{tikzpicture}
+% \begin{axis}[
+%     width=12cm,
+%     height=8cm,
+%     xlabel={Sequence length $\times$ Batch size},
+%     ylabel={Tokens per second (Kt/s)},
+%     xmode=log,
+%     log ticks with fixed point,
+%     grid=major,
+%     legend style={
+%         at={(0.02,0.02)}, 
+%         anchor=south west,
+%         cells={anchor=west},
+%         font=\small,
+%         row sep=2pt,
+%         legend columns=2
+%     },
+%     legend cell align={left},
+%     xtick={1,2,3,4},
+%     xticklabels={2K$\times$16, 4K$\times$4, 8K$\times$2, 16K$\times$2},
+%     ymin=22,
+%     ymax=60,
+%     ytick={25,30,35,40,45,50,55,60},
+%     yticklabels={25K,30K,35K,40K,45K,50K,55K,60K}
+% ]
+
+% % Transformer
+% \addplot[blue, mark=*, thick] coordinates {
+%     (1, 55.0)
+%     (2, 47.6)
+%     (3, 37.9)
+%     (4, 26.5)
+% };
+
+% % DeltaNet
+% \addplot[purple, mark=square*, thick] coordinates {
+%     (1, 45.9)
+%     (2, 45.6)
+%     (3, 45.6)
+%     (4, 45.2)
+% };
+
+% % GatedDeltaNet (#5c7232)
+% \addplot[color=gdngreen, mark=triangle*, thick] coordinates {
+%     (1, 46.1)
+%     (2, 45.7)
+%     (3, 45.8)
+%     (4, 45.9)
+% };
+
+% % Mamba1
+% \addplot[orange, mark=diamond*, thick] coordinates {
+%     (1, 38.2)
+%     (2, 38.1)
+%     (3, 37.8)
+%     (4, 37.6)
+% };
+
+% % Mamba2
+% \addplot[red, mark=pentagon*, thick] coordinates {
+%     (1, 48.1)
+%     (2, 48.2)
+%     (3, 48.2)
+%     (4, 48.1)
+% };
+
+% % GatedDeltaNet-H2 (NVIDIA green)
+% \addplot[color=nvgreen, mark=*, thick] coordinates {
+%     (1, 55.6)
+%     (2, 53.4)
+%     (3, 52.5)
+%     (4, 52.5)
+% };
+
+% % Samba
+% \addplot[gray, mark=*, thick] coordinates {
+%     (1, 45.0)
+%     (2, 44.0)
+%     (3, 43.3)
+%     (4, 42.8)
+% };
+
+% \legend{
+%     Transformer++,
+%     DeltaNet,
+%     Gated DeltaNet,
+%     Mamba1,
+%     Mamba2,
+%     Gated DeltaNet-H2,
+%     Samba
+% }
+
+% \end{axis}
+% \end{tikzpicture}
+% \caption{Training throughput comparison of 1.3B models on a single H100 GPU.}
+% \label{fig:throughput}
+% \end{wrapfigure}
+
+
+% , reveals interesting performance patterns. 
+% Gated DeltaNet-H2 demonstrates superior efficiency, maintaining consistently high throughput (52-55K tokens/sec) across most configurations, with only a slight decline at 32K×1. Mamba2 shows remarkable stability, maintaining a steady throughput of approximately 48K tokens/sec. This contrasts sharply with Transformer++, which shows strong performance at shorter sequence lengths (55K tokens/sec at 2K×16) but degrades significantly as sequence length increases, dropping to just 16.6K tokens/sec at 32K×1. Samba maintains moderate but stable performance around 43-45K tokens/sec across all configurations, showing better scalability than Transformer++ but not matching the peak performance of Gated DeltaNet-H2.
+
+
+\section{Related Work} 
+\paragraph{Gated linear RNN.} Large linear recurrent language models have attracted significant attention due to their training and inference efficiency. The field of linear RNNs has rapidly evolved from using data-independent decay mechanisms, as exemplified by models like S4 \citep{s4}, S5 \citep{s5}, LRU \citep{Orvieto2023ResurrectingRN}, 
+ RWKV4/5 \citep{peng_rwkv_2023}, and RetNet \citep{sun2023retentive}, to incorporating data-dependent decay mechanisms in more recent architectures such as HGRN1/2 \citep{qin2024hgrn2, HGRN}, Mamba1/2 \citep{gu_mamba_2023,mamba2}, RWKV6 \citep{peng_eagle_2024}, GSA \citep{Zhang2024GatedSA}. This transition stems from the proven advantages of gating/forgetting mechanisms (termed selective mechanisms in Mamba)—a classical concept originating in the gated RNN literature \citep{DBLP:journals/neco/GersSC00} whose significance has been consistently reaffirmed \citep{Greff2015LSTMAS,unreasonable-forget-gate, qin2024hgrn2, HGRN, gu_mamba_2023}.
+
+Modern forget gates differ from traditional designs like those in LSTM by removing the dependency on the previous hidden state, relying solely on input data. This modification enables efficient parallelism across sequence lengths \citep{parallel-martin,HGRN}. The absence of a forget gate has been a notable limitation in DeltaNet, and our gated extension addresses this gap in a natural, effective, and hardware-efficient way. We also note a recent concurrent work RWKV-7~\footnote{\url{https://github.com/BlinkDL/RWKV-LM/tree/main/RWKV-v7}} using a similar idea, but with a more relaxable formalism using diagonal-plus-low-rank transitions: $\rmS_t = \rmS_{t-1} (\operatorname{diag}(\mathbf{d}_t) - \mathbf{a}_t \mathbf{b}_t^\top) + \vv_t \vk_t^\top$ where $\mathbf{d}_t, \mathbf{a}_t, \mathbf{b}_t \in \mathbb{R}^{d_k}$. The chunkwise algorithm could be similarly adapted to this case, as implemented in Flash Linear Attention \citep{yang_fla_2024}.~\footnote{\url{https://github.com/fla-org/flash-linear-attention/tree/main/fla/ops/generalized_delta_rule}.}
+
+\paragraph{Delta rule.} The delta learning rule demonstrates superior memory capacity compared to Hebbian learning \citep{Gardner1988TheSO, Prados1989NeuralNC}, an advantage DeltaNet leverages while linear transformers rely on Hebbian-like rules. This memory capacity advantage is evident in synthetic in-context learning tasks and extends to language modeling \citep{irie2021going, yang2024parallelizing}, reinforcement learning \citep{DBLP:conf/icml/IrieSCS22}, and image generation \citep{DBLP:conf/iclr/IrieS23}. \citet{yang2024parallelizing} parallelized delta rule computation and demonstrated how DeltaNet's data-dependent identity-plus-low-rank structure ($\rmI - \beta_t \vk_t \vk_t^\intercal$) offers greater flexibility than Mamba2's data-dependent diagonal matrices ($\alpha_t \rmI$). This structural advantage could enable complex reasoning, including regular language recognition \citep{fan-etal-2024-advancing, Grazzi2024UnlockingSI} and state-tracking beyond TC$^0$ complexity \citep{merrill_illusion_2024}—crucial for coding and reasoning applications.
+
+Despite these significant advantages, the delta rule faces theoretical limitations \citep{irie-etal-2023-practical} and shows only moderate performance on real-world datasets \citep{yang2024parallelizing}, suggesting room for improvement. Previous attempts to enhance expressiveness through nonlinear recurrence \citep{irie2021going,DBLP:conf/icml/IrieSCS22} addressed some limitations but sacrificed training parallelism, creating a performance-efficiency tradeoff.
+Recent work proposes some enhancements without compromising parallelism for better state tracking performance, including using negative eigenvalues \citep{Grazzi2024UnlockingSI} and multiple products of householder transition matrices \citep{siems2025deltaproductincreasingexpressivitydeltanet} which enable high-rank transformations. These methods could be applied to Gated DeltaNet seamlessly.
+
+From a (online) learning objective perspective, alternative formulations could further extend expressiveness: nonlinear regression ($\mathcal{L}(\rmS_t) = \frac{1}{2}||f_{\rmS_t}(\vk_t) - \vv_t||^2$) as in TTT \citep{ttt} and Titans \citep{behrouz2024titanslearningmemorizetest}, where $f_\rmS$ is a nonlinear function parameterized by $\rmS$; or regression considering the entire history ($\mathcal{L}(\rmS_t) =\frac{1}{2} \sum_{i=1}^t||\rmS_t\vk_i - \vv_i||^2$) as in Mesa layer \citep{vonoswald2024uncoveringmesaoptimizationalgorithmstransformers}—analogous to the difference between Least Mean Square and Recursive Least Square algorithms. However, these more expressive variants introduce nonlinear recurrence and require workarounds, such as performing nonlinear updates only after processing entire chunks (as in TTT and Titans); or approximating nonlinear recurrence methods like \citet{lim2024parallelizingnonlinearsequentialmodels, gonzalez2024towards, schöne2025implicitlanguagemodelsrnns}.
+
+\paragraph{Hybrid models.} In this work, we explore interleaving hybrid attention layers across layers, which is commonly used such as in MiniMax-01 \citep{minimax2025minimax01scalingfoundationmodels} and Hybrid Mamba2-Attention \citep{waleffe2024empiricalstudymambabasedlanguage}. It is also interesting to investigate hybrid linear/softmax attention within a single layer \citep{GAU,zancato2024bmojo,munkhdalai2024leave,nunez2024expansionspancombiningfading,dong2025hymba,zhang2025lolcats}. 
+
+\section{Conclusion}
+In this work, we introduced Gated DeltaNet, which enables better key-value association learning compared to Mamba2 and more adaptive memory clearance than DeltaNet, leading to consistently better empirical results across various tasks. We extended the parallel algorithm from ~\cite{yang2024parallelizing} to enable hardware-efficient training of Gated DeltaNet. Our hybrid Gated DeltaNet model achieves even higher training throughput and overall performance, making it well-suited for practical deployment.
+
+\section*{Acknowledgment}
+We thank Yu Zhang for assistance with figure creation and model evaluation; Kazuki Irie for providing valuable feedback on the draft; Simeng Sun and Zhixuan Lin for insightful discussions on long-sequence task evaluation settings; and Eric Alcaide and Volodymyr Kyrylov for their helpful discussions on the online learning perspective of DeltaNet.
+
+
+
+
+\bibliography{ref}
+\bibliographystyle{iclr2025_conference}
+\newpage
+\appendix
+% \section{Appendix}
+
+
+
+
+
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand\thefigure{S.\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand\thetable{S.\arabic{table}}
+\setcounter{table}{0}
+
+\section{Extended WY representation for gated delta rule}
+\label{sec:extended_wy_proof}
+% \paragraph{Extended WY representation for $\rmS$} 
+To reduce notation clutter, we only consider the first chunk here. 
+
+For $\rmS_t$, the extended WY representation is 
+\begin{align*}
+    \rmS_t = \sum_{i=1}^t {\color{blue}\frac{\gamma_{t}}{\gamma_i}} \vu_i \vk_i^\intercal, \qquad \vu_t = \beta_t \left( \vv_t - \sum_{i=1}^{t-1} {\color{blue} \frac{\gamma_{t}}{\gamma_i}} \vu_i \vk_i^T \vk_t \right)
+\end{align*}
+We proof this by mathmetical induction.
+\begin{proof}
+\begin{align*}
+\centering
+\rmS_{t+1} &=\rmS_{t} \left({\color{blue}\alpha_{t+1}} (\rmI - \beta_{t+1} \vk_{t+1}\vk_{t+1}^\intercal) \right) + \beta_{t+1} \vv_{t+1}  \vk_{t+1}^\intercal \\ &= {\color{blue}\alpha_{t+1}} (\sum_{i=1}^t {\color{blue}\frac{\gamma_t}{\gamma_i}} \vu_i \vk_i^\intercal) - {\color{blue}\alpha_{t+1}} \beta_{t+1} (\sum_{i=1}^t {\color{blue}\frac{\gamma_t}{\gamma_i}} \vu_i \vk_i^\intercal \vk_i  \vk_{t+1}^\intercal) + \beta_{t+1} \vv_{t+1} \vk_{t+1}^\intercal \\
+&= \sum_{i=1}^t {\color{blue}\frac{\gamma_{t+1}}{\gamma_{i}}} \vu_i \vk_i^\intercal + \underbrace{\beta_{t+1} \left( \vv_{t+1} - \sum_{i=1}^t {\color{blue}\frac{\gamma_{t+1}}{\gamma_{i}}}\vu_i \vk_i^T \vk_{t+1} \right)}_{  \vu_{t+1}} \vk_{t+1}^\intercal \\
+&= \sum_{i=1}^t {\color{blue}\frac{\gamma_{t+1}}{\gamma_{i}}} \vu_i \vk_i^\intercal + \underbrace{{\color{blue}\frac{\gamma_{t+1}}{\gamma_{t+1}}}}_{1} \vu_{t+1} \vk_{t+1}^\intercal
+\\
+&= 
+\sum_{i=1}^{t+1} {\color{blue}\frac{\gamma_{t+1}}{\gamma_i}} \vu_i \vk_i^\intercal
+\end{align*}
+\end{proof}
+
+\section{Experiment Contunued}
+
+\subsection{Evaluation}
+\label{sec:evaluation}
+\paragraph{Commonsense reasoning} Following \citet{gu_mamba_2023}, we evaluate our model on multiple commonsense reasoning benchmarks: PIQA \citep{bisk2020piqa}, HellaSwag \citep[Hella.;][]{zellers2019hellaswag}, WinoGrande \citep[Wino.;][]{sakaguchi2021winogrande}, ARC-easy (ARC-e) and ARC-challenge (ARC-c) \citep{arc-ce}, SIQA \citep{sap2019social}, BoolQ \citep{clark2019boolq}, Wikitext \citep[Wiki.;][]{merity2016pointer}, and LAMBADA \citep[LMB.;][]{paperno_lambada_2016}.
+\paragraph{In-context retrieval} Our evaluation comprises both synthetic and real-world tasks. For synthetic tasks, we utilize the Needle-In-A-Haystack Single (NIAH-S) benchmark suite from RULER \citep{hsieh2024ruler}, which includes three increasingly complex tasks: S-NIAH-1 (passkey retrieval), S-NIAH-2 (numerical needle in haystack), and S-NIAH-3 (word-based needle in haystack).
+For real-world tasks, following \citet{arora-2024-jrt}, we evaluate on diverse datasets: SWDE \citep{lockard_openceres_2019} for structured HTML relation extraction, FDA \citep{arora_language_2023} for PDF key-value retrieval, and several question-answering datasets including SQuAD \citep{rajpurkar_know_2018}, TriviaQA \citep{JoshiTriviaQA2017}, Drop \citep{dua2019drop}, and NQ \citep{47761}. Since our pretrained models lack instruction tuning, we employ the Cloze Completion Formatting prompts provided by \citet{arora-2024-jrt}, which better align with our models' next-word-prediction training objective.
+\paragraph{Long context understanding} We evaluate on 14 tasks from Longbench \citep{bai2023longbench}, encompassing: narrative comprehension (Narrative QA \citep{kocisky-etal-2018-narrativeqa}), scientific understanding (QasperQA \citep{dasigi2021qasper}), multi-hop reasoning (MultiField QA, HotpotQA \citep{yang2018hotpotqa}, 2WikiMulti QA \citep{ho2020constructing}, Musique \citep{trivedi2022musique}), document summarization (GovReport \citep{huang2021govreport}, QMSum \citep{zhong2021qmsum}, MultiNews \citep{fabbri2019multinews}), and various specialized tasks (TRec \citep{li2002learning}, Trivia QA \citep{joshi2017triviaqa}, SamSum \citep{gliwa2019samsum}, LCC \citep{guo2023longcoder}, and RepoBench-P \citep{liu2023repobench}).
+
+\subsection{Ablation Study}
+\label{sec:ablation_study}
+
+\begin{table*}[t!]
+    % \vspace{-1\normalbaselineskip}
+    \caption{\small
+        Ablation study on the Gated DeltaNet block. Avg-PPL and Avg-Acc denote average perplexity and zero-shot commonsense reasoning accuracy (as in Table~\ref{tab:commonsense_results}), respectively. All models have 400M parameters and are trained for 15B tokens on the same subset of FineWeb-Edu dataset~\citep{penedo2024fineweb}.
+    }
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.1}
+    % \addtolength{\tabcolsep}{-2pt}
+    \resizebox{.53\textwidth}{!}{
+    \begin{tabular}{lcc}
+        \toprule
+                {\textit{Gated DeltaNet Ablations (400M)}}                       & Avg-PPL  (${\downarrow}$) & Avg-Acc  (${\uparrow}$) \\
+        \midrule
+        Gated DeltaNet \textit{w} Head Dim 128,         & 27.35 & 47.26        \\
+        \midrule
+        \emph{Macro Design}                    \\
+        \quad \textit{w.} naive Delta Rule  & 30.87 & 45.12                 \\
+        \quad \textit{w/o.} Short Conv  & 28.95   & 46.16               \\
+        \quad \textit{w/o.} Output Gate  & 29.12    & 45.46              \\
+        \quad \textit{w/o.} Output Norm  & 27.55  & 47.07                \\
+        \midrule
+        \emph{Normalization \& Feature Map}                    \\
+        \quad \textit{w.} $L_1$-norm \& ReLU  & 30.79    & 45.92              \\
+        \quad \textit{w.} $L_1$-norm \& 1+ELU  & 30.34  & 46.05                \\
+        \quad \textit{w.} $L_1$-norm \& SiLU  & 30.18  & 46.09                \\
+        \quad \textit{w.} $L_2$-norm \& ReLU  & 27.67   & 46.94               \\
+        \quad \textit{w.} $L_2$-norm \& 1+ELU  & 27.58  & 47.17                \\ \midrule
+        \emph{Model Dimensions}                    \\
+        \quad \textit{w.} Head Dim 64   & 28.31      & 46.35            \\
+        \quad \textit{w.} Head Dim 256   & 27.13     & 47.38             \\
+        \bottomrule
+    \end{tabular}
+    }
+    \label{tab:ablations1}
+\end{table*} 
+
+\begin{table*}[!h]
+\centering
+\scriptsize
+\addtolength{\tabcolsep}{-2.5pt}    
+\begin{tabular}{l|cc|ccccccccc}
+\toprule
+% \text{} & & \midrule \\
+\textbf{Model}  & \textbf{Wiki.}  &  \textbf{LMB.} &  \textbf{LMB.} & \textbf{PIQA} &    \textbf{Hella.} & \textbf{Wino.} & \textbf{ARC-e} &  \textbf{ARC-c} &  \textbf{SIQA}  & \textbf{BoolQ} &  \textbf{Avg.} \\
+ & ppl $\downarrow$  &  ppl $\downarrow$  &  acc $\uparrow$  & acc $\uparrow$ &   acc\_n $\uparrow$  & acc $\uparrow$  & acc $\uparrow$ & acc\_n $\uparrow$ &  acc $\uparrow$  & acc $\uparrow$ &     \\
+
+\midrule
+{\textit{Hybrid Ablations (500M/15B)}} \\
+\midrule
+%Gated DeltaNet + SWA + Mamba2
+\hspace{2mm} Gated DeltaNet + SWA + Mamba2 & 24.02 & 28.20 & 34.77 & 67.08 & 40.84 &	50.74 & 60.35	& 28.83 &  38.94  & 61.49  & 47.88 \\
+%Gated Gated DeltaNet + Mamba2 + SWA
+\hspace{2mm} Gated DeltaNet + Mamba2 + SWA & 23.69 & 26.83 & 36.17 & 67.51 & 41.51 &	51.85 & 61.19	& 29.77 &  38.58  & 53.73  & 47.54 \\
+%Mamba2 + SWA + Gated DeltaNet
+\hspace{2mm} Mamba2 + SWA + Gated DeltaNet & 24.14 & 25.21 & 36.79 & 64.96 & 41.18 &	52.01 & 60.90	& 30.03 &  38.07  & 59.44  & 47.92 \\
+%Mamba2 + Gated DeltaNet + SWA
+\hspace{2mm}  Mamba2 + Gated DeltaNet + SWA & \textbf{23.54} & \textbf{24.11} & 36.92 & 66.48 & 41.70 &	52.72 & 61.06	& 30.54 &  39.91  & 60.51  & \textbf{48.73} \\
+\bottomrule
+\end{tabular}
+\addtolength{\tabcolsep}{2.5pt}    
+\centering
+% \vspace{-1mm}
+\caption{Ablation studies of Gated DeltaNet models. All evaluations are performed by using \texttt{lm-evaluation-harness} \citep{eval-harness}. All models use the Llama tokenizer and are trained on the same subset of the FineWeb-Edu dataset~\citep{penedo2024fineweb}.
+}
+% \vspace{-2mm}
+\label{tab:hybrid_design_ablations}
+\end{table*}
+
+Table~\ref{tab:ablations1} presents ablation studies on the Gated DeltaNet block's components. Our experiments demonstrate that both the short convolution and output gate are crucial for model performance, while output normalization yields marginal improvements. Consistent with \citet{yang2024parallelizing}, we found L2 normalization to be essential for optimal performance, though the choice of feature map was less influential. Nevertheless, SiLU consistently outperformed other activation functions, aligning with observations from \citet{Qin2023TransNormerLLMAF}. Through empirical analysis, we determined that a head dimension of 128 provides an optimal trade-off between performance and computational efficiency. Additionally, Table~\ref{tab:hybrid_design_ablations} demonstrates that among various hybrid architectures, the combination of Mamba2, Gated DeltaNet, and SWA in this specific order produces superior results.
+
+
+
+
+
+\end{document}

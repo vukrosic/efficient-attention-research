@@ -1,0 +1,36 @@
+\begin{table}[h]
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{9pt}
+    \caption{Performance comparison of Kimi Linear with the full-attention MLA baseline and the hybrid GDN baseline, all using the same SFT recipe after pretraining. Kimi Linear consistently outperforms both MLA and GDN-H on short-context instruction-tuned benchmarks. Best per-column results are \textbf{bolded}.}
+    \label{tab:instruct-1t-eval}
+    \begin{tabular}{@{}r l c c c}
+        \toprule
+         &      Type Instruct                     & MLA           & GDN-H         & Kimi Linear   \\
+        \midrule
+         & Trained Tokens            & 1.4T          & 1.4T          & 1.4T          \\
+        \midrule
+        \multirow{6}{*}{\textit{General}}
+         & BBH                       & 68.2          & 68.5          & \textbf{69.4} \\
+         & MMLU                      & 75.7          & 75.6          & \textbf{77.0} \\
+         & MMLU-Pro                  & 65.7          & 64.8          & \textbf{67.4} \\
+         & MMLU-Redux                & 79.2          & 78.7          & \textbf{80.3} \\
+         & GPQA-Diamond (Avg@8)      & 57.1          & 58.6          & \textbf{62.1} \\
+         & LiveBench (Pass@1)        & 45.7          & \textbf{46.4} & 45.2          \\
+        \midrule
+        \multirow{6}{*}{\textit{Math \& Code}}
+         & AIME 2025 (Avg@64)        & 20.6          & 21.1          & \textbf{21.3} \\
+         & MATH500 (Acc.)            & 80.8          & \textbf{83.0} & 81.2          \\
+         & HMMT 2025 (Avg@32)        & 11.3          & 11.3          & \textbf{12.5} \\
+         & PolyMath-en (Avg@4)       & 41.3          & 41.5          & \textbf{43.6} \\
+         & LiveCodeBench v6 (Pass@1) & 25.1          & 25.4          & \textbf{26.0} \\
+         & EvalPlus                  & \textbf{62.6} & 62.5          & 61.0          \\
+
+
+
+
+
+
+        \bottomrule
+    \end{tabular}
+\end{table}

@@ -1,0 +1,400 @@
+\begin{figure}[t!]
+  \centering
+  \definecolor{fgate_color}{RGB}{252,224,225}
+  \definecolor{kda_color}{RGB}{252,226,187}
+  \definecolor{add_norm_color}{RGB}{242,243,193}
+  \definecolor{glu_color}{RGB}{194,232,247}
+  \definecolor{silu_color}{RGB}{203,231,207}
+  \definecolor{linear_color}{RGB}{220,223,240}
+  \definecolor{gray_bbox_color}{RGB}{243,243,244}
+  \definecolor{oproj_color}{RGB}{203,231,207}
+  \definecolor{operator_color}{RGB}{252,224,225}
+  \resizebox{0.75\textwidth}{!}{
+    \tikzset{
+      model/.style={
+          draw=black,
+          very thick,
+          fill=gray_bbox_color,
+          minimum width=120pt,
+          minimum height=180pt,
+          rounded corners=10pt
+        },
+      kda/.style={
+          draw=black,
+          very thick,
+          fill=gray_bbox_color,
+          minimum width=240pt,
+          minimum height=210pt,
+          rounded corners=10pt
+        },
+      moe/.style={
+          draw=black,
+          very thick,
+          fill=gray_bbox_color,
+          minimum width=240pt,
+          minimum height=160pt,
+          rounded corners=10pt
+        },
+      tokenmixer/.style={
+          draw=black,
+          very thick,
+          fill=kda_color!40,
+          minimum width=2.5cm,
+          minimum height=0.7cm,
+          rounded corners=3pt
+        },
+      glu/.style={
+          draw=black,
+          very thick,
+          fill=glu_color!80,
+          minimum width=2.5cm,
+          minimum height=0.7cm,
+          rounded corners=3pt
+        },
+      norm/.style={
+          draw=black,
+          very thick,
+          fill=add_norm_color!80,
+          minimum width=2.5cm,
+          rounded corners=3pt,
+          align=center,
+        },
+      linear/.style={
+          draw=black,
+          very thick,
+          fill=oproj_color!80,
+          minimum width=2.5cm,
+          rounded corners=3pt
+        },
+      stacked/.style={
+          draw=black,
+          very thick,
+          fill=salmon!40,
+          minimum width=1.4cm,
+          rounded corners=3pt,
+          rectangle,
+        },
+      prob/.style={
+          draw=black,
+          line width=0.8pt,
+          inner sep=0pt,
+          fill=orange!40,
+          minimum width=4pt,
+          rounded corners=0.2pt,
+          rectangle,
+        },
+      shared expert/.style={
+          draw=black,
+          very thick,
+          fill=oproj_color!80,
+          minimum width=20pt,
+          minimum height=20pt,
+          rounded corners=3pt
+        },
+      routed expert/.style={
+          draw=black,
+          very thick,
+          fill=linear_color!80,
+          minimum width=20pt,
+          minimum height=20pt,
+          rounded corners=3pt
+        },
+      conv/.style={
+          chamfered rectangle,
+          draw=black,
+          very thick,
+          inner sep=1pt,
+          fill=linear_color!80,
+          minimum width=1.1cm,       % 控制横向宽度
+          chamfered rectangle xsep=0.6pt,
+          rounded corners=1pt,
+        },
+      l2norm/.style={
+          chamfered rectangle,
+          draw=black,
+          very thick,
+          inner sep=0pt,
+          fill=linear_color!80,
+          minimum width=1cm,       % 控制横向宽度
+          chamfered rectangle xsep=0.5pt,
+          rounded corners=1pt,
+        },
+      fgate/.style={
+          draw=black,
+          very thick,
+          trapezium,
+          trapezium stretches=true,
+          inner sep=0.1pt,
+          fill=fgate_color!60,
+          minimum width=1.1cm,
+          minimum height=0.4cm,
+          rounded corners=1pt
+        },
+      oproj/.style={
+          draw=black,
+          very thick,
+          fill=oproj_color!80,
+          minimum width=2.5cm,
+          rounded corners=3pt
+        },
+      silu/.style={
+          draw=black,
+          very thick,
+          fill=silu_color,
+          minimum width=1.1cm,
+          rounded corners=3pt
+        },
+      layerlink/.style={
+          -latex,
+          very thick,
+        },
+      modulelink/.style={
+          -latex,
+          very thick,
+          densely dashed,
+          shorten >=1pt,
+          shorten <=1pt,
+          rounded corners=3pt
+        },
+      routerlink/.style={
+          very thick,
+          dashed,
+          shorten >=1pt,
+          shorten <=1pt,
+          rounded corners=3pt
+        },
+      normlink/.style={
+          very thick,
+        },
+      residual/.style={
+          very thick,
+          rounded corners=5pt
+        },
+      qf/.style={
+          -latex,
+          very thick,
+          rounded corners=5pt
+        },
+      oplus/.style={
+          draw=black,
+          line width=1pt,
+          circle,
+          minimum size=8pt,
+          inner sep=0pt,
+          outer sep=0pt,
+          path picture={
+              \draw (path picture bounding box.center) -- ++(0.3cm,0)
+              (path picture bounding box.center) -- ++(-0.3cm,0)
+              (path picture bounding box.center) -- ++(0,0.3cm)
+              (path picture bounding box.center) -- ++(0,-0.3cm);
+            },
+        },
+      otimes/.style={
+          draw=black,
+          line width=1pt,
+          circle,
+          minimum size=8pt,
+          inner sep=0pt,
+          outer sep=0pt,
+          path picture={
+              \draw (path picture bounding box.center) -- ++(0.25cm,0.25cm)
+              (path picture bounding box.center) -- ++(-0.25cm,-0.25cm)
+              (path picture bounding box.center) -- ++(-0.25cm,0.25cm)
+              (path picture bounding box.center) -- ++(0.25cm,-0.25cm);
+            }
+        },
+      sigmoid/.style={
+          draw=black,
+          line width=1pt,
+          circle,
+          minimum size=8pt,
+          inner sep=0pt,
+          outer sep=0pt,
+          path picture={
+              \node at (path picture bounding box.center) {\small\textcolor{brickred}{$\sigma$}};
+            }
+        },
+      swish/.style={
+          draw=black,
+          thick,
+          line width=1pt,
+          circle,
+          minimum size=8pt,
+          inner sep=0pt,
+          outer sep=0pt,
+          path picture={
+              \draw[domain=-1.5:0, samples=50, variable=\x, blue, thick]
+              plot ({\x}, {0});
+              \draw[domain=0:1.5, samples=50, variable=\x, blue, thick]
+              plot ({\x}, {\x});
+            }
+        },
+      kkda/.style={
+          draw=black,
+          very thick,
+          fill=kda_color!50,
+          minimum width=5cm,
+          minimum height=0.8cm,
+          rounded corners=3pt
+        },
+    }
+    \begin{tikzpicture}
+      \node[model] (model) at (0,0) {};
+      \node[anchor=east,xshift=-2pt] at (model.west) (ntimes) {$N\times$};
+      \node[below=12pt, minimum width=2.5cm] at (model.south) (input) {};
+      \node[norm, anchor=south, yshift=25pt] at (model.south) (norm1) {Norm};
+      \draw[layerlink] (input.north) -- (norm1.south);
+      \node[tokenmixer, anchor=south, yshift=10pt] at (norm1.north) (kda0) {\textsc{KDA}};
+      \draw[normlink] (norm1.north) -- (kda0.south);
+      \node[oplus, anchor=south, yshift=10pt] at (kda0.north) (oplus1) {};
+      \node[norm, anchor=south, yshift=18pt] at (oplus1.north) (norm2) {Norm};
+      \draw[normlink] (kda0.north) -- (oplus1.south);
+      \draw[layerlink] (oplus1.north) -- (norm2.south);
+      \draw[residual] ([yshift=-12pt]norm1.south) -- ([xshift=-48pt,yshift=-12pt]norm1.south) -- ([xshift=-48pt]oplus1.center) -- (oplus1.center);
+      \node[glu, anchor=south, yshift=10pt] at (norm2.north) (glu) {MoE};
+      \draw[normlink] (norm2.north) -- (glu.south);
+      \node[oplus, anchor=south, yshift=10pt] at (glu.north) (oplus2) {};
+      \draw[normlink] (glu.north) -- (oplus2.south);
+      \draw[residual] ([xshift=0pt,yshift=8pt]oplus1.center) -- ([xshift=-48pt,yshift=8pt]oplus1.center) -- ([xshift=-48pt]oplus2.center) -- (oplus2.center);
+
+
+
+      \node[model, anchor=south, yshift=20pt] (model2) at (model.north) {};
+      \node[anchor=east,xshift=-2pt] at (model2.west) (ntimes1) {$1\times$};
+      \node[norm, anchor=south, yshift=25pt] at (model2.south) (norm3) {Norm};
+      \draw[layerlink] (oplus2.north) -- (norm3.south);
+      \node[tokenmixer, anchor=south, yshift=10pt, fill=brickred!35] at (norm3.north) (mla) {\textsc{MLA}};
+      \draw[normlink] (norm3.north) -- (mla.south);
+      \node[oplus, anchor=south, yshift=10pt] at (mla.north) (oplus3) {};
+      \draw[normlink] (mla.north) -- (oplus3.south);
+      \node[norm, anchor=south, yshift=18pt] at (oplus3.north) (norm4) {Norm};
+      \draw[layerlink] (oplus3.north) -- (norm4.south);
+      \draw[residual] ([yshift=-12pt]norm3.south) -- ([xshift=-48pt,yshift=-12pt]norm3.south) -- ([xshift=-48pt]oplus3.center) -- (oplus3.center);
+      \node[glu, anchor=south, yshift=10pt] at (norm4.north) (glu2) {MoE};
+      \draw[normlink] (norm4.north) -- (glu2.south);
+      \node[oplus, anchor=south, yshift=10pt] at (glu2.north) (oplus4) {};
+      \draw[normlink] (glu2.north) -- (oplus4.south);
+      \draw[residual] ([xshift=0pt,yshift=8pt]oplus3.center) -- ([xshift=-48pt,yshift=8pt]oplus3.center) -- ([xshift=-48pt]oplus4.center) -- (oplus4.center);
+      \node[anchor=south, yshift=12pt] at (model2.north) (output) {};
+      \draw[layerlink] (oplus4.north) -- (output.south);
+
+      \node[kda, anchor=north west,xshift=50pt] (kda) at (model.north east)  {};
+      \node[below=12pt] at (kda.south) (input) {\textcolor{white}{Inputs}};
+      \node[stacked, anchor=south, xshift=3pt, yshift=28pt, opacity=0.25] at ($(kda.south west)!0.22!(kda.south east)$) (qproj) {Linear};
+      \node[conv, anchor=south, yshift=5pt, opacity=0.25] at (qproj.north) (qconv) {\small Conv};
+      \node[swish, yshift=48pt, opacity=0.25] at (qproj.south) (qsilu) {};
+      \node[l2norm, anchor=south, yshift=4pt, opacity=0.25] at (qsilu.north) (ql2norm) {\small L2};
+      \draw[residual, opacity=0.25] (input.north) -- (kda.south) |- ([xshift=-10pt,yshift=12pt]kda.south) -| (qproj.south);
+      \draw[normlink, opacity=0.25] (qconv.south) -- (qproj.north);
+      \draw[normlink, opacity=0.25] (qsilu.south) -- (qconv.north);
+      \draw[normlink, opacity=0.25] (qconv.south) -- (ql2norm.north);
+        
+      \node[stacked, anchor=south, yshift=25pt, opacity=0.8] at ($(kda.south west)!0.22!(kda.south east)$) (kproj) {Linear};
+      \node[conv, anchor=south, yshift=5pt, opacity=0.8] at (kproj.north) (kconv) {\small Conv};
+      \node[swish, yshift=48pt, opacity=0.8] at (kproj.south) (ksilu) {};
+      \node[l2norm, anchor=south, yshift=4pt, opacity=0.8] at (ksilu.north) (kl2norm) {\small L2};
+      \draw[normlink, opacity=0.8] (kconv.south) -- (kproj.north);
+      \draw[normlink, opacity=0.8] (ksilu.south) -- (kconv.north);
+      \draw[normlink, opacity=0.8] (kl2norm.south) -- (ksilu.north);
+
+
+      \node[stacked, anchor=south, yshift=25pt] at ($(kda.south west)!0.42!(kda.south east)$) (vproj) {Linear};
+      \node[conv, anchor=south, yshift=5pt, opacity=0.8] at (vproj.north) (vconv) {\small Conv};
+      \node[swish, yshift=48pt, opacity=0.8] at (vproj.south) (vsilu) {};
+      \draw[normlink, opacity=0.8] (vconv.south) -- (vproj.north);
+      \draw[normlink, opacity=0.8] (vsilu.south) -- (vconv.north);
+
+      \node[fgate, trapezium angle=60, anchor=south, yshift=25pt] at ($(kda.south west)!0.6!(kda.south east)$)  (fproj0) {};
+      \node[fgate, trapezium angle=120, anchor=south, yshift=1pt] at (fproj0.north)  (fproj) {};
+      \node[fgate, trapezium angle=35, anchor=south, yshift=25pt] at ($(kda.south west)!0.75!(kda.south east)$)  (aproj) {};
+      \node[sigmoid, yshift=48pt] at (fproj0.south) (sigmoid) {};
+      \node[sigmoid, yshift=48pt] at (aproj.south) (asigmoid) {};
+      \draw[normlink] (fproj0.north) -- (fproj.south);
+      \draw[normlink] (fproj.north) -- (sigmoid.south);
+      \draw[residual] (aproj.north) -- (asigmoid.south);
+
+
+      \node[fgate, fill=limegreen!20, trapezium angle=60, anchor=south, yshift=25pt] at ($(kda.south west)!0.9!(kda.south east)$)  (gproj0) {};
+      \node[fgate, fill=limegreen!20, trapezium angle=120, anchor=south, yshift=1pt] at (gproj0.north)  (gproj) {};
+      \node[sigmoid, yshift=48pt] at (gproj0.south) (gsigmoid) {};
+      \draw[normlink] (gproj0.north) -- (gproj.south);
+      \draw[normlink] (gproj.north) -- (gsigmoid.south);
+
+
+      \draw[residual] (input.north) -- (kda.south) |- ([xshift=-10pt,yshift=12pt]kda.south) -| (kproj.south);
+      \draw[residual] (input.north) -- (kda.south) |- ([xshift=-10pt,yshift=12pt]kda.south) -| (vproj.south);
+      \draw[residual] (input.north) -- (kda.south) |- ([xshift=10pt,yshift=12pt]kda.south) -| (fproj0.south);
+      \draw[residual] (input.north) -- (kda.south) |- ([xshift=10pt,yshift=12pt]kda.south) -| (gproj0.south);
+      \draw[residual] (input.north) -- (kda.south) |- ([xshift=10pt,yshift=12pt]kda.south) -| (aproj.south);
+
+
+      \node[kkda, yshift=12pt] at (kda.mid) (kernel) {Kimi Delta Attention};
+      \draw[layerlink] (kl2norm.north) -- (kl2norm|-kernel.south);
+      \draw[layerlink] (vsilu.north) -- (vsilu|-kernel.south);
+      \draw[layerlink, opacity=0.25] (ql2norm.north) -- (ql2norm|-kernel.south);
+      \draw[qf] (sigmoid.north) -- (sigmoid|-kernel.south);
+      \draw[qf] (asigmoid.north) -- (asigmoid|-kernel.south);
+      \node[norm, anchor=south, yshift=12pt] at (kernel.north) (norm4) {Norm};
+      \draw[layerlink] (kernel.north) -- (norm4.south);
+      \node[otimes, anchor=south, yshift=8pt] at (norm4.north) (otimes) {};
+      \draw[normlink] (norm4.north) -- (otimes.south);
+      \node[linear, anchor=south, yshift=8pt] at (otimes.north) (oproj) {Linear};
+      \draw[normlink] (otimes.north) -- (oproj.south);
+      \node[above=28pt,minimum width=2.5cm] at (oproj.north) (output) {\textcolor{white}{Outputs}};
+      \draw[layerlink] (oproj.north) -- (output.south);
+      \draw[modulelink] (kda0.east) -| ([yshift=-12pt]$(model.east)!0.5!(kda.west)$) |- (kda.west);
+      \draw[residual] (gsigmoid.north) |- (otimes);
+
+
+      \node[moe, anchor=north west,xshift=50pt] (moe) at (model2.north east)  {};
+      \draw[modulelink] (glu2.east) -| ([yshift=10pt]$(model2.east)!0.5!(moe.west)$) |- (moe.west);
+      \node[norm, anchor=south, yshift=25pt, minimum width=20pt] at ($(moe.south west)!0.5!(moe.south east)$) (router) {\small Router};
+      \node[below=12pt] at (moe.south) (input4) {};
+      \draw[layerlink] (input4.north) -- (router.south);
+      \node[prob, anchor=west, xshift=6pt, yshift=-5pt, minimum height=4pt] at (router.east) (prob1) {};
+      \node[prob, anchor=south west, minimum height=10pt] at (prob1.south east) (prob2) {};
+      \node[prob, anchor=south west, minimum height=6pt] at (prob2.south east) (prob3) {};
+      \node[prob, anchor=south west, minimum height=15pt] at (prob3.south east) (prob4) {};
+      \node[shared expert] at ([yshift=0pt]$(moe.west)!0.12!(moe.east)$) (ffn1) {\small $1$};
+      \node[shared expert, anchor=west] at ($(ffn1.east)+(15pt, 0)$) (ffn2) {\small ${N_s}$};
+      \node[] at ($(ffn1)!0.5!(ffn2)$) (dots) {\tiny$\cdots$};
+
+      \node[routed expert, anchor=west] at ($(ffn2.east)+(20pt, 0)$) (ffn3) {\small $1$};
+      \node[routed expert, anchor=west] at ($(ffn3.east)+(8pt, 0)$) (ffn4) {\small $2$};
+      \node[routed expert, anchor=west] at ($(ffn4.east)+(8pt, 0)$) (ffn5) {\small $3$};
+      \node[routed expert, anchor=west] at ($(ffn5.east)+(15pt, 0)$) (ffn6) {\small ${N_r}$};
+      \node[] at ($(ffn5)!0.5!(ffn6)$) (dots1) {\tiny$\cdots$};
+      \node[shared expert, minimum width=12pt, minimum height=12pt] at ([yshift=-12pt]$(moe.north west)!0.7!(moe.north east)$) (shared) {};
+      \node[routed expert, minimum width=12pt, minimum height=12pt] at ($(shared)+(0, -16pt)$) (routed) {};
+      \node[anchor=west, yshift=-1pt] at (shared.east) (shared1) {\footnotesize Shared Expert};
+      \node[anchor=west, yshift=-1pt] at (routed.east) (routed1) {\footnotesize Routed Expert};
+
+      \node[otimes, anchor=south, yshift=8pt] at (ffn4.north) (otimes1) {};
+      \node[otimes, anchor=south, yshift=8pt] at (ffn6.north) (otimes2) {};
+      \node[oplus, anchor=south, yshift=8pt] at ($(moe.north)!0.2!(moe.south)$) (oplus6) {};
+      \node[above=12pt,minimum width=2.5cm] at (moe.north) (output1) {\textcolor{white}{Outputs}};
+
+      \draw[residual] (input4.north) -- (moe.south) |- ([xshift=-10pt,yshift=12pt]moe.south) -| (ffn1.south);
+      \draw[residual] (input4.north) -- (moe.south) |- ([xshift=-10pt,yshift=12pt]moe.south) -| (ffn2.south);
+      \draw[residual] (ffn4.north) -- (otimes1.south);
+      \draw[residual] (ffn6.north) -- (otimes2.south);
+      \draw[routerlink] (prob2) |- (otimes1);
+      \draw[routerlink] (prob4) |- ([xshift=10pt,yshift=18pt]prob4.north) -| ($(ffn5)!0.5!(ffn6)$) |- (otimes2);
+      \draw[residual] (router.north) |- ([xshift=9pt,yshift=12pt]router.north) -| (ffn4);
+      \draw[residual] (router.north) |- ([xshift=9pt,yshift=12pt]router.north) -| (ffn6);
+      \draw[residual] (ffn1.north) -- (oplus6);
+      \draw[residual] (ffn2.north) -- (oplus6);
+      \draw[residual] (otimes1) -- (oplus6);
+      \draw[residual] (otimes2) -- (oplus6);
+      \draw[layerlink] (oplus6.north) -- (output1.south);
+
+
+
+    \end{tikzpicture}
+  }
+  \caption{\small
+    Illustration of our Kimi Linear model architecture, which consists of a stack of blocks containing a token mixing layer followed by a MoE channel-mixing layer. Specifically, we interleave $N$ KDA layers with one MLA layer for token mixing, where $N$ is set to 3 in our implementation.
+  }
+  \label{fig:scaling-model}
+
+\end{figure}

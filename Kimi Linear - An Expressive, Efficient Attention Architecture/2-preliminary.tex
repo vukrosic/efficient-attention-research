@@ -1,0 +1,179 @@
+\section{Preliminary}
+
+In this section, we introduce the technical background related to our proposed Kimi Delta Attention.
+
+\subsection{Notation}
+In this paper, we define $\square_t \in \mathbb{R}^{d_k}$ or $\mathbb{R}^{d_v}$, $\operatorname{s.t.}, \square\in \{\bm{q,k,v,o,u,w}\}$ denotes a $t$-th corresponding column vector, and $\mathbf{S}_t \in \mathbb{R}^{d_k \times d_v}$ represents the matrix-form memory state. $\mathbf{M}$ and $\mathbf{M}^{-}$ denote lower-triangular masks with and without diagonal elements, respectively; for convenience, we also write them as $\operatorname{Tril}$ and $\operatorname{StrictTril}$.
+
+\paragraph{Chunk-wise Formulation}
+Suppose the sequence is split into $L/C$ chunks where each chunk is of length $C$. We define $\square_{[t]} \in \mathbb{R}^{C\times d}$ for $\square \in \{\mathbf{Q}, \mathbf{K}, \mathbf{V}, \mathbf{O}, \mathbf{U}, \mathbf{W} \}$ are matrices that stack the vectors within the $t$-th chunk, and $\square_{[t]}^r=\square_{tC+r}$ is the $r$-th element of the chunk. Note that $t\in [0, L/C), r \in [1, C]$. State matrices are also re-indexed such that $\bm{S}^i_{[t]} = \bm{S}_{tC+i}$. Additionally, $\bm{S}_{[t]}:=\bm{S}_{[t]}^0 = \bm{S}_{[t-1]}^C$, i.e., the initial state of a chunk is the last state of the previous chunk. 
+
+\paragraph{Decay Formulation}
+We define the cumulative decay $\brickred{\gamma_{[t]}^{i\rightarrow j}} := \prod_{k=i}^j \brickred{\alpha_{[t]}^k}$, and abbreviate $\brickred{{\gamma}_{[t]}^{1\rightarrow r}}$ as $\brickred{{\gamma}_{[t]}^{r}}$. 
+Additionally, $\brickred{\mathcal{A}_{[t]}} :=\brickred{\mathcal{A}_{[t]}^{i/j}}\in\mathbb{R}^{C\times C}$ is the matrix with elements $\brickred{\gamma_{[t]}^i/\gamma_{[t]}^j}$. 
+$\brickred{\operatorname{Diag}\left(\bm{\alpha}_t\right)}$ denotes the fine-grained decay, $\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow j}\right)} := \prod_{k=i}^j \brickred{\operatorname{Diag}\left(\boldsymbol{\alpha}_{[t]}^k\right)}$, and $\brickred{\bm{\Gamma}_{[t]}^{i\rightarrow j}}\in\mathbb{R}^{C\times d_k}$ is the matrix stack from $\brickred{\boldsymbol{\gamma}_{[t]}^i}$ to $\brickred{\boldsymbol{\gamma}_{[t]}^j}$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Linear Attention and the Gated Delta Rule}
+
+\paragraph{Linear Attention as Online Learning.}
+Linear attention~\citep{katharopoulos-2020-transformers} maintains a matrix-valued recurrent state that accumulates key--value associations:
+\[
+\mathbf{S}_t = \mathbf{S}_{t-1} + \bm{k}_t \bm{v}_t^\top, \qquad 
+\bm{o}_t = \mathbf{S}_t^\top \bm{q}_t .
+\]
+From the fast-weight perspective~\citep{schlag-2021-deltanet,schlag-2021-learning}, $\mathbf{S}_t$ serves as an associative memory storing transient mappings from keys to values.  
+This update can be viewed as performing gradient \emph{descent} on the unbounded correlation objective
+\[
+\mathcal{L}_t(\mathbf{S}) = -\langle \mathbf{S}^\top \bm{k}_t, \bm{v}_t \rangle ,
+\]
+which continually reinforces recent key--value pairs without any forgetting.  
+However, such an objective provides no criterion for which memories to erase, and the accumulated state grows unbounded, leading to interference over long contexts.  
+
+\paragraph{DeltaNet: Online Gradient Descent on Reconstruction Loss.}
+DeltaNet~\citep{schlag-2021-deltanet} reinterprets this recurrence as online gradient \emph{descent} on a reconstruction objective:
+\[
+\mathcal{L}_t(\mathbf{S}) = \tfrac{1}{2}\|\mathbf{S}^\top\bm{k}_t - \bm{v}_t\|^2 .
+\]
+Taking a gradient step with learning rate $\beta_t$ gives
+\[
+\mathbf{S}_t
+= \mathbf{S}_{t-1} - \beta_t \nabla_\mathbf{S}\mathcal{L}_t(\mathbf{S}_{t-1})
+=(\mathbf{I}-\beta_t\bm{k}_t\bm{k}_t^\top)  \mathbf{S}_{t-1}
+  + \beta_t\bm{k}_t\bm{v}_t^\top .
+\]
+This rule---the classical \emph{delta rule}---treats $\mathbf{S}$ as a learnable associative memory that continually corrects itself toward the mapping $\bm{k}_t \mapsto \bm{v}_t$.  
+The rank-1 update structure, equivalent to a generalized Householder transformation, supports hardware-efficient chunkwise parallelization~\citep{bischof-wy-1987,yang-2024-parallelizing}.  
+
+\paragraph{Gated DeltaNet as Weight Decay.}
+Although DeltaNet stabilizes learning, it still retains outdated associations indefinitely.  
+Gated DeltaNet (GDN)~\citep{yang-2025-gdn} introduces a scalar forget gate $\brickred{\alpha_t} \in [0,1]$, yielding
+\[
+\mathbf{S}_t
+= \brickred{\alpha_t} (\mathbf{I}-\beta_t\bm{k}_t\bm{k}_t^\top) \mathbf{S}_{t-1}
+  + \beta_t\bm{k}_t\bm{v}_t^\top .
+\]
+Here, $\brickred{\alpha_t}$ acts as a form of \emph{weight decay} on the fast weights \cite{behrouz2025atlas}, implementing a  forgetting mechanism analogous to data-dependent $L_2$ regularization.  
+This simple yet effective modification provides a principled way to control memory lifespan and mitigate interference, improving both stability and long-context generalization while preserving DeltaNet’s parallelizable structure.
+
+
+From this perspective, we observe that GDN can be interpreted as a form of multiplicative positional encoding where the transition matrix is data-dependent and learnable, relaxing the orthogonality constraint of RoPE \citep{yang2025path}.\footnote{When the state transformation matrix preserves its orthogonality, absolute positional encodings can also be applied independently to $\bm{q}$ and $\bm{k}$ to be converted into relative positional encodings during the attention computation \citep{kexuefm-11033}.} 
+

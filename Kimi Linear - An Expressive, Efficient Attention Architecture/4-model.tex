@@ -1,0 +1,85 @@
+\input{figures/model}
+
+\section{The Kimi Linear Model Architecture}
+The main backbone of our model architecture follows Moonlight \citep{liu-2025-moonlight}.
+In addition to fine-grained gating, we also leverage several components to further improve the expressiveness of Kimi Linear.
+The overall Kimi Linear architecture is shown in Figure \ref{fig:scaling-model}.
+
+\paragraph{Neural Parameterization}
+Let $\bm{x}_t \in \mathbb{R}^d$ be the $t$-th token input representation, the input to KDA for each
+head $h$ is computed as follows
+\begin{align*}
+\bm{q}^h_t,\bm{k}^h_t &= \operatorname{L2Norm}(\operatorname{Swish}(\operatorname{ShortConv}(\mathbf{W}^h_{q/k}\bm{x}_t)))\in \mathbb{R}^{d_k}\\
+\bm{v}^h_t &= \operatorname{Swish}(\operatorname{ShortConv}(\mathbf{W}^h_v\bm{x}_t))\in \mathbb{R}^{d_v} \\
+\brickred{\bm{\alpha}^h_t} &= f(\mathbf{W}_{\alpha}^{\uparrow}\mathbf{W}_{\alpha}^{\downarrow}\bm{x}_t) \in [0,1]^{d_k}\\
+\beta^h_t &= \operatorname{Sigmoid}(\mathbf{W}_{\beta}^h\bm{x}_t) \in [0,1]\\
+\end{align*}
+where $d_k, d_v$ represent the key and value head dimensions, which are set to 128 for all experiments.
+For $\bm{q},\bm{k},\bm{v}$, we apply a $\operatorname{ShortConv}$ followed by a $\operatorname{Swish}$ activation, following \citep{yang-2025-gdn}. 
+The $\bm{q}$ and $\bm{k}$ representations are further normalized using $\operatorname{L2Norm}$ to ensure eigenvalues stability, as suggested by \cite{yang-2024-parallelizing}. 
+The per-channel decay $\brickred{\bm{\alpha}^h_t}$ is parameterized via a low-rank projection (\(\mathbf{W}_{\alpha}^{\downarrow}\) and \(\mathbf{W}_{\alpha}^{\uparrow}\) with rank equal to the head dimension) and a decay function $f(\cdot)$ similar to those used in GDN and Mamba~\citep{yang-2025-gdn,mamba2}. 
+Before the output projection through $\mathbf{W}_o \in \mathbb{R}^{d \times d}$, we use a head-wise RMSNorm \citep{zhang2019root} and a data-dependent gating mechanism \citep{qiu2025gated} parameterized as:
+\begin{equation}
+\begin{aligned}
+\bm{o}_t = \mathbf{W}_o\left( \operatorname{Sigmoid}\left(\mathbf{W}_g^{\uparrow}\mathbf{W}_g^{\downarrow} \bm{x}_t\right)\odot \operatorname{RMSNorm}\left(\operatorname{KDA}\left( \bm{q}_t,\bm{k}_t,\bm{v}_t,\brickred{\bm{\alpha}_t},\beta_t \right) \right)\right) 
+\end{aligned}
+\end{equation}
+Here, the output gate adopts a low-rank parameterization similar to the forget gate, to ensure a fair parameter comparison, while maintaining performance comparable to full-rank gating and alleviating the Attention Sink \citep{qiu2025gated}. 
+The choice of nonlinear activation function is further discussed in \S\ref{sec:ablation}.
+
+
+
+
+
+
+
+
+
+\paragraph{Hybrid model architecture}
+Long‑context retrieval remains the primary bottleneck for pure linear attention, we therefore hybridize KDA with a small number of full global‑attention (Full MLA) layers \cite{deepseekaiv3}. 
+For Kimi Linear, we chose a layerwise approach (alternating entire layers) over a headwise one (mixing heads within layers) for its superior infrastructure simplicity and training stability. 
+Empirically, a uniform 3:1 ratio, i.e., repeating 3 KDA layers to 1 full MLA layer, provided the best quality–throughput trade‑off.
+We discuss other hybridization strategies in \S~\ref{sec:hybrid}.
+
+
+\paragraph{No Position Encoding (NoPE) for MLA Layers.}
+In Kimi Linear, we apply NoPE to all full attention (MLA) layers.
+This design delegates the entire responsibility for encoding positional information and recency bias (see \S~\ref{sec:delta_rule}) to the KDA layers.
+KDA is thus established as the primary position-aware operator, fulfilling a role analogous to, or arguably stronger than, auxiliary components like short convolutions \citep{allen2025physics} or SWA \citep{puvvada2025swangpt}.
+Our findings align with prior results \citep{yang2025ropenopeagainnew,barbero2025round,deepseekaiv3}, who similarly demonstrated that complementing global NoPE attention with a dedicated position-aware mechanism yields competitive long-context performance.
+
+We note that NoPE offers practical advantages, particularly for MLA. 
+First, NoPE enables their conversion to the highly-efficient pure Multi-Query Attention (MQA) during inference. 
+Second, it simplifies long-context training, as it obviates the need for RoPE parameter adjustments, such as frequency base tuning or methods like YaRN \citep{peng2023yarn}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

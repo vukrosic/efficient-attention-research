@@ -1,0 +1,60 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{chunk\PYGZus{}kda}\PYG{p}{(}
+    \PYG{n}{q}\PYG{p}{:} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{Tensor}\PYG{p}{,}
+    \PYG{n}{k}\PYG{p}{:} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{Tensor}\PYG{p}{,}
+    \PYG{n}{v}\PYG{p}{:} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{Tensor}\PYG{p}{,}
+    \PYG{n}{g}\PYG{p}{:} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{Tensor}\PYG{p}{,}
+    \PYG{n}{beta}\PYG{p}{:} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{Tensor}\PYG{p}{,}
+    \PYG{n}{initial\PYGZus{}state}\PYG{p}{:} \PYG{n}{Optional}\PYG{p}{[}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{Tensor}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{None}\PYG{p}{,}
+    \PYG{n}{chunk\PYGZus{}size}\PYG{p}{:} \PYG{n+nb}{int} \PYG{o}{=} \PYG{l+m+mi}{64}
+\PYG{p}{):}
+    \PYG{n}{dtype} \PYG{o}{=} \PYG{n}{v}\PYG{o}{.}\PYG{n}{dtype}
+    \PYG{n}{B}\PYG{p}{,} \PYG{n}{T}\PYG{p}{,} \PYG{n}{H}\PYG{p}{,} \PYG{n}{K}\PYG{p}{,} \PYG{n}{V}\PYG{p}{,} \PYG{n}{C} \PYG{o}{=} \PYG{o}{*}\PYG{n}{q}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{,} \PYG{n}{v}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{],} \PYG{n}{chunk\PYGZus{}size}
+    \PYG{n}{N} \PYG{o}{=} \PYG{n}{T} \PYG{o}{//} \PYG{n}{C}
+
+    \PYG{n}{q}\PYG{p}{,} \PYG{n}{k}\PYG{p}{,} \PYG{n}{v}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{beta} \PYG{o}{=} \PYG{n+nb}{map}\PYG{p}{(}
+        \PYG{k}{lambda} \PYG{n}{x}\PYG{p}{:} \PYG{n}{rearrange}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}b (n c) h ... \PYGZhy{}\PYGZgt{} b h n c ...\PYGZsq{}}\PYG{p}{,} \PYG{n}{c}\PYG{o}{=}\PYG{n}{C}\PYG{p}{)}\PYG{o}{.}\PYG{n}{to}\PYG{p}{(}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{float}\PYG{p}{),}
+        \PYG{p}{[}\PYG{n}{q}\PYG{p}{,} \PYG{n}{k}\PYG{p}{,} \PYG{n}{v}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{beta}\PYG{p}{]}
+    \PYG{p}{)}
+    \PYG{n}{q} \PYG{o}{=} \PYG{n}{q} \PYG{o}{*} \PYG{n}{K}\PYG{o}{**\PYGZhy{}}\PYG{l+m+mf}{0.5}
+    \PYG{n}{g} \PYG{o}{=} \PYG{n}{g}\PYG{o}{.}\PYG{n}{cumsum}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{)}
+    \PYG{n}{mask} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{triu}\PYG{p}{(}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{(}\PYG{n}{C}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{bool}\PYG{p}{,} \PYG{n}{device}\PYG{o}{=}\PYG{n}{q}\PYG{o}{.}\PYG{n}{device}\PYG{p}{),} \PYG{n}{diagonal}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+
+    \PYG{n}{A} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{B}\PYG{p}{,} \PYG{n}{H}\PYG{p}{,} \PYG{n}{N}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{float}\PYG{p}{,} \PYG{n}{device}\PYG{o}{=}\PYG{n}{q}\PYG{o}{.}\PYG{n}{device}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{C}\PYG{p}{):}
+        \PYG{n}{k\PYGZus{}i} \PYG{o}{=} \PYG{n}{k}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{i}\PYG{p}{,} \PYG{p}{:]}
+        \PYG{n}{g\PYGZus{}i} \PYG{o}{=} \PYG{n}{g}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{i}\PYG{p}{:}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{:]}
+        \PYG{n}{A}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}... c d, ... d \PYGZhy{}\PYGZgt{} ... c\PYGZsq{}}\PYG{p}{,} \PYG{n}{k} \PYG{o}{*} \PYG{p}{(}\PYG{n}{g} \PYG{o}{\PYGZhy{}} \PYG{n}{g\PYGZus{}i}\PYG{p}{)}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{(),} \PYG{n}{k\PYGZus{}i}\PYG{p}{)}
+    \PYG{n}{A} \PYG{o}{=} \PYG{n}{A} \PYG{o}{*} \PYG{n}{beta}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{]}
+    \PYG{c+c1}{\PYGZsh{} matrix inverse by forward substitution}
+    \PYG{n}{A} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{n}{A}\PYG{o}{.}\PYG{n}{masked\PYGZus{}fill}\PYG{p}{(}\PYG{n}{mask}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{C}\PYG{p}{):}
+        \PYG{n}{A}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{i}\PYG{p}{,} \PYG{p}{:}\PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{n}{A}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{i}\PYG{p}{,} \PYG{p}{:}\PYG{n}{i}\PYG{p}{]}\PYG{o}{.}\PYG{n}{clone}\PYG{p}{()} \PYG{o}{+} \PYG{p}{(}\PYG{n}{A}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{i}\PYG{p}{,} \PYG{p}{:,} \PYG{k+kc}{None}\PYG{p}{]}\PYG{o}{.}\PYG{n}{clone}\PYG{p}{()} \PYG{o}{*} \PYG{n}{A}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{p}{:,} \PYG{p}{:}\PYG{n}{i}\PYG{p}{]}\PYG{o}{.}\PYG{n}{clone}\PYG{p}{())}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{)}
+    \PYG{n}{A} \PYG{o}{=} \PYG{p}{(}\PYG{n}{A} \PYG{o}{+} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{eye}\PYG{p}{(}\PYG{n}{C}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{float}\PYG{p}{,} \PYG{n}{device}\PYG{o}{=}\PYG{n}{q}\PYG{o}{.}\PYG{n}{device}\PYG{p}{))} \PYG{o}{*} \PYG{n}{beta}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{,} \PYG{p}{:]}
+
+    \PYG{n}{w} \PYG{o}{=} \PYG{n}{A} \PYG{o}{@} \PYG{p}{(}\PYG{n}{g}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{()} \PYG{o}{*} \PYG{n}{k}\PYG{p}{)}
+    \PYG{n}{u} \PYG{o}{=} \PYG{n}{A} \PYG{o}{@} \PYG{n}{v}
+
+    \PYG{n}{S} \PYG{o}{=} \PYG{n}{k}\PYG{o}{.}\PYG{n}{new\PYGZus{}zeros}\PYG{p}{(}\PYG{n}{B}\PYG{p}{,} \PYG{n}{H}\PYG{p}{,} \PYG{n}{K}\PYG{p}{,} \PYG{n}{V}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{initial\PYGZus{}state} \PYG{o+ow}{is} \PYG{o+ow}{not} \PYG{k+kc}{None}\PYG{p}{:}
+        \PYG{n}{S} \PYG{o}{+=} \PYG{n}{initial\PYGZus{}state}
+    \PYG{n}{o} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{zeros\PYGZus{}like}\PYG{p}{(}\PYG{n}{v}\PYG{p}{)}
+    \PYG{c+c1}{\PYGZsh{} strictly lower triangular}
+    \PYG{n}{mask} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{triu}\PYG{p}{(}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{(}\PYG{n}{C}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{bool}\PYG{p}{,} \PYG{n}{device}\PYG{o}{=}\PYG{n}{q}\PYG{o}{.}\PYG{n}{device}\PYG{p}{),} \PYG{n}{diagonal}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{N}\PYG{p}{):}
+        \PYG{c+c1}{\PYGZsh{} [B, H, C, ...]}
+        \PYG{n}{q\PYGZus{}i}\PYG{p}{,} \PYG{n}{k\PYGZus{}i}\PYG{p}{,} \PYG{n}{u\PYGZus{}i}\PYG{p}{,} \PYG{n}{g\PYGZus{}i}\PYG{p}{,} \PYG{n}{w\PYGZus{}i} \PYG{o}{=} \PYG{n}{q}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{],} \PYG{n}{k}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{],} \PYG{n}{u}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{],} \PYG{n}{g}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{],} \PYG{n}{w}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{]}
+        \PYG{n}{A} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{B}\PYG{p}{,} \PYG{n}{H}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{C}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{torch}\PYG{o}{.}\PYG{n}{float}\PYG{p}{,} \PYG{n}{device}\PYG{o}{=}\PYG{n}{q}\PYG{o}{.}\PYG{n}{device}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} secondary chunking for numerical stability}
+        \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{C}\PYG{p}{):}
+            \PYG{n}{k\PYGZus{}j} \PYG{o}{=} \PYG{n}{k}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]}
+            \PYG{n}{g\PYGZus{}j} \PYG{o}{=} \PYG{n}{g}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{:}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{:]}
+            \PYG{n}{A}\PYG{p}{[}\PYG{o}{...}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{torch}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}... c d, ... d \PYGZhy{}\PYGZgt{} ... c\PYGZsq{}}\PYG{p}{,} \PYG{n}{q\PYGZus{}i} \PYG{o}{*} \PYG{p}{(}\PYG{n}{g\PYGZus{}i} \PYG{o}{\PYGZhy{}} \PYG{n}{g\PYGZus{}j}\PYG{p}{)}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{(),} \PYG{n}{k\PYGZus{}j}\PYG{p}{)}
+        \PYG{n}{A} \PYG{o}{=} \PYG{n}{A}\PYG{o}{.}\PYG{n}{masked\PYGZus{}fill}\PYG{p}{(}\PYG{n}{mask}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{v\PYGZus{}i} \PYG{o}{=} \PYG{n}{u\PYGZus{}i} \PYG{o}{\PYGZhy{}} \PYG{n}{w\PYGZus{}i} \PYG{o}{@} \PYG{n}{S}
+        \PYG{n}{o}\PYG{p}{[:,} \PYG{p}{:,} \PYG{n}{i}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}\PYG{n}{q\PYGZus{}i} \PYG{o}{*} \PYG{n}{g\PYGZus{}i}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{())} \PYG{o}{@} \PYG{n}{S} \PYG{o}{+} \PYG{n}{A} \PYG{o}{@} \PYG{n}{v\PYGZus{}i}
+        \PYG{n}{S} \PYG{o}{=} \PYG{n}{S} \PYG{o}{*} \PYG{n}{rearrange}\PYG{p}{(}\PYG{n}{g\PYGZus{}i}\PYG{p}{[:,} \PYG{p}{:,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{(),} \PYG{l+s+s1}{\PYGZsq{}b h k \PYGZhy{}\PYGZgt{} b h k 1\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{S} \PYG{o}{+=} \PYG{n}{rearrange}\PYG{p}{((}\PYG{n}{g\PYGZus{}i}\PYG{p}{[:,} \PYG{p}{:,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{:]} \PYG{o}{\PYGZhy{}} \PYG{n}{g\PYGZus{}i}\PYG{p}{)}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{()} \PYG{o}{*} \PYG{n}{k\PYGZus{}i}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}b h c k \PYGZhy{}\PYGZgt{} b h k c\PYGZsq{}}\PYG{p}{)} \PYG{o}{@} \PYG{n}{v\PYGZus{}i}
+    \PYG{k}{return} \PYG{n}{rearrange}\PYG{p}{(}\PYG{n}{o}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}b h n c d \PYGZhy{}\PYGZgt{} b (n c) h d\PYGZsq{}}\PYG{p}{)}\PYG{o}{.}\PYG{n}{to}\PYG{p}{(}\PYG{n}{dtype}\PYG{p}{)}
+
+\end{MintedVerbatim}

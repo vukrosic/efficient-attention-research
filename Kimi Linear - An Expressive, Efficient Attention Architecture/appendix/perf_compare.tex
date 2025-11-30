@@ -1,0 +1,12 @@
+\section{Kimi Linear\string@5.7T results}
+\label{appendix:results}
+
+
+Following Moonlight, we also trained Kimi Linear with an extended 5.7T token dataset to demonstrate its effectiveness. With $3\times$ sparsity and a new attention architecture design, Kimi Linear consistently outperforms Moonlight across nearly all benchmarks, underscoring the efficacy of the new architecture. The results are shown in Table~\ref{tab:pretrain-eval} for base model and Table~\ref{tab:instruct-eval} for instruction tuned model. 
+Moonlight-Instruct was not evaluated (``-'') on tasks exceeding its 8K context limit.
+
+Kimi Linear\string@5.7T obtains a score of 94.8 on RULER at 1M context length. This long context performance reinforces that Kimi Linear is a promising alternative to full-attention architectures, delivering comparable or superior results while potentially offering more efficient resource utilization.
+
+\input{table/base}
+\input{table/instruct}
+

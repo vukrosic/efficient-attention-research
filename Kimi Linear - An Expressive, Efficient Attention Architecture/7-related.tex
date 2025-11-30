@@ -1,0 +1,81 @@
+\section{Related Works}
+
+\subsection{Efficient Subquadratic Attention}
+The quadratic time complexity of the standard self-attention mechanism \citep{vaswani-2017-attention} remains a fundamental bottleneck for processing long contexts in Transformer-based models. This limitation has become increasingly critical as large language models (LLMs) are now expected to handle million-token sequences for tasks such as agentic tool use and repository-level code analysis \citep{deepseekaiv3,kimi2025k2}. To overcome this challenge, a substantial body of research has explored more efficient attention mechanisms \citep{sun2025efficient,sun2025speedwinssurveyefficient}, which can broadly be categorized into two main directions: (1) linear attention, and (2) sparse attention.
+
+
+\input{table/update}
+\paragraph{Linear Attention}
+reformulates the quadratic attention map into kernelized feature interactions, replacing the softmax with a positive feature map so that attention can be computed through two associative matrix products \citep{katharopoulos-2020-transformers}. 
+This eliminates the explicit $\mathcal{O}(T^2)$ similarity matrix and enables linear-time computation with respect to sequence length.
+Subsequent work strengthens the vanilla linear attention significantly through more refined memory control, shifting from data-independent ``decay'' \citep{sun-2023-retnet,qin-2024-transnormerllm} to more adaptive, data-dependent mechanisms \citep{gu-2023-mamba,sun-2024-yoco}, and refining the decay granularity from coarse headwise \citep{mamba2} to precise, channel-wise decay.
+GLA generalizes these approaches with diagonal, channel-wise gates that balance expressiveness and efficiency while retaining chunk-wise parallelism \citep{yang-2024-fla,yang-etal-2024-gla}. 
+Table~\ref{tab:KDA-obj} summarizes the corresponding update rules. 
+Collectively, these methods cast attention as a compact recurrent memory updated with parallel prefix-scan operators and fused matrix multiplies, aligning well with modern accelerators \citep{hua-etal-2022-gau}.
+
+A complementary view connects linear attention to \emph{fast-weight} memory \citep{schlag-2021-deltanet}: the state is a low-capacity associative table updated online by Hebbian-like rules \citep{munkhdalai-2019-metalearned}, while slow weights amortize when to store, update, or forget \citep{munkhdalai2018metalearninghebbianfastweights}. 
+
+In Table \ref{tab:KDA-obj}, we provide a summary of the existing efficient token mixing methods, comparing them from the perspectives of state update mechanisms and optimization objectives.
+
+From this perspective, gating and decay serve as learnable criteria that mitigate interference and stabilize optimization \citep{sun-2024-learning}. 
+Despite these advances, linear attention still lags full attention on exact copying and fine-grained selection in extreme long-context retrieval. 
+This motivates hybrid designs (interleaving linear and full attention) and more structured updates. 
+In particular, the gated delta rule used by GDN/KDA introduces rank-1 corrective updates to the fast-weight state, improving targeted retention while remaining parallelizable at the operator level \citep{yang-2024-parallelizing}.
+
+
+\paragraph{Linear Attention with Gating Mechanism}
+The vanilla Linear Attention \citep{katharopoulos-2020-transformers} is known to lack the selection mechanism inherent in softmax attention \citep{vaswani-2017-attention}, falling short in expressiveness. 
+To address this, Gated Linear Attention models have emerged as memory-efficient and parallelizable alternatives \citep{yang-2024-fla,yang-etal-2024-gla,gu-2023-mamba}. Instead of storing an ever-expanding KV cache, these models employ a fixed-size matrix-valued state and learnable gates to selectively retain and forget information.  
+This design achieves expressive power comparable to softmax attention \citep{merrill-sabharwal-2023-parallelism, zhong2025understanding,merrill2024illusion} while maintaining constant time and memory complexity during inference time. 
+The general recurrent formulation of such models for memory update $\mathbf{S}_t \in \mathbb{R}^{d_k \times d_v}$ can be expressed as:
+\begin{equation}
+    \mathbf{S}_{t}=\brickred{\mathbf{A}_t}\mathbf{S}_{t-1} +  \bm{k}_t\bm{v}_t^\top,\quad\bm{o}_{t}=\mathbf{S}_t^\top\bm{q}_t.
+    \label{eq:linear-attn}
+\end{equation}
+The primary distinction among various gated linear attention mechanisms lies in the parameterization of the forget gate $\brickred{\mathbf{A}_t}$, as summarized in Table~\ref{tab:KDA-obj}.
+For instance, RetNet \citep{sun-2023-retnet} uses a data-independent scalar decay $\brickred{\alpha}$, and Mamba2 \citep{mamba2} employs a data-dependent scalar $\brickred{\alpha_t}$.
+Specifically,  GLA \citep{yang-etal-2024-gla} utilized a diagonalized fine-grained matrix $\brickred{\operatorname{Diag}(\bm{\alpha}_t)}\in \mathbb{R}^{d_k\times d_k}$, offering an effective trade-off between efficiency and performance. Other variants are displayed in Table~\ref{tab:KDA-obj}.
+
+
+\paragraph{Sparse Attention}
+
+
+A separate body of work reduces the quadratic complexity of standard attention by exploiting its inherent sparsity, approximating the full attention score by performing the computation on a strategically selected subset of tokens.
+The central challenge lies in identifying this subset effectively without degrading model performance. 
+Early methods often utilized efficient, training-free static patterns, such as sliding and dilated windows \citep{ding2023longnetscalingtransformers1000000000,gu2025attentionsinkemergeslanguage,xiao2023efficient}, or fixed patterns \citep{zaheer2020big,guo2019star}, but their rigid structure often compromises model accuracy. 
+More advanced methods determine the important positions based on the context, such as clustering \citep{kitaev2020reformer,wu2022memorizing} and lightweight routing mechanisms \citep{fu2024moa,pikekos2025mixture,ainslie2023colt5,bertsch2023unlimiformer}, but this dynamic selection process introduces a computational overhead that can prevent them from achieving their full theoretical speedup without dedicated kernel acceleration \citep{dong2024flexattentionprogrammingmodel}. Some models further introduce training-free sparsification during the inference stage \citep{xiao2023efficient,xu2025xattention}.
+
+Recent approaches to sparse attention have begun to prioritize hardware co-design, as exemplified by NSA \citep{yuan2025nativesparseattentionhardwarealigned,minicpmteam2025minicpm4ultraefficientllmsend} and MoBA \citep{lu2025mobamixtureblockattention}, which both move from token-level to chunk-level selection. 
+In NSA, each query dynamically selects chunks based on scores produced by an MLP. The method’s efficiency relies on its use of Grouped-Query Attention (GQA) \citep{touvron-2023-llama} with a large head count (typically a multiple of 16), a configuration specifically designed to accelerate computation through highly parallelized tensor–matrix multiplications.
+Similarly, MoBA performs top-$k$ chunk selection, but leverages log-sum-exp (LSE) scores computed efficiently via flash-attention kernels \citep{dao-2022-flashattn}. In contrast to NSA and MoBA, the recently proposed DeepSeek-V3.2-Exp Attention (DSA) \citep{deepseekai2024deepseekv32} revives token-level sparsity, maintaining efficiency through a learnable full-attention indexer implemented with low-precision fp8 and a small head dimension for token selection.
+
+
+\paragraph{Discussion} Linear attention and sparse attention represent two distinct pathways toward efficient long-context modeling. Sparse attention tends to retrieve fine-grained historical information more effectively, but this advantage comes at the cost of storing the entire KV cache for token selection, making it less efficient than linear attention models that maintain a constant state. Moreover, sparse attention performs only information selection, and its theoretical expressive upper bound remains that of full attention. In contrast, linear attention, grounded in the principle of “compression as intelligence”, enables generalization with a fixed-size state and, when combined with the Delta learning rule, can achieve theoretically stronger expressive capacity. Although linear attentions have traditionally been criticized for weak retrieval ability, this limitation can be mitigated through state expansion \citep{du2025mom,guo2025log,yau2025sequential,hu2024attractor} or related techniques. Nevertheless, despite these advantages, linear attention remains limited by current hardware implementations and the absence of optimized inference infrastructure. Our work overcomes these limitations with Kimi Linear, a powerful model integrated with vLLM for efficient inference. Our proposed KDA delivers competitive performance compared to the full-attention baseline (Table~\ref{tab:pretrain}) and achieves over a $2\times$ decoding speedup at the one-million-token context (Figure~\ref{fig:decoding}). Despite their distinct approaches to efficient long-context modeling, linear attention and sparse attention are not mutually exclusive. Future work could explore hybrid models that integrate the strengths of both, leveraging the compression and generalization capabilities of linear attention with the fine-grained retrieval advantages of sparse attention to further enhance model performance and efficiency.
+
+
+
+
+
+
+\subsection{Hybrid Model}
+\label{sec:hybrid}
+
+Despite efficiency, pure Linear Attention still struggle with precise memory retrieval and exact copying \citep{jelassi-2024-repeat,wen2024rnns}
+This deficiency hinders their adoption in industrial-scale LLMs where robust long-context recall (e.g., beyond 1M tokens) and reliable tool-use over extensive code repositories are critical \citep{kimi2025k2}. Recent work shows that Linear Attention and full attention can effectively complement each other, leading to various hybrid designs.
+
+\paragraph{Intra-layer hybrid}
+One category of hybrid architectures is the intra-layer hybrid, which adaptively fuses the outputs of different mechanisms within each layer.
+A common implementation fuses outputs from heterogeneous heads within each layer, such as combining standard attention with state space models (SSMs) \citep{dong2024hymba,li2025transmamba}.
+In contrast, sequence-level approaches apply distinct mechanisms to different parts of the input. For example, some use linear attention for past context and SWA for recent tokens \citep{zhang2024lolcats,lan2025liger,munkhdalai2024leave}, while NHA \citep{du2025native} compresses the history with GSA \citep{zhang2024gated} and combines it with local sliding window context to emulate a standard attention operation.
+
+\paragraph{Inter-layer Hybrid} 
+A key drawback of the intra-layer hybrid is the increased system complexity and inference overhead. 
+The heterogeneous mechanisms require separate computational paths, complicating optimizations like distributed parallelism. To mitigate this challenge, inter-layer hybrids have become a more widely adopted and practical strategy in LLMs \citep{minimax2025minimax01,lieber2024jamba,team2025hunyuan}.
+This approach involves stacking distinct layer types, such as full attention and a linear alternative, in a predefined ratio.
+Building on this paradigm, we implement a simple yet effective strategy: interleaving linear and full attention layers at a fixed 3:1 ratio (see \S~\ref{sec:ablation} for ablations). This regular, repeating structure simplifies KV cache management and integrates seamlessly with standard optimizations.
+For the linear component of our hybrid, we deviate from the common practice of using Mamba2 \citep{mamba2}. Instead, we employ KDA, as we found it yields superior overall performance, particularly in retrieval and copying abilities.
+
+\paragraph{Discussion}
+Recent work indicates that hybrid models can be sensitive to adjustments in the RoPE base frequency, a vulnerability that complicates context window extension \citep{zuo2025falconh1familyhybridheadlanguage}. This sensitivity can hinder the model's ability to extrapolate to longer sequences.
+To address this challenge, recent models have trended towards solutions that incorporate No Position Embeddings (NoPE). Falcon-H \citep{zuo2025falconh1familyhybridheadlanguage}, for example, uses an unconventionally high base frequency (e.g., $b \approx 10^{11}$) to push its positional encoding to a near-NoPE state.
+Architecturally, SwanGPT \citep{puvvada2025swangpt} interleaves RoPE-based layers with NoPE-based full attention layers. Aligning with this direction, we found that hybridizing our KDA layers with NoPE full attention is also a highly effective strategy, facilitating straightforward context window extension.

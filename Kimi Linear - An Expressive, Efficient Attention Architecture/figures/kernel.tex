@@ -1,0 +1,89 @@
+\begin{wrapfigure}[14]{r}{0.34\textwidth}
+    \centering
+    \vspace{-2em}
+    \resizebox{\linewidth}{!}{
+        \begin{tikzpicture}
+            \begin{axis}[
+                    trim axis left,
+                    trim axis right,
+                    ymajorgrids=true,
+                    xmajorgrids=true,
+                    tickwidth=0pt,
+                    tick align=inside,
+                    xlabel=Input length,
+                    enlarge x limits=0.15,
+                    width=10cm, height=7.5cm,
+                    ymin=0, ymax=64,
+                    symbolic x coords={
+                            2K,4K,8K,16K,32K,64K
+                        },
+                    ytick={0,16,32,48,64},
+                    yticklabels={0,16,32,48,64},
+                    xlabel near ticks,
+                    ylabel=Execution Time (ms),
+                    ylabel style={at={(0.05,0.5)}},
+                    axis line style={opacity=0},
+                    legend style={
+                            at={(0,1)},
+                            anchor=north west,
+                            legend cell align=left,
+                            font=\small,
+                        },
+                ]
+
+
+                \addplot[
+                    line width=1.5pt,
+                    dashdotdotted,
+                    mark=star,
+                    mark size=2pt,
+                    mark options={scale=1},
+                    color=darkcyan
+                ] plot coordinates {
+                        (2K,  2.021408 )
+                        (4K,  3.900816 )
+                        (8K,  7.550000 )
+                        (16K, 14.894096)
+                        (32K, 29.636353)
+                        (64K, 59.221313)
+                    };
+                \addlegendentry{DPLR}
+
+                \addplot[
+                    line width=1.5pt,
+                    mark=pentagon*,
+                    draw=blue!60,,
+                    mark options={
+                            fill=blue!60,
+                            fill opacity=1.0,
+                            solid
+                        },
+                    mark size=1.5pt,
+                    opacity=1.0,
+                ] plot coordinates {
+                        (2K,    1.698688)
+                        (4K,    2.026816)
+                        (8K,    3.877184)
+                        (16K,   7.599360)
+                        (32K,  14.811120)
+                        (64K,  29.831713)
+                    };
+                \addlegendentry{\text{KDA (ours)}}
+
+
+
+
+                \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+
+
+            \end{axis}
+
+        \end{tikzpicture}
+    }
+
+    \caption{
+        Execution time of kernels for varying input lengths, with a uniform batch size of 1 and 16 heads.
+    }
+    \label{fig:kernel}
+\end{wrapfigure}

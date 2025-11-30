@@ -1,0 +1,37 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "main.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "2C4F4D1B572F3505ABF6D058B89339AA.highlight.minted"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "83106406BD3D329D87F75E06CEDBB007.highlight.minted"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "BBA52D286D914A6D49816DF2911A90F1.highlight.minted"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "_FAD58DE7366495DB4650CFEFAC2FCD61.index.minted"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "default.style.minted"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "main.bib"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

@@ -1,0 +1,64 @@
+
+
+\begin{table}[t!]
+    \centering
+    \small
+    \caption{
+        An overview of attention mechanisms in their mathematically equivalent recurrent ($\boldsymbol{o}_t$) and parallel ($\mathbf{O}$) forms.
+        We omitted the normalization term and $\beta_t$ to achieve a more concise representation.
+        The function \(\phi\) refers to the infinite-dimensional feature space corresponding to the exponential kernel, i.e., \(\phi(\bm{q})^\top \phi(\bm{k}) = \exp(\bm{q}^\top \bm{k})\).
+    }
+    \renewcommand{\arraystretch}{1.4}
+    \begin{adjustbox}{width=1\columnwidth}
+        \setlength{\tabcolsep}{4pt}
+        \begin{tabular}{rlll}
+            \toprule
+                                                                                                                                                                                                                              \rowcolor{white} & Recurrent form                                                                                                                                                 & Parallel form \\
+            \midrule
+            SA \citep{vaswani-2017-attention}                                                                                                                                                                                  &
+            $\sum\limits_{j=1}^t  \exp\left( \bm{q}_t^{\top} \bm{k}_j \right)\bm{v}_j $                                                                                                                                        &
+            $\left(\exp\left( \mathbf{QK^\top} \right)\odot \mathbf{M}\right) \mathbf{V}$                                                                                                                                                                                                                                                                                                                       \\
+            SA + RoPE \citep{su2024roformer}                                                                                                                                                                                   &
+            $\sum\limits_{j=1}^t \exp\left( \bm{q}_t^{\top} {\left( \prod\limits_{s=j+1}^t \bm{R}_s\right)} \bm{k}_j \right) \bm{v}_j $                                                                                        &
+            $\left(\exp\left( \mathbf{R\left(Q\right)R\left(K\right)^\top} \right)\odot \mathbf{M}\right) \mathbf{V}$                                                                                                                                                                                                                                                                                           \\
+            LA \citep{wang-2020-linformer}                                                                                                                                                                                     &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} \bm{k}_j \right)\bm{v}_j  $                                                                                                                                            &
+            $\left(\mathbf{QK^\top} \odot \mathbf{M}\right) \mathbf{V}$                                                                                                                                                                                                                                                                                                                                         \\
+            Mamba2 \citep{mamba2}                                                                                                                                                                                              &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\brickred{\alpha_s} \right)}\bm{k}_j \right)\bm{v}_j  $                                                                                   &
+            $\left( \mathbf{QK^\top} \odot \brickred{\mathcal{A}}\odot \mathbf{M}\right)\mathbf{V}$                                                                                                                                                                                                                                                                                                             \\
+            GLA \citep{yang-etal-2024-gla}                                                                                                                                                                                     &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\brickred{\operatorname{Diag}\left(\bm{\alpha}_s\right)} \right)}\bm{k}_j \right)\bm{v}_j  $                                              & $\left(\left( \mathbf{Q} \odot \brickred{\mathbf{\Gamma}}\right) \left(\frac{\mathbf{K}}{\brickred{\mathbf{\Gamma}}} \right)^\top\odot \mathbf{M}\right)\mathbf{V}$                 \\
+            DeltaNet \citep{schlag-2021-deltanet}                                                                                                                                                                           &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\left(\mathbf{I}-\bm{k}_s\bm{k}_s^\top\right) \right)}\bm{k}_j \right)\bm{v}_j  $                                                         &
+            $\left(\mathbf{QK^\top} \odot \mathbf{M}\right)\left( \mathbf{I} + \mathbf{KK^{\top}}\odot \mathbf{M}^{-} \right)^{-1}\mathbf{V}$                                                                                                                                                                                                                                                                   \\
+            FoX \citep{lin2025forgetting}                                                                                                                                                                                      &
+            $\sum\limits_{j=1}^t \exp\left( \bm{q}_t^{\top} \bm{k}_j \right){\left(\prod\limits_{s=j+1}^t \brickred{\alpha_s} \right)}\bm{v}_j  $                                                                              &
+            $\left(\exp\left( \mathbf{QK^\top} \right)\odot \brickred{\mathcal{A}} \odot \mathbf{M} \right) \mathbf{V}$                                                                                                                                                                                                                                                                                         \\
+            DeltaFormer \citep{zhong2025understanding}                                                                                                                                                                         &
+            $\sum\limits_{j=1}^t  \left(\phi(\bm{q}_t)^{\top} {\left(\prod\limits_{s=j+1}^t\left(\mathbf{I}-\phi\left(\bm{k}_s\right)\phi\left(\bm{w}_s\right)^\top\right) \right)}\phi\left(\bm{k}_j\right)\right) \bm{v}_j
+            $                                    &
+            $\left(\exp\left( \mathbf{QK^\top} \right)\odot \mathbf{M}\right) \left( \mathbf{I} + \exp\left(\mathbf{WK^{\top}} \right)\odot \mathbf{M}^-\right)^{-1}\mathbf{V}$
+            \\
+            PaTH-FoX \citep{yang2025path}                                                                                                                                                                                          &
+            $\sum\limits_{j=1}^t \exp\left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\left(\mathbf{I}-\bm{w}_s\bm{w}_s^\top\right) \right)}\bm{k}_j \right)\left(\prod\limits_{s=j+1}^t\brickred{\alpha_s}\right) \bm{v}_j $                                  &
+            $\left(\exp\left(\left(\mathbf{QK^\top} \odot \mathbf{M}\right) \left(\mathbf{I} + \mathbf{WW^{\top}} \odot \mathbf{M}^-\right)^{-1}\right)\odot \brickred{\mathcal{A}}\odot\mathbf{M}\right)\mathbf{V}$                                                                                                                                                                                            \\
+
+            GDN \citep{yang-2025-gdn}                                                                                                                                                                                          &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\brickred{\alpha_s}\left(\mathbf{I}-\bm{k}_s\bm{k}_s^\top\right) \right)}\bm{k}_j \right)\bm{v}_j  $                                      &
+            $\left(\mathbf{QK^\top} \odot \brickred{\mathcal{A}}\odot \mathbf{M}\right)\left( \mathbf{I} + \mathbf{KK^{\top}}\odot \brickred{\mathcal{A}} \odot \mathbf{M}^{-}\right)^{-1}\mathbf{V}$                                                                                                                                                                                                           \\
+            Comba \citep{hu2025comba}                                                                                                                                                                                          &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\left(\brickred{\alpha_s}-\bm{k}_s\bm{k}_s^\top\right) \right)}\bm{k}_j \right)\bm{v}_j  $                                                &
+            $\left(\mathbf{QK^\top} \odot \brickred{\mathcal{A}}\odot \mathbf{M}\right)\left( \mathbf{I} + \mathbf{KK^{\top}}\odot \brickred{\mathcal{A}^{i-1/j}} \odot \mathbf{M}^{-}\right)^{-1}\mathbf{V}$                                                                                                                                                                                                   \\
+            RWKV7 \citep{peng-2025-rwkv7}                                                                                                                                                                                      &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\left(\brickred{\operatorname{Diag}\left(\bm{\alpha}_s\right)}-\left(\bm{b}_s\odot\hat{\bm{k}}_s\right)\hat{\bm{k}}_s^\top\right) \right)}\bm{k}_j \right)\bm{v}_j  $           &
+            $\left(\left(\mathbf{Q} \odot \brickred{\mathbf{\Gamma}}\right)\left(\frac{{\mathbf{K}}}{\brickred{\mathbf{\Gamma}}} \right)^\top\odot \mathbf{M}\right)\left( \mathbf{I} + \left(\hat{\mathbf{K}} \odot \brickred{\overset{0 \to t-1}{\mathbf{\Gamma}}}\right)\left(\frac{\tilde{\mathbf{K}}\odot \mathbf{B}}{\brickred{\mathbf{\Gamma}}} \right)^\top\odot\mathbf{M}^{-1}\right)^{-1}\mathbf{V}$                                  \\
+
+            \rowcolor{gray!20} \textbf{KDA} (ours)                                                                                                                                                                             &
+            $\sum\limits_{j=1}^t \left( \bm{q}_t^{\top} {\left(\prod\limits_{s=j+1}^t\brickred{\operatorname{Diag}\left(\bm{\alpha}_s\right)}\left(\mathbf{I}-\bm{k}_s\bm{k}_s^\top\right) \right)}\bm{k}_j \right) \bm{v}_j $ &
+            $\left(\left(\mathbf{Q} \odot \brickred{\mathbf{\Gamma}}\right)\left(\frac{\mathbf{K}}{\brickred{\mathbf{\Gamma}}} \right)^\top\odot \mathbf{M}\right)\left( \mathbf{I} + \left(\mathbf{K} \odot \brickred{\mathbf{\Gamma}}\right)\left(\frac{\mathbf{K}}{\brickred{\mathbf{\Gamma}}} \right)^\top\odot\mathbf{M}^{-1}\right)^{-1}\mathbf{V}$\\
+            \bottomrule
+        \end{tabular}
+    \end{adjustbox}
+    \label{tab:KDA-parallel}
+\end{table}

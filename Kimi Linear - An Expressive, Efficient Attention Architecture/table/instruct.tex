@@ -1,0 +1,39 @@
+
+
+\begin{table}[h]
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{5pt}
+    \caption{Performance of Kimi-Linear-Instruct and Moonlight-Instruct across diverse tasks.
+    }
+    \label{tab:instruct-eval}
+    \begin{tabular}{@{}r l | >{\columncolor{gray!20}}c c }
+        \toprule
+         & \textbf{Benchmark}         & {\textbf{Kimi-Linear-Instruct}} & {\textbf{Moonlight-Instruct}} \\
+        \midrule
+         & Architecture                                & MoE                             & MoE                                               \\
+         & \# Activated Params                         & 3B                              & 3B                                                  \\
+         & \# Total Params                             & 48B                             & 16B                                                  \\
+         & Trained Tokens                              & 5.7T                            & 5.7T                                                           \\
+        \midrule
+        \multirow{5}{*}{\textit{General}}
+         & RULER@128k                        & 95.4                            & -                                                       \\
+         & RULER@1M                       & 94.8                            & -                                                       \\
+         & GPQA-Diamond (Avg@8)                        & 71.7                            & 24.7                                                       \\
+         & MMLU-Redux (EM)                             & 86.9                            & 66.9                                                  \\
+         & MMLU-Pro (EM)                               & 72.7                            & 43.8                                               \\
+         & FaithJudge (1-Hallu.)                       & 64.2                            &  56.0                              \\
+        \midrule
+        \multirow{3}{*}{\textit{Math}}
+         & AIME 2025 (Avg@64)                          & 58.6                            & -                                               \\
+         & MATH500 (Acc.)                             & 94.6                            & 58.0                                            \\
+         & HMMT 2025 (Avg@32)                          & 44.5                            & -                                            \\
+        \midrule
+        \multirow{4}{*}{\textit{Code}}
+         & LiveCodeBench v6 (Pass@1)                   & 45.7                   & 11.9                                          \\
+         & OJBench (Pass@1)                            & 14.2                   &  -                                         \\
+         & Humaneval$^+$                               & 70.9                   & 46.3                                           \\
+         & MBPP$^+$                                    & 72.4                   & 56.3                                        \\
+        \bottomrule
+    \end{tabular}
+\end{table}

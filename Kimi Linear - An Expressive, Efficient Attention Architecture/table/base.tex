@@ -1,0 +1,44 @@
+
+\begin{table}[h]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.1}
+    \setlength{\tabcolsep}{5pt}
+    \caption{Performance of Kimi-Linear-Base and Moonlight-Base across diverse tasks.
+    }
+    \label{tab:pretrain-eval}
+    \begin{tabular}{@{}r l | c | >{\columncolor{gray!20}}c c }
+        \toprule
+         & \textbf{Benchmark}          & \textbf{\#Shots} & {\textbf{Kimi-Linear-Base}} & \textbf{Moonlight-Base}  \\
+        \midrule
+         & Architecture                & -                & MoE                         & MoE                                  \\
+         & \# Activated Params         & -                & 3B                          & 3B                                    \\
+         & \# Total Params             & -                & 48B                         & 16B                                      \\
+         & Trained Tokens              & -                & 5.7T                        & 5.7T                                \\
+        \midrule
+        \multirow{6}{*}{\textit{General}}
+         & TriviaQA                    & 5-shots          & 75.2               & 66.2                                     \\
+         & SimpleQA                    & 5-shots          & 10.1               & \white{0}5.6                    \\
+         & MMLU-Pro                    & 5-shots          & 54.8                        & 42.4                                \\
+         & MMLU-redux                  & 5-shots          & 79.7                        & 73.8                                   \\
+         & WinoGrande                  & 5-shots          & 81.5               & 74.6                                   \\
+         & GPQA-Diamond (avg@8) & 5-shots          & 40.4                        & 35.2                                  \\
+        \midrule
+        \multirow{4}{*}{\textit{Math}}
+         & MATH                        & 4-shots          & 58.5                        & 45.3                                 \\
+         & GSM8k                       & 8-shots          & 86.3                        & 77.2                                \\
+         & GSM8k-platinum              & 8-shots          & 89.6                        & 79.4                                  \\
+         & CMATH                       & 6-shots          & 85.5               & 79.6                                   \\
+        \midrule
+        \multirow{4}{*}{\textit{Code}}
+         & CRUXEval-I-cot              & 0-shots          & 61.0                        & 45.9                                    \\
+         & CRUXEval-O-cot              & 0-shots          & 67.0                        & 46.6                               \\
+         & LiveCodeBench (v6)           & 1-shots          & 20.0                        & 14.3                               \\
+         & EvalPlus                    & -                & 64.9                        & 50.3                               \\
+        \midrule
+        \multirow{2}{*}{\textit{Chinese}}
+         & C-Eval                      & 5-shots          & 83.3                        & 77.6                               \\
+         & CSimpleQA                   & 5-shots          & 53.5               & 34.7                              \\
+        \bottomrule
+    \end{tabular}
+\end{table}

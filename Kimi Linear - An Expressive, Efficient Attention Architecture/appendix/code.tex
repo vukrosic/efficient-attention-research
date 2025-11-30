@@ -1,0 +1,77 @@
+\newpage
+\section{Pseudo Code for chunkwise KDA}
+\renewcommand{\theFancyVerbLine}{\ttfamily\textcolor[rgb]{0.5,0.5,0.5}{\scriptsize\arabic{FancyVerbLine}}}
+\begin{longlisting}
+\begin{minted}[
+    mathescape,
+    linenos,
+    numbersep=4pt,
+    frame=lines,
+    fontsize=\small,
+    framesep=4mm,
+]{python}
+def chunk_kda(
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    g: torch.Tensor,
+    beta: torch.Tensor,
+    initial_state: Optional[torch.Tensor] = None,
+    chunk_size: int = 64
+):
+    dtype = v.dtype
+    B, T, H, K, V, C = *q.shape, v.shape[-1], chunk_size
+    N = T // C
+
+    q, k, v, g, beta = map(
+        lambda x: rearrange(x, 'b (n c) h ... -> b h n c ...', c=C).to(torch.float),
+        [q, k, v, g, beta]
+    )
+    q = q * K**-0.5
+    g = g.cumsum(-2)
+    mask = torch.triu(torch.ones(C, C, dtype=torch.bool, device=q.device), diagonal=0)
+
+    A = torch.zeros(B, H, N, C, C, dtype=torch.float, device=q.device)
+    for i in range(C):
+        k_i = k[..., i, :]
+        g_i = g[..., i:i+1, :]
+        A[..., i] = torch.einsum('... c d, ... d -> ... c', k * (g - g_i).exp(), k_i)
+    A = A * beta[..., None]
+    # matrix inverse by forward substitution
+    A = -A.masked_fill(mask, 0)
+    for i in range(1, C):
+        A[..., i, :i] = A[..., i, :i].clone() + (A[..., i, :, None].clone() * A[..., :, :i].clone()).sum(-2)
+    A = (A + torch.eye(C, dtype=torch.float, device=q.device)) * beta[..., None, :]
+
+    w = A @ (g.exp() * k)
+    u = A @ v
+
+    S = k.new_zeros(B, H, K, V)
+    if initial_state is not None:
+        S += initial_state
+    o = torch.zeros_like(v)
+    # strictly lower triangular
+    mask = torch.triu(torch.ones(C, C, dtype=torch.bool, device=q.device), diagonal=1)
+    for i in range(0, N):
+        # [B, H, C, ...]
+        q_i, k_i, u_i, g_i, w_i = q[:, :, i], k[:, :, i], u[:, :, i], g[:, :, i], w[:, :, i]
+        A = torch.zeros(B, H, C, C, dtype=torch.float, device=q.device)
+        # secondary chunking for numerical stability
+        for j in range(C):
+            k_j = k[:, :, i, j]
+            g_j = g[:, :, i, j:j+1, :]
+            A[..., j] = torch.einsum('... c d, ... d -> ... c', q_i * (g_i - g_j).exp(), k_j)
+        A = A.masked_fill(mask, 0)
+        v_i = u_i - w_i @ S
+        o[:, :, i] = (q_i * g_i.exp()) @ S + A @ v_i
+        S = S * rearrange(g_i[:, :, -1].exp(), 'b h k -> b h k 1')
+        S += rearrange((g_i[:, :, -1:] - g_i).exp() * k_i, 'b h c k -> b h k c') @ v_i
+    return rearrange(o, 'b h n c d -> b (n c) h d').to(dtype)
+
+\end{minted}
+\caption{
+    Pseudo PyTorch-style code snippet for KDA chunked form.
+}
+\label{listing:code}
+\end{longlisting}
+ 

@@ -1,0 +1,241 @@
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        xmode=log,
+                        log basis x={10},
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={Prefilling Length},
+                        enlarge x limits=0.1,
+                        width=12cm, height=9cm,
+                        xmin=0,xmax=1080000,
+                        ymin=0, ymax=70,
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xtick={4096,131072,262144,524288,1048576},
+                        xticklabels={4K,128K,256K,512K,1M},
+                        ytick={0,20,40,60},
+                        yticklabels={0,20,40,60},
+                        xlabel near ticks,
+                        ylabel=Latency (s),
+                        ylabel style={at={(0.05,0.5)}},
+                        axis line style={opacity=0},
+                        legend style={
+                                at={(0,1)},
+                                anchor=north west,
+                                legend cell align=left,
+                                font=\small,
+                            },
+                    ]
+
+                    \addplot[
+                        line width=1.5pt,
+                        dash pattern={on 4pt off 4pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+                    ] plot coordinates {
+                        (4096, 0.064)
+                        (8192, 0.099)
+                        (16384, 0.182)
+                        (32768, 0.359)
+                        (65536, 0.796)
+                        (131072, 2.005)
+                        (262144, 5.764)
+                        (524288, 18.629)
+                        (1048576, 65.460)
+                        };
+                    \addlegendentry{MLA}
+                    \addplot[
+                        line width=1.5pt,
+                        mark=10-pointed star,
+                        mark size=2pt,
+                        draw=orange!70,
+                    ] plot coordinates {
+                        (4096, 0.099)
+                        (8192, 0.123)
+                        (16384, 0.184)
+                        (32768, 0.324)
+                        (65536, 0.624)
+                        (131072, 1.341)
+                        (262144, 3.101)
+                        (524288, 7.847)
+                        (1048576, 22.415)
+                        };
+                    \addlegendentry{GDN-H}
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=pentagon*,
+                        draw=blue!60, 
+                        mark options={
+                                fill=blue!60, 
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+                    ] plot coordinates {
+                        (4096, 0.096)
+                        (8192, 0.125)
+                        (16384, 0.186)
+                        (32768, 0.327)
+                        (65536, 0.643)
+                        (131072, 1.397)
+                        (262144, 3.214)
+                        (524288, 8.068)
+                        (1048576, 22.753)
+                        };
+                    \addlegendentry{\text{Kimi Linear}}
+
+                    
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+                    
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:1048576,22.753) -- (axis cs:1048576,65.460);
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:524288,8.068) -- (axis cs:524288,18.629);
+                    \node[right, black] at (axis cs:1048576, 44.1065) (1M) {\large${2.9\times}$};
+                    \node[right, black] at (axis cs:524288, 13.3485) (512K) {\large${2.3\times}$};
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:prefilling}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        xmode=log,
+                        log basis x={10},
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={Decoding Length},
+                        enlarge x limits=0.1,
+                        width=12cm, height=9cm,
+                        xmin=0,xmax=1080000,
+                        ymin=5, ymax=19,
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xtick={4096,131072,262144,524288,1048576},
+                        xticklabels={4K,128K,256K,512K,1M},
+                        ytick={5,10,15},
+                        yticklabels={5,10,15},
+                        xlabel near ticks,
+                        ylabel=TPOT (ms),
+                        ylabel style={at={(0.05,0.5)}},
+                        axis line style={opacity=0},
+                        legend style={
+                                at={(0,1)},
+                                anchor=north west,
+                                legend cell align=left,
+                                font=\small,
+                            },
+                    ]
+
+                    \addplot[
+                        line width=1.5pt,
+                        dash pattern={on 4pt off 4pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+                    ] plot coordinates {
+                        (4096, 5.32)
+                        (8192, 5.37)
+                        (16384, 6.2)
+                        (32768, 6.52)
+                        (65536, 6.88)
+                        (131072, 7.67)
+                        (262144, 9.1)
+                        (524288, 11.96)
+                        (1048576, 17.76)
+                        };
+                    \addlegendentry{MLA}
+
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=10-pointed star,
+                        mark size=2pt,
+                        draw=orange!70,
+                    ] plot coordinates {
+                        (4096, 5.07)
+                        (8192, 5.07)
+                        (16384, 5.32)
+                        (32768, 5.39)
+                        (65536, 5.48)
+                        (131072, 5.75)
+                        (262144, 5.97)
+                        (524288, 6.62)
+                        (1048576, 7.94)
+                        };
+                    \addlegendentry{GDN-H}
+                    \addplot[
+                        line width=1.5pt,
+                        mark=pentagon*,
+                        draw=blue!60, 
+                        mark options={
+                                fill=blue!60, 
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+                    ] plot coordinates {
+                        (4096, 5.09)
+                        (8192, 5.12)
+                        (16384, 5.37)
+                        (32768, 5.41)
+                        (65536, 5.53)
+                        (131072, 5.74)
+                        (262144, 6.0)
+                        (524288, 6.66)
+                        (1048576, 7.99)
+                        };
+                    \addlegendentry{\text{Kimi Linear}}
+                    
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+                    
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:1048576,7.99) -- (axis cs:1048576,17.76);
+                    \node[right, black] at (axis cs:1048576, 12.9) (1M) {\large${2.2\times}$};
+                    
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:524288,6.66) -- (axis cs:524288,11.96);
+                    \node[right, black] at (axis cs:524288, 9.3) (512K) {\large${1.8\times}$};
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:decoding}
+    \end{subfigure}
+
+
+
+                    
+                    
+                    
+
+
+
+    \caption{
+        (\subref{fig:prefilling}) The prefilling time of MLA (full attention), hybrid GDN-H and our Kimi Linear.
+        (\subref{fig:decoding}) The time per output token (TPOT) for MLA, GDN-H and Kimi Linear during decoding. (We use batch size = 1 here for tests.)
+    }
+\end{figure} 

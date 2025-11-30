@@ -1,0 +1,69 @@
+\begin{table}[t]
+    \centering
+    \small
+    \caption{
+        An overview of different attention mechanisms through the lens of state updating rules and their learning objective under the TTT framework \citep{sun-2024-learning}.
+        We ignore all normalizer terms and activation/kernel functions for brevity.
+    }
+    \renewcommand{\arraystretch}{1.8}
+    \begin{adjustbox}{width=1\columnwidth, center}
+        \renewcommand{\multirowsetup}{\centering}
+        \setlength{\tabcolsep}{18pt}
+        \begin{threeparttable}
+            \begin{tabular}{r ll}
+                \toprule
+                                                                                                                                                                                                                                                                                                                & Objective $\mathcal{L}$                                                                                                                                                                                   & Update rule $\mathbf{S}_t = \mathbf{S}_{t-1} - \nabla_{\mathbf{S}_{t-1}}\mathcal{L}$                                         \\
+                \midrule
+                LA \citep{katharopoulos-2020-transformers}                                                                                                                                                                                                                                                      &
+                $-\left\langle\mathbf{S}_{t-1}^\top \boldsymbol{k}_t, \boldsymbol{v}_t\right\rangle$                                                                                                                                                                                                            & $\mathbf{S}_t = \mathbf{S}_{t-1}+\boldsymbol{k}_t\boldsymbol{v}_t^\top$                                                                                                                                                                                                                                                                  \\
+                RetNet \citep{sun-2023-retnet}                                                                                                                                                                                                                                                                  &
+                $-{\beta_t}\left\langle\mathbf{S}_{t-1}^\top \boldsymbol{k}_t, \boldsymbol{v}_t\right\rangle+\frac{1}{2}\left\|\sqrt{\brickred{1-\mathbf{\alpha}}}~\mathbf{S}_{t-1}\right\|_F^2$                                                                                                                & $\mathbf{S}_t = \brickred{\alpha}\mathbf{S}_{t-1}+{\beta_t}\boldsymbol{k}_t\boldsymbol{v}_t^\top$                                                                                                                                                                                                                                        \\
+                Mamba2 \citep{mamba2}                                                                                                                                                                                                                                                                           &
+                $-{\beta_t}\left\langle\mathbf{S}_{t-1}^\top \boldsymbol{k}_t, \boldsymbol{v}_t\right\rangle+\frac{1}{2}\left\|\sqrt{\brickred{1-\mathbf{\alpha}_t}}\mathbf{S}_{t-1}\right\|_F^2$                                                                                                               & $\mathbf{S}_t = \brickred{\alpha_t}\mathbf{S}_{t-1}+{\beta_t}\boldsymbol{k}_t\boldsymbol{v}_t^\top$                                                                                                                                                                                                                                      \\
+                GLA \citep{yang-etal-2024-gla}                                                                                                                                                                                                                                                                  & $-\left\langle\mathbf{S}_{t-1}^\top \boldsymbol{k}_t, \boldsymbol{v}_t\right\rangle+\frac{1}{2}\left\|\sqrt{\brickred{\operatorname{Diag}\left(\bm{1}-\bm{\alpha}_t\right)}}\mathbf{S}_{t-1}\right\|_F^2$ & $\mathbf{S}_t = \brickred{\operatorname{Diag}(\boldsymbol{\alpha}_t)}\mathbf{S}_{t-1}+\boldsymbol{k}_t\boldsymbol{v}_t^\top$ \\
+                HGRN2 \citep{qin-2024-hgrn2}                                                                                                                                                                                                                                                                    &
+                $-\left\langle\mathbf{S}_{t-1}^\top \brickred{(\mathbf{1-\boldsymbol{\alpha}}_t)}, \boldsymbol{v}_t\right\rangle+\frac{1}{2}\left\|\sqrt{\brickred{\operatorname{Diag}\left(\bm{1}-\bm{\alpha}_t\right)}}\mathbf{S}_{t-1}\right\|_F^2$                                                          &
+                $\mathbf{S}_t = \brickred{\operatorname{Diag}(\boldsymbol{\alpha}_t)}\mathbf{S}_{t-1}+\brickred{(\mathbf{\bm{1}-\boldsymbol{\alpha}}_t)}\boldsymbol{v}_t^\top$                                                                                                                                                                                                                                                                                                                                                                                                                                                                             \\
+                \midrule
+
+
+                                Longhorn \citep{liu-2024-longhorn}                                                                                                                                                                                                                                                              &
+                $\frac{1}{2}\left\|\mathbf{S}_{t-1}^\top \boldsymbol{k}_t-\boldsymbol{v}_t \right\|^2_{\operatorname{Diag}(\bm{\beta}_t)} $                                                                                                                                                                     & $\mathbf{S}_t = {\left(\mathbf{I}
+                    -\frac{\bm{\beta}_t}{\bm{1}+\bm{\beta}_t\bm{k}_t^\intercal\bm{k}_t}\bm{k}_t\bm{k}_t^\intercal\right)}\mathbf{S}_{t-1}+{\beta_t}\bm{k}_t\bm{v}_t^\intercal$
+                \\
+
+
+                Comba \citep{hu2025comba}                                                                                                                                                                                                                                                                     &
+                $ \frac{{\beta_t}}{2}\left\|\mathbf{S}_{t-1}^\top \boldsymbol{k}_t -\boldsymbol{v}_t\right\|^2+\frac{1}{2}\left\|\sqrt{\brickred{1-\mathbf{\alpha}_t}}\mathbf{S}_{t-1}\right\|_F^2$                                                                                                             &
+                $\mathbf{S}_t = \left(\brickred{\alpha_t}
+                -\beta_t\boldsymbol{k}_t\hat{\boldsymbol{k}}_t^\top\right)\mathbf{S}_{t-1}+{\beta_t}\boldsymbol{k}_t\boldsymbol{v}_t^\top$                                                                                                                                                                         \\
+
+
+
+                RWKV7 \citep{peng-2025-rwkv7}                                                                                                                                                                                                                                                                   &
+                $ \frac{1}{2}\left\|\mathbf{S}_{t-1} ^\top\tilde{\boldsymbol{k}}_t-\boldsymbol{v}_t\right\|^2+\frac{1}{2}\left\|\sqrt{\brickred{\operatorname{Diag}\left(\bm{1}-\bm{\alpha}_t\right)}}\mathbf{S}_{t-1}\right\|_F^2 $                                                         &
+                $\mathbf{S}_t = \left(\brickred{\operatorname{Diag}\left(\boldsymbol{\alpha}_t\right)}-\left(\bm{b}_s\odot\hat{\bm{k}}_s\right)\hat{\boldsymbol{k}}_t^\top\right)\mathbf{S}_{t-1}+{\boldsymbol{k}}_t\boldsymbol{v}_t^\top$                                                                                                                                                                                                                                                                                                                                                                                                                      \\
+
+                GDN \citep{yang-2025-gdn}                                                                              &
+                $ \frac{{\beta_t}}{2}\left\|\brickred{\tilde{\mathbf{S}}_{t-1}^\top} \boldsymbol{k}_t-\boldsymbol{v}_t\right\|^2 $                                                             &
+                $\mathbf{S}_t = {\left(\mathbf{I}-{\beta}_t\boldsymbol{k}_t\boldsymbol{k}_t^\top\right)\brickred{\alpha_t}}\mathbf{S}_{t-1}+{\beta}_t\boldsymbol{k}_t\boldsymbol{v}_t^\top$                                                                       \\
+
+                \rowcolor{gray!20} \textbf{KDA} (ours)                                                                                                                                                                                                                                                         &
+                $ \frac{\beta_t}{2}\left\|\brickred{\tilde{\mathbf{S}}_{t-1}^\top} {\boldsymbol{k}_t}-\boldsymbol{v}_t\right\|^2$ &
+                $\mathbf{S}_t = \left(\mathbf{I}
+                -\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^\top\right)\brickred{\operatorname{Diag}\left(\boldsymbol{\alpha}_t\right)}\mathbf{S}_{t-1}+{\beta_t}\boldsymbol{k}_t\boldsymbol{v}_t^\top$                                                                                                                                                                                                                                                                                                                                                                                                                                                       \\
+
+
+
+
+
+                \bottomrule
+            \end{tabular}
+            \begin{tablenotes}
+            \footnotesize
+              {\item For GDN and KDA, the update can be viewed as performing an Stochastic Gradient Descent(SGD) process on the decayed state $\brickred{\tilde{\mathbf{S}}}$, that is, $\mathbf{S}_t = \brickred{\tilde{\mathbf{S}}_{t-1}} - \nabla_{\brickred{\tilde{\mathbf{S}}_{t-1}}}\mathcal{L}$, where $\brickred{\tilde{\mathbf{S}}_{t-1}}$ is decayed by scalar or fine-grained gate.}
+            \end{tablenotes}
+        \end{threeparttable}
+    \end{adjustbox}
+    \label{tab:KDA-obj}
+\end{table}

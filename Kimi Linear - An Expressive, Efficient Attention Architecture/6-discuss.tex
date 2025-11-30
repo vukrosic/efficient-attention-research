@@ -1,0 +1,132 @@
+\section{Discussions}
+
+
+
+\subsection{Kimi Delta Attention as learnable position embeddings}\label{sec:delta_rule}
+
+
+The standard attention in transformers is by design agnostic to the sequence order of its inputs \citep{vaswani-2017-attention}, thus necessitating explicit positional encodings \citep{press-2022-alibi, shaw2018selfattention}. 
+Among various methods, RoPE \citep{su2024roformer} has emerged as the \textit{de facto} standard in modern LLMs due to its effectiveness \citep{touvron-2023-llama,agarwal2025gpt,deepseekaiv3}.
+The mechanism of multiplicative positional encodings like RoPE can be analyzed through a generalized attention formulation:
+\begin{equation}
+    s_{t,i} = \bm{q}_t^{\top}  \left( \prod_{j=i+1}^t \mathbf{R}_j\right) \bm{k}_i \label{eq:posemb}
+\end{equation} 
+
+where the position relationship between the $t$-th query $\bm{q}_t$ and the $i$-th key $\bm{k}_i$ is reflected by the cumulative matrix products. RoPE defines the transformation matrix $\mathbf{R}_j$ as a block diagonal matrix composed of $d_k/2$ 2D rotation matrices $\mathbf{R}_j^{k} = \begin{psmallmatrix} \cos(j\theta_k) & -\sin (j\theta_k) \\ \sin(j\theta_k) & \cos(j\theta_k) \end{psmallmatrix}$ with \textbf{per-2-dimensional} angular frequency $\theta_k$. Due to the properties of rotation matrices, i.e., $\mathbf{R}_{t-i}=\mathbf{R}_t^\top\mathbf{R}_i$, absolute positional information $\mathbf{R}_t$ and $\mathbf{R}_i$ can be applied separately to $\bm{q}_t$ and $\bm{k}_i$, which are then transformed into relative positional information $t-i$ encoded as $\prod_{j=i+1}^t \mathbf{R}_j=\begin{psmallmatrix} \cos((t-i)\theta_k) & -\sin ((t-i)\theta_k) \\ \sin((t-i)\theta_k) & \cos((t-i)\theta_k) \end{psmallmatrix}$.
+
+Consequently, we show that linear attentions with the gated delta rule can be expressed in a comparable formulation in Eq.~\ref{eq:gdnpos}.
+Similar forms for other attention variants are summarized in Table~\ref{tab:KDA-parallel}.
+\begin{align}\label{eq:gdnpos}
+    \bm{o}_t = \sum_{i=1}^t \left( \bm{q}_t^{\top} \left(\prod_{j=i+1}^t\brickred{\mathbf{A}_j}\left(\mathbf{I}-\beta_j\bm{k}_j\bm{k}_j^\top\right) \right)\bm{k}_j\right) \bm{v}_j 
+\end{align}
+
+\input{table/parallel}
+
+From this perspective, GDN can be interpreted as a form of multiplicative positional encoding whose transition matrix is data-dependent, thereby relaxing the orthogonality constraint imposed by RoPE and can be potentially more powerful \citep{yang2025path}.
+\footnote{
+When preserving orthogonality, absolute positional encodings can be applied independently to $\bm{q}$ and $\bm{k}$, which are then automatically transformed into relative positional encodings during the attention computation \citep{kexuefm-11033}.
+}
+This provides a potential solution to the known extrapolation issues of RoPE, whose fixed frequencies can cause overfitting to context lengths seen during training \citep{xiong-2023-llamalong,peng2023yarn}.
+Some recent works adopt workarounds like partial RoPE \citep{barbero2025round} or even forgo explicit positional encodings entirely (NoPE) \citep{kazemnejad2023impact,puvvada2025swangpt, deepseekaiv3}. 
+Given that GDN serves as an analogue role to RoPE, we choose NoPE for global full attention layers (MLA) in our model, allowing positional information to be captured dynamically by our proposed KDA model. 
+
+Moreover, a key strength of RoPE is its fine-grained positional encoding, achieved by assigning different rotation frequencies to each pair of dimensions, which functions analogously to a Nonuniform Fourier Transform \citep{barbero2025round,hua2024fourier} along the feature dimension.
+Standard GDN, however, employs a per-head scalar decay and lacks this per-dimensional diversity, which motivates us to propose KDA with a learnable channel-wise gate. 
+
+
+\input{table/KDA_and_dplr}
+
+\subsection{Relation to DPLR}
+\label{sec:related_dplr}
+
+
+
+
+
+(Gated) DeltaNet can be generalized to a more expressive \emph{Diagonal-Plus-Low-Rank} (DPLR) structure, defined as $\mathbf{D} - \bm{a}_t \bm{b}_t^\top$.
+This structure was also explored in models such as S4~\citep{gu-2022-efficiently}, which employed a static DPLR formulation as the state transition matrix.
+During computation, this matrix is typically jointly diagonalized into the complex plane, thereby restricting its expressiveness to diagonal transformations~\citep{merrill2024illusion}.
+
+While the DPLR structure introduces richer model interactions and can potentially enhance recall through its key–value update rule, it also suffers from a notable limitation: high computational cost and poor parallelizability.
+These drawbacks make DPLR inherently slower in large-scale or real-time scenarios, where maintaining parameter efficiency becomes a crucial design challenge.
+
+To address this issue, KDA introduces a constrained variant of DPLR, where Eq.~\ref{eq:recurrent_KDA} can be rewritten as
+$\mathbf{S}_t = \left(
+    \brickred{\operatorname{Diag}\!\left(\bm{\alpha}_t \right)} 
+    - \beta_t \bm{k}_t \bm{k}_t^{\top} 
+      \brickred{\operatorname{Diag}\!\left(\bm{\alpha}_t \right)}
+\right)\mathbf{S}_{t-1} 
++ \beta_t \bm{k}_t \bm{v}_t^{\top}
+$
+with the correspondence between the two given by:
+\[
+\mathbf{S}_t = (\mathbf{D} - \bm{a}_t \bm{b}_t^{\top}) \mathbf{S}_{t-1} + \bm{k}_t \bm{v}_t^{\top}, \mathrm{s.t.},\;\; \mathbf{D} = \brickred{\operatorname{Diag}\!\left(\bm{\alpha}_t \right)}, 
+\bm{a}_t = \beta_t \bm{k}_t,
+\bm{b}_t = \bm{k}_t \odot\brickred{\bm{\alpha}_t}.
+\]
+Furthermore, by sharing $\brickred{\bm{\alpha}_t}$, we can factor it out as in Eq.~\ref{eq:recurrent_KDA}, enabling a fine-grained multiplicative decay over $\mathbf{S}_t$ in a manner similar to GLA~\citep{yang-etal-2024-gla}, followed by a Householder-style transformation like DeltaNet~\citep{schlag-2021-deltanet,yang-2024-parallelizing} for efficient state updating.
+We provide a side-by-side comparison of the chunkwise PyTorch-style pseudocode implementations for DPLR and KDA in Listing~\ref{listing:dplr} and Listing~\ref{listing:KDA}.%
+The key improvements are highlighted below:
+\begin{itemize}[leftmargin=12pt]
+    \item Listing~\ref{listing:dplr} \colorbox{red!10}{Line 13-16} vs., Listing~\ref{listing:KDA} \colorbox{green!10}{Line 14-15}: the reciprocal of the cumulative decay term $1/\Gamma$ in chunkwise form (Eq.~\ref{eq:gdn-o}) can introduce numerical instability. While we can resolve this issue by secondary chunking \citep{yang-2024-fla}, it incurs additional computation and I/O overhead. By fixing $\bm{a}=\bm{b} = \bm{k}$ in the DPLR formulation, KDA removes the need for two secondary chunking steps, substantially reducing redundant operations and improving overall efficiency.
+    \item Listing~\ref{listing:dplr} \colorbox{red!10}{Line 25-27,31-32} vs., Listing~\ref{listing:KDA} \colorbox{green!10}{Line 26,29}: KDA further eliminates roughly three matrix multiplications during inter-chunk and output computation, leading to significant kernel-level acceleration.
+\end{itemize}
+We further benchmark the kernel speed in Fig.~\ref{fig:kernel}, showing that KDA achieves nearly $2\times$ the speed of DPLR for sequence lengths up to $64\text{k}$.
+
+
+
+
+
+
+
+\subsection{Complexity Analysis}
+\paragraph{Training flops}
+We maintain a similar number of parameters in Kimi Linear as in the full attention MLA. The linear projection calculation remains identical to that of the global attention layer. The key distinction lies in the FLOPs associated with attention computation. For simplicity, we focus on non-variable length scenarios. Based on the implementation of the gated rule kernel, the theoretical FLOPs for a single attention head with headdim $d_h$ and a fixed chunk size $C = 64$ in the gated delta rule \citep{wang-deltanet} (per sequence of length $T$) are as follows:
+\begin{align}
+\mathrm{FLOPs}_{\text{KDA}}(T; C, d_h)
+&= 6 T d_h^2 + 3 T C d_h + T C^2. \label{eq:gdn}
+\end{align}
+For full (global) attention, the dominant term per head is
+\begin{equation}
+\mathrm{FLOPs}_{\text{Attn}}(T; d_h) \;=\; 2 T^2 d_h. \label{eq:attn}
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subparagraph{Inference strategy and cost}
+The inference strategy in Kimi Linear employs a hybrid approach to optimize both computational and I/O efficiency. During the prefill phase, the model utilizes a FLOP-intensive chunk kernel (see \S~\ref{sec:kda:chunk}), while switching to the more efficient recurrent kernel (Eq. \ref{eq:KDA-recurrent}) for autoregressive generation.
+A key advantage of the Linear KDA is its ability to maintain a fixed-sized state ($d_k \times d_v$ per head, with $d_k = d_v = 128$) regardless of sequence length.
+For our hybrid model, as sequence length increases, the I/O-bounded decoding time approaches a maximum hybrid efficiency ratio of 3:1 compared to full attention. This trend is reflected in Fig.~\ref{fig:decoding}, where Kimi Linear achieves a $2.3\times$ speedup at a 1M token context. Additionally, by eliminating the need for a large, linear-scaling KV cache, Kimi Linear is able to reallocate memory resources to support larger batch sizes, enhancing overall throughput. In long-context scenarios (up to 1M tokens), this memory efficiency results in a theoretical decoding speedup of up to $6.3\times$ (see Fig.~\ref{fig:decoding-best}).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

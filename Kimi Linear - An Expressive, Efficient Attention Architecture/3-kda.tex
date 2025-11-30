@@ -1,0 +1,105 @@
+\section{Kimi Delta Attention: Improving Delta Rule with Fine-grained Gating}
+We propose Kimi Delta Attention (KDA), a new gated linear attention variant that refines GDN's scalar decay by introducing a fine-grained diagonalized gate $\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_t)}$ that enables fine-grained control over memory decay and positional awareness (as discussed in \S\ref{sec:delta_rule}). We begin by introducing the chunkwise parallelization of KDA, showing how a series of rank-1 matrix transformations can be compressed into a dense representation while maintaining stability under diagonal gating. We then highlight the efficiency gains of KDA over the standard DPLR (\emph{Diagonal-Plus-Low-Rank}) formulation \cite{gu-2022-efficiently,peng-2025-rwkv7}.
+\begin{equation}
+    \mathbf{S}_t = \left(\mathbf{I}-\beta_t\bm{k}_{t}\bm{k}_{t}^{\top}\right)\brickred{\operatorname{Diag}\left(\bm{\alpha}_t \right)}\mathbf{S}_{t-1} + \beta_t\bm{k}_{t}\bm{v}_{t}^{\top}\in\mathbb{R}^{d_k\times d_v};
+    \qquad \bm{o}_t = \mathbf{S}^\top_t \bm{q}_t\in\mathbb{R}^{d_v}
+    \label{eq:recurrent_KDA}
+\end{equation}
+\input{figures/recurrent}
+
+\subsection{Hardware-Efficient Chunkwise Algorithm}
+\label{sec:kda:chunk}
+
+
+
+By partially expanding the recurrence for Eq. \ref{eq:recurrent_KDA} into a chunk-wise formulation, we have:
+\begin{equation}
+    \begin{aligned}
+        \mathbf{S}_{[t]}^r & = \underbrace{\left(\prod_{i=1}^r \left(\mathbf{I} - \beta_{[t]}^i \boldsymbol{k}_{[t]}^i \boldsymbol{k}_{[t]}^{i\top}\right) \brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^i)}\right)}_{:= \mathbf{P}_{[t]}^r} \cdot\mathbf{S}_{[t]}^{0} + \underbrace{\sum_{i=1}^{r} \left(\prod_{j=i+1}^r \left(\mathbf{I} - \beta_{[t]}^j \boldsymbol{k}_{[t]}^j \boldsymbol{k}_{[t]}^{j\top}\right)\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^j)}\right)\cdot\beta_{[t]}^i \boldsymbol{k}_{[t]}^i\boldsymbol{v}_{[t]}^{i\top}}_{:=\mathbf{H}_{[t]}^r}
+    \end{aligned}
+    \label{eq:KDA-recurrent}
+\end{equation}
+
+
+\paragraph{WY Representation}shi
+is typically employed to  pack a series rank-1 updates into a single compact representation \citep{bischof-wy-1987}. We follow the formulation of $\mathbf{P}$ in Comba \citep{hu2025comba} to reduce the need for an additional matrix inversion in subsequent computations.
+    \begin{align}
+        \mathbf{P}_{[t]}^r = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r} \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r})} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top} &&
+        \mathbf{H}_{[t]}^r = \sum_{i=1}^{t} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top}
+        \label{eq:PH_wy}
+    \end{align}
+    where the auxiliary vector $\boldsymbol{w}_t \in \mathbb{R}^{d_k}$ and $\boldsymbol{u}_t \in \mathbb{R}^{d_v}$ are computed via the following recurrence relation:
+    \begin{align}
+        \boldsymbol{w}_{[t]}^r &= \beta_{[t]}^r \left( \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} \boldsymbol{k}_{[t]}^r - \sum_{i=1}^{r-1} \boldsymbol{w}_{[t]}^i\left( \boldsymbol{k}_{[t]}^{i\top}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r} \right)}\boldsymbol{k}_{[t]}^r \right)  \right) \\
+        \boldsymbol{u}_{[t]}^r &= \beta_{[t]}^r \left(\boldsymbol{v}_{[t]}^r - \sum_{i=1}^{r-1}\boldsymbol{u}_{[t]}^i \left(\boldsymbol{k}_{[t]}^{i\top} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^r\right)  \right)
+    \end{align}
+
+
+\paragraph{UT transform.}
+We apply the UT transform \citep{joffrain-2006-ut} to reduce non-matmul FLOPs, which is crucial to enable better hardware utilization during training.
+\begin{align}
+\label{eq:gdn-wy}
+\mathbf{M}_{[t]}&=\left(\mathbf{I} +  \operatorname{StrictTril} \left(\operatorname{Diag}\left(\beta_{[t]}\right) \left(\brickred{{\bm{\Gamma}}_{[t]}^{1\rightarrow C}} \odot \mathbf{K}_{[t]} \right) \left(\frac{\mathbf{K}_{[t]}}{\brickred{\bm{\Gamma}_{[t]}^{1\rightarrow C}}} \right)^\top\right) \right)^{-1} \operatorname{Diag}\left(\beta_{[t]}\right)\\
+\mathbf{W}_{[t]} &= \mathbf{M}_{[t]} \left(\brickred{{\bm{\Gamma}}_{[t]}^{1\rightarrow C}}\odot\mathbf{K}_{[t]}\right),  \quad\quad\quad \mathbf{U}_{[t]}=\mathbf{M}_{[t]} \mathbf{V}_{[t]} 
+\end{align}
+The inverse of a lower triangular matrix can be efficiently computed through an iterative row-wise approach by forward substitution in Gaussian elimination \citep{grcar_2011}.
+
+Equivalently, in matrix form, we can update the state in chunk-wise:
+\begin{equation}
+    \mathbf{S}_{[t+1]} = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^C)} \mathbf{S}_{[t]} +   \left(\brickred{\bm{\Gamma}_{[t]}^{i\rightarrow C}} \odot \mathbf{K}_{[t]}\right)^\top \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]} \mathbf{S}_{[t]}\right) \in \mathbb{R}^{d_k\times d_v}
+\end{equation}
+\input{figures/chunks}
+During the output stage, we adopt an inter-block recurrent and intra-block parallel strategy to maximize matrix multiplication throughput, thereby fully utilizing the computational potential of Tensor Cores.
+\begin{equation}
+\label{eq:gdn-o}
+    \mathbf{O}_{[t]} = 
+    \underbrace{\left(\brickred{{\bm{\Gamma}}_{[t]}^{1\rightarrow C}} \odot\mathbf{Q}_{[t]}\right)
+    \mathbf{S}_{[t]}}_\text{inter chunk} + \underbrace{\operatorname{Tril}\left(\left(\brickred{{\bm{\Gamma}}_{[t]}^{1\rightarrow C}} \odot \mathbf{Q}_{[t]} \right) \left(\frac{\mathbf{K}_{[t]}}{\brickred{{\bm{\Gamma}}_{[t]}^{1\rightarrow C}}} \right)^\top \right)}_\text{intra chunk} \underbrace{\left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]} \mathbf{S}_{[t]}\right)}_{\text{``pseudo''-value term}} \in \mathbb{R}^{C\times d_v}
+\end{equation}
+\input{figures/chunko}
+
+
+
+\subsection{Efficiency Analysis}
+\input{figures/kernel}
+In terms of representational capacity, KDA aligns with the generalized DPLR formulation, i.e., $\mathbf{S}_t = (\mathbf{D} - \bm{a}_t \bm{b}_t^{\top}) \mathbf{S}_{t-1} + \bm{k}_t \bm{v}_t^{\top}$, both exhibiting fine-grained decay behavior. However, such fine-grained decay introduces numerical precision issues during division operations (e.g., the intra-chunk computation in Eq.~\ref{eq:gdn-o}). To address this, prior work such as GLA~\citep{yang-etal-2024-gla} performs computations in the logarithmic domain and introduces secondary chunking in full precision. This approach, however, prevents full utilization of half-precision matrix multiplications and significantly reduces operator speed.
+By binding both variables $\bm a$ and $\bm b$ to $\bm k$, KDA effectively alleviates this bottleneck—reducing the number of second-level chunk matrix computations from four to two, and further eliminating three additional matrix multiplications. As a result, the operator efficiency of KDA improves by roughly 100\% compared to the DPLR formulation. A detailed analysis is provided in \S \ref{sec:related_dplr}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

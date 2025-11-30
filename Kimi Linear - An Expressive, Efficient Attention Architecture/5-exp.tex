@@ -1,0 +1,260 @@
+\section{Experiments}
+
+\subsection{Synthetic tests}
+We start by evaluating KDA against other competing linear attention methods on three synthetic tasks, serving as benchmark tests for long-context performance.
+Across all experiments, we adopt a consistent model configuration of 2 layers with 2 attention heads, each having a head dimension of 128.
+For each task, we train the model for at most 20,000 steps with a grid search over learning rates in $\{5\times 10^{-5}, 1\times 10^{-4}, 5\times 10^{-4}, 1\times 10^{-3}\}$.
+We then present the best-performing training accuracy curves. Specifically, we compare two scenarios: (1) the performance of different tasks as training length increases from 256 to 2,048 tokens, measuring the peak accuracy; and (2) the convergence speed of KDA, GDN, and Mamba2 with a fixed context length of 1,024 tokens.
+
+\input{figures/syn}
+\paragraph{Palindrome} Palindrome requires the model to reproduce a given sequence of random tokens in reverse order. 
+As illustrated in Table~\ref{tab:palindrome}, given an input like ``\text{O G R S U N E}'',  the model must generate its exact reversal.
+Such copying tasks are known to be difficult for linear attention models \citep{jelassi-2024-repeat}, as they struggle to precisely retrieve the entire history from a compressed, fixed-size memory state.
+\begin{center}
+    \begin{tabular}{rcccccccccccccccccc}
+        \textbf{Input}  & O      & G      & R      & S      & U      & N      & E      & \raisebox{0.5pt}{\textcolor{gray}{\texttt{\textsc{<sep>}}}} & E & N & U & S & R & G & O      \\
+        \textbf{Output} & $\phi$ & $\phi$ & $\phi$ & $\phi$ & $\phi$ & $\phi$ & $\phi$ & $\phi$                                                      & N & U & S & R & G & O & $\phi$ \\
+    \end{tabular}
+    \label{tab:palindrome}
+\end{center}
+
+\paragraph{Multi Query Associative Recall (MQAR)} MQAR assesses the model's ability to retrieve values associated with multiple queries that appear at various positions within the context.
+For instance, as shown in Table~\ref{tab:mqar}, the model is asked to recall \brickred{0} for the query \brickred{B} and \midnightblue{5} for \midnightblue{G}.
+This task is known to be highly correlated with language modeling performance \citep{arora-2023-zoology}.
+
+\begin{center}
+    \begin{tabular}{rcccccccccccccccccc}
+        \textbf{Input}  & A      & 1      & C      & 3      & \brickred{B} & \brickred{0} & M      & 8      & \midnightblue{G} & \midnightblue{5} & E      & 4      & \raisebox{0.5pt}{\textcolor{gray}{\texttt{\textsc{<sep>}}}} & \brickred{B} & \midnightblue{G} \\
+        \textbf{Output} & $\phi$ & $\phi$ & $\phi$ & $\phi$ & $\phi$       & $\phi$       & $\phi$ & $\phi$ & $\phi$           & $\phi$           & $\phi$ & $\phi$ & $\phi$                                                      & \brickred{0} & \midnightblue{5} \\
+    \end{tabular}
+    \label{tab:mqar}
+\end{center}
+
+\paragraph{Stack} We assess the state tracking capabilities \citep{grazzi2025unlocking} of each candidate by simulating the standard LIFO (Last In First Out) stack operations.
+Our setup involves 64 independent stacks, each identified by a unique ID.
+The model processes a sequence of two operations: 1) PUSH: an action like ``\raisebox{0.5pt}{\textcolor{gray}{\texttt{\textsc{<push>}}}} \midnightblue{1} \midnightblue{G}'' adds the element \midnightblue{G} to stack \midnightblue{1}; 2) POP: an action like ``\raisebox{0.5pt}{\textcolor{gray}{\texttt{\textsc{<pop>}}}} \brickred{0} \brickred{E}'' requires the model to predict the element \brickred{E} most recently pushed onto stack \brickred{0}. 
+The objective is to accurately track the states of all stacks and predict the correct element upon each pop request.
+
+Figure~\ref{fig:syn} shows the final results. 
+Across all tasks, KDA consistently achieves the highest accuracy as the sequence length increases from 256 to 2,048 tokens.
+In particular, on the Palindrome and recall-intensive MQAR tasks, KDA converges significantly faster than GDN. 
+This confirms the benefits of our fine-grained decay, which enables the model to selectively forget irrelevant information while preserving crucial memories more precisely.
+We also observe that Mamba2~\citep{mamba2}, a typical linear attention that uses only multiplicative decay and lacks a delta rule, fails on all tasks in our model settings.
+
+
+\subsection{Ablation on Key Components of Kimi Linear}
+\label{sec:ablation}
+\input{table/ablation}
+We conducted a series of ablation studies by directly comparing different models to the first-scale scaling law model, i.e., 16 heads, 16 layers. 
+All models were trained with the same FLOPs budget and hyperparameters for a fair comparison.
+We report the training and validation perplexities (PPLs) in Table~\ref{tab:ablation}.
+The validation PPL is calculated on a high-quality dataset whose distribution differs significantly from the pre-training corpus, emphasizing generalization under distribution shift, and thus the differences in training and validation perplexities. 
+
+\paragraph{Output gate}
+We compare our default $\mathrm{Sigmoid}$ output gate against two variants: one with no gating and another with $\mathrm{swish}$ gating. 
+The results show that removing the gate degrades performance. 
+Moreover, the $\mathrm{swish}$ gate adopted by \cite{yang-2025-gdn} performs substantially worse than $\mathrm{Sigmoid}$. Our observation is consistent with \cite{qiu2025gated}, who also conclude that $\mathrm{Sigmoid}$ gating offers superior performance.
+So we adopt $\mathrm{Sigmoid}$ across all of our experiments, including GDN-H.
+
+\paragraph{Convolution Layer} 
+Lightweight depthwise convolutions with a small kernel size (e.g., 4) can be effective at capturing local token dependencies \citep{allen2025physics} and are widely adopted by many recent architectures \citep{mamba2,arora-2023-zoology,yang-2024-parallelizing}. 
+We validate its efficacy in Table~\ref{tab:ablation}, demonstrating that convolutional layers continue to play a non-negligible role in hybrid models.
+
+
+\paragraph{Hybrid ratio}
+We performed an ablation study to determine the optimal hybrid ratio of KDA linear attention layers to MLA full attention layers. Among the configurations tested, the 3:1 ratio (3 KDA layers for every 1 MLA layer) yielded the best results, achieving the lowest training and validation losses.
+We observed clear trade-offs with other ratios: a higher ratio (e.g., 7:1) produced a comparable training loss but led to significantly worse validation performance, while a lower ratio (e.g., 1:1) maintained a similar validation loss but at the cost of increased inference overhead. 
+Furthermore, the pure full-attention baseline (0:1) performed poorly. Thus, the 3:1 configuration offers the most effective balance between model performance and computational efficiency.
+
+
+\paragraph{NoPE vs. RoPE}
+
+As shown in Table~\ref{tab:long_ctx}, the Kimi Linear consistently excels on long‑context evaluations, whereas Kimi Linear (RoPE) attains similar scores on short‑context tasks. We posit that this divergence arises from how positional bias is distributed across depth. In Kimi Linear (RoPE), the global attention layer carries a strong, explicit relative positional signal, while the linear attention (e.g., GDN) contributes a weaker, implicit positional inductive bias. This mismatch yields an overemphasis on short‑range order in the global layer, which benefits short contexts but makes the model less flexible when adapting mid‑training to extended contexts.
+By contrast, Kimi Linear induces a more balanced positional bias across layers, which improves robustness and extrapolation at long ranges, leading to stronger long‑context performance. 
+Regarding long context performance, as shown in Table~\ref{tab:long_ctx}, Kimi Linear achieves the best average score across different long context benchmarks, which verifies the benefits we claim in the last section.
+
+\subsection{Scaling Law of Kimi Linear}
+\input{figures/scaling}
+
+We conducted scaling law experiments on a series of MoE models following the Moonlight \citep{liu-2025-moonlight} architecture. In all experiments, we activated 8 out of 64 experts and utilized the Muon optimizer \citep{liu-2025-moonlight}.
+Details and hyperparameters are listed in Table~\ref{tab:scaling_params}.
+
+For MLA, following the Chinchilla scaling law methodology \citep{hoffmann-2022-chinchilla}, we trained five language models of different sizes, carefully tuning their hyperparameters through grid search to ensure optimal performance for each model.
+For KDA, we maintained the best hybrid ratio of 3:1 as ablated in Table~\ref{tab:ablation}.
+Except for this, we adhered strictly to the MLA training configuration without any modifications.
+As shown in Figure~\ref{fig:scaling_law}, Kimi Linear achieves $\sim 1.16\times$ computational efficiency compared to the MLA baselines with compute optimal training. We expect that careful hyperparameter tuning will yield superior scaling curves for KDA.
+
+
+
+
+
+
+
+
+
+\subsection{Experimental Setup}
+
+\paragraph{Kimi Linear and baselines settings} 
+
+We evaluate our Kimi Linear model against a full-attention MLA baseline and a hybrid Gated DeltaNet (GDN-H) baseline, all of which share the same architecture, parameter count, and training setup for fair comparisons. The model configuration is largely aligned with Moonlight \citep{liu-2025-moonlight}, with the key distinction that MoE sparsity is increased to 32. Each model activates 8 out of 256 experts, including one shared expert,  resulting in 48 billion total parameters and 3 billion active parameters per forward pass. 
+The first layer is implemented as a dense layer without MoE, ensuring stable training. To evaluate the effectiveness of NoPE in Kimi Linear, we also introduce a hybrid KDA baseline using RoPE with the same model configuration, referred to as Kimi Linear (RoPE).
+
+\paragraph{Evaluation Benchmarks} Our evaluation encompasses three primary categories of benchmarks, each designed to assess distinct capabilities of the model:
+
+\begin{itemize}[leftmargin=12pt]
+    \item \textbf{Language Understanding and Reasoning}: Hellaswag \citep{zellers-2019-hellaswag}, ARC-Challenge \citep{clark-2018-arc}, Winogrande \citep{keisuke-2019-winogrande}, MMLU \citep{hendrycks-2021-mmlu}, TriviaQA \citep{joshi2017triviaqa}, MMLU-Redux \citep{gema2024we}, MMLU-Pro \citep{wang2024mmlu}, GPQA-Diamond \citep{rein2024gpqa}, BBH \citep{suzgun2022challenging}, and 
+    \citep{white2024livebench}.
+    \item \textbf{Code Generation}: LiveCodeBench v6 \footnote{Questions from 2024.8 to 2025.5}\citep{jain2024livecodebench}, EvalPlus \citep{evalplus}.
+    \item  \textbf{Math \& Reasoning}: AIME 2025, MATH 500, HMMT 2025, PolyMath-en.
+    \item  \textbf{Long-context}: MRCR \footnote{\url{https://huggingface.co/datasets/openai/mrcr}} , RULER \citep{hsieh2024ruler}, Frames \citep{krishna2024fact}, HELMET-ICL \citep{yen2025helmet}, RepoQA \citep{liu2024repoqa}, Long Code Arena \citep{bogomolov2024long} and LongBench v2 \citep{bai2024longbench}.
+    \item \textbf{Chinese Language Understanding and Reasoning}:  C-Eval \citep{huang2023c}, and CMMLU \citep{li-etal-2024-cmmlu}.
+\end{itemize}
+
+\paragraph{Evaluation Configurations} All models are evaluated using temperature 1.0. 
+For benchmarks with high variance, we report the score of Avg@$k$. For base model, We employ perplexity-based evaluation for MMLU, MMLU-Redux, GPQA-Diamond, and C-Eval. Otherwise, generation-based evaluation is adopted. To mitigate the high variance inherent to GPQA-Diamond, we report the mean score across eight independent runs. All evaluations are conducted using our internal framework derived from LM-Harness-Evaluation \citep{biderman2024lessons}, ensuring consistent settings across all models.
+
+\subsubsection{Pre-training recipe}
+\paragraph{Pre-training recipe} 
+All models are pretrained using a 4,096-token context window, the MuonClip optimizer, and the WSD learning rate schedule, processing a shared total of 1.4 trillion tokens sampled from the K2 pretraining corpus \citep{kimi2025k2}. The learning rate is set to $1.1\times 10^{-3}$, and the global batch size is fixed at 32 million tokens. They also adopt the same annealing schedule and long-context activation phase established in Kimi K2 \citep{kimi2025k2}.
+
+Our final released Kimi Linear checkpoint is pretrained using the same procedure, but with an expanded total of 5.7 trillion tokens to match the pretraining tokens of Moonlight. In addition, the final checkpoint supports a context length of up to 1 million tokens. We compare the performance of Kimi Linear\string@5.7T and Moonlight in Appendix~\ref{appendix:results}
+
+
+
+
+
+
+
+
+
+
+
+
+\subsubsection{Post-training recipe}
+
+
+\paragraph{SFT recipe}
+
+
+
+The SFT dataset extends the Kimi K2 \citep{kimi2025k2} SFT data by incorporating additional reasoning tasks, creating a large-scale instruction-tuning dataset that spans diverse domains with a heavy emphasis on math and coding. We employ a multi-stage SFT approach, initially training the model on a broad range of diverse SFT data for general instruction-following, followed by scheduled targeted training on reasoning-intensive data to enhance the model’s reasoning capabilities.
+
+
+\paragraph{RL recipe}
+For the RL training prompt set, we primarily integrate three data sources: mathematics, code, and STEM. The main purpose of this enhancement is to boost the model’s reasoning ability. Before conducting RL, we pre-selected data that matches a moderate difficulty level for the starting checkpoint.
+
+A known risk of RL training is the potential degeneration of general capabilities. To mitigate this, we incorporate the PTX loss~\cite{ouyang2022training} during RL, following the practice of K2~\cite{kimi2025k2}. This involves concurrent SFT on a high-quality, distributionally diverse dataset in the RL progress. Our PTX dataset spans both reasoning and general-purpose tasks. All data mentioned above are subsets derived from the training recipe of the K2 model~\cite{kimi2025k2}.
+
+For the RL algorithm, we use the same algorithm as in  K1.5~\cite{kimiteam2025kimik15scalingreinforcement}, while introducing several advanced tricks. We noticed that the precision mismatch between training and inference engines may lead to unstable RL learning. Therefore we introduce  truncated importance sampling, a method that effectively mitigates the policy mismatch between rollout and training~\cite{yao2025offpolicy}. We also dynamically adjust the KL penalty and the mini batch size (\textit{i.e.}, the number of updates per iteration) to make the RL training stable and avoid collapse of entropy~\cite{cui2025entropy}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Main results} 
+
+\subsubsection{Kimi Linear\string@1.4T results}
+
+\paragraph{Pretrain results}
+
+
+We compared our Kimi Linear model against two baselines (MLA and hybrid GDN-H) using a 1.4T pretraining corpus in Table~\ref{tab:pretrain}. 
+The evaluation focused on three areas: general knowledge, reasoning (math and code), and Chinese tasks.
+Kimi Linear consistently outperformed both baselines across almost all categories.
+\begin{itemize}[leftmargin=12pt]
+    \item General Knowledge: Kimi Linear scores highest on all of the key benchmarks like BBH, MMLU and HellaSwag.
+    \item Reasoning: It leads in math (GSM8K) and most code tasks (CRUXEval). However, it scores slightly lower on EvalPlus compared to GDN-H.
+    \item Chinese Tasks: Kimi Linear achieves the top scores on CEval and CMMLU.
+\end{itemize}
+In summary, Kimi Linear demonstrated the strongest performance, positioning it as a strong alternative to full-attention architectures at short context pretraining.
+
+
+
+\input{table/pretrain_1t}
+\input{table/instruct_1t}
+\input{table/long_1t}
+
+
+
+\paragraph{SFT results}
+
+Kimi Linear demonstrates strong performance across both general and math \& code tasks after undergoing the same supervised fine-tuning (SFT) recipe, consistently outperforming MLA and GDN-H. 
+In general tasks, Kimi Linear leads across the board, achieving the top scores on various MMLU benchmarks, BBH, and GPQA-Diamond.
+In math \& code tasks, it surpasses both baselines on difficult benchmarks like AIME 2025, HMMT 2025, PolyMath-en, and LiveCodeBench.
+Despite some minor exceptions like MATH500 and EvalPlus, Kimi Linear shows robust superiority across the tasks, confirming its clear superiority to the other models tested (GDN-H and MLA).
+
+
+
+
+
+
+
+\paragraph{Long Context Performance Evaluation}
+We evaluate the long-context performance of Kimi Linear against three baseline models—MLA, GDN-H, and Kimi Linear (RoPE)—across several benchmarks at 128k context length (see Table~\ref{tab:long_ctx}). The results highlight Kimi Linear's clear superiority in these long-context tasks.
+It consistently outperformed MLA and GDN-H, achieving the highest scores on RULER (84.3) and RepoQA (68.5) by a significant margin. This pattern of outperformance held across most other tasks, except for LongBench V2 and Frames. 
+Overall, Kimi Linear achieved the highest average score (54.5), further reinforcing its effectiveness as a leading attention architecture in long-context scenarios.
+
+
+\paragraph{RL results}
+\input{figures/rl_KDA_mla}
+
+To compare the RL convergence properties of Kimi Linear and MLA, we conduct RLVR using the in-house mathematics training set from \citep{kimi2025k2}, and evaluate on mathematics test sets (e.g., AIME 2025, MATH500), while keeping the algorithm and all hyperparameters identical to ensure a fair comparison of performance.
+
+As shown in Figure \ref{fig:rl_compare}, Kimi Linear demonstrates better efficiency compared to MLA. On the training set, even though both models start at similar points, the growth rate of training accuracy for Kimi Linear is significantly higher than that of MLA, and the gap gradually widens. On the test set, similar phenomena are observed. For example, on MATH500 and AIME2025, Kimi Linear achieves faster and better improvement compared to MLA. Overall, in reasoning-intensive long-form generation under RL, we empirically observe that Kimi Linear performs significantly better than MLA.
+
+\textbf{Summary of overall findings} During the pretraining and SFT stages, a clear performance hierarchy was established: Kimi Linear outperformed GDN-H, which in turn outperformed MLA. 
+However, this hierarchy shifted in long-context evaluations. While Kimi Linear maintained its top position, GDN-H's performance declined, placing it behind MLA. 
+Furthermore, in the RL stage, Kimi Linear also demonstrated superior performance over MLA. Overall, Kimi Linear consistently ranked as the top performer across all stages, establishing itself as a superior alternative to full attention architectures.
+
+
+
+
+\subsection{Efficiency Comparison}
+\input{figures/speed}
+
+\paragraph{Prefilling \& Decoding speed}
+We compare the training and decoding times for full attention MLA \citep{deepseekaiv3}, GDN-H, and Kimi Linear in Figure~\ref{fig:prefilling} and Figure~\ref{fig:decoding}. Note that all models are based on the Kimi Linear 48B setting, with the same number of layers and attention heads. 
+We observe that:
+1) Despite incorporating a more fine-grained decay mechanism, Kimi Linear introduces negligible latency overhead compared to GDN-H during prefilling.
+As shown in Figure \ref{fig:prefilling}, their performance curves are virtually indistinguishable, confirming that our method maintains high efficiency.
+The hybrid Kimi Linear model demonstrates a clear efficiency advantage over the MLA baseline as sequence length increases. 
+While its performance is comparable to MLA at shorter lengths (4k–16k), it becomes significantly faster from 128k onwards. 
+This efficiency gap widens dramatically at scale, with Kimi Linear outperforming MLA by a factor of $2.3$ for 512k sequences and $2.9$ for 1M sequences.
+As shown in Figure~\ref{fig:decoding-best},  Kimi Linear fully demonstrates its advantages during the decoding phase. For decoding at 1M context length, Kimi Linear is $6\times$ faster than full attention.
+
+
+
+
+
+
+
+

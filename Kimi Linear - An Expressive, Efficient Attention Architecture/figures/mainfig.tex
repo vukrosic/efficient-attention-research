@@ -1,0 +1,228 @@
+\pgfdeclareplotmark{redstar}{
+    \node[star,star point ratio=2.25,minimum size=15pt,
+        inner sep=0pt,draw=black,solid,fill=brickred!80] {};
+}
+\pgfdeclareplotmark{bluecircle}{
+    \node[circle,minimum size=10pt,
+        inner sep=0pt,draw=black,solid,fill=midnightblue!80] {};
+}
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={Decoding Acceleration},
+                        enlarge x limits=0.01,
+                        width=12cm, height=9cm,
+                        xmin=0,xmax=5,
+                        xtick={1,2,3,4},
+                        xticklabels={$1\times$,$2\times$,$3\times$,$4\times$},
+                        ymin=45, ymax=60,
+                        ytick={45,50,55,60},
+                        yticklabels={45,,,60},
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xlabel near ticks,
+                        ylabel=Performance,
+                        ylabel style={at={(0.05,0.5)}},
+                        axis line style={opacity=0.3, gray},
+                        grid style={gray!50},
+                    ]
+
+
+                    \addplot[color=brickred!80, only marks, mark=redstar]
+                    coordinates {
+                            (1, 47.2)
+                            (1.07991361, 47.9)
+                            (1.07991361, 51.0)
+                        };
+
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+                    
+                    \draw [gray, dashed] (rel axis cs:0, 1) -- (rel axis cs:1, 0);
+                    \node[right, color=black] at (axis cs:1.2, 47) {MLA 47.2};
+                    \node[left, color=black] at (axis cs:0.95, 48) {GDN-H 47.9};
+                    \node[right, color=black] at (axis cs:1.2, 51) {Kimi Linear 51.0};
+
+                \end{axis}
+                \begin{axis}[
+                        width=12cm, height=9cm,
+                        axis y line*=right,    % Position this y-axis on the right
+                        axis x line=none,      % Hide the x-axis
+                        enlarge x limits=0.01,
+                        tickwidth=0pt,
+                        xmin=0,xmax=5,
+                        ymin=50, ymax=90,
+                        xtick=\empty,          % Hide x-ticks
+                        ytick=\empty,          % Hide y-ticks
+                        ytick={50,90},
+                        yticklabels={50,90},
+                        ylabel style={at={(1.2, 0.5)}},
+                        axis line style={opacity=0.3, gray},
+                        grid style={gray!50},
+                    ]
+                    \addplot[color=midnightblue!80, only marks, mark=bluecircle]
+                    coordinates {
+                            (1, 81.3)
+                            (3.98, 80.5)
+                            (3.98, 84.3)
+                        };
+                    
+                    \node[right, color=black] at (axis cs:1.2, 81.3) {MLA 81.3};
+                    \node[left, color=black] at (axis cs:3.9, 80.5) {GDN-H 80.5};
+                    \node[left, color=black] at (axis cs:3.9, 84.3) {Kimi Linear 84.3};
+
+                    \node[left, draw=black, solid, minimum width=95pt, minimum height=80pt]  at (axis description cs:1, 0.0) {};
+                    \node at (axis description cs:0.72, 0.06) [star, star point ratio=2.25, minimum size=10pt,inner sep=0pt, draw=black, solid, fill=brickred!80,label={[right, brickred, font=\small,yshift=-1pt,xshift=5pt]right:MMLU-Pro (4k)} ] {};
+                    \node at (axis description cs:0.72, 0.12) [circle,  minimum size=7pt,inner sep=0pt, draw=black, solid, fill=midnightblue!80,label={[right, midnightblue, font=\small,yshift=-0.4pt,xshift=5pt]right:RULER (128k)} ] {};
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:perf-speed}
+    \end{subfigure}
+    \hspace{5mm}
+    \begin{subfigure}[b]{0.43\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        xmode=log,
+                        log basis x={10},
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={Decoding Length},
+                        enlarge x limits=0.1,
+                        width=12cm, height=9cm,
+                        xmin=0,xmax=1080000,
+                        ymin=0, ymax=13,
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xtick={4096,131072,262144,524288,1048576},
+                        xticklabels={4K,128K,256K,512k,1M},
+                        ytick={0,5,10},
+                        yticklabels={0,5,10},
+                        xlabel near ticks,
+                        ylabel=TPOT (ms),
+                        ylabel style={at={(0.05,0.5)}},
+                        axis line style={opacity=0},
+                        legend style={
+                                at={(0,1)},
+                                anchor=north west,
+                                legend cell align=left,
+                                font=\small,
+                            },
+                    ]
+
+                    \addplot[
+                        line width=1.5pt,
+                        dash pattern={on 4pt off 4pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+                    ] plot coordinates {
+                            (4096, 0.0926)
+                            (8192, 0.134)
+                            (16384, 0.213)
+                            (32768, 0.400)
+                            (65536, 0.781)
+                            (131072, 1.83)
+                            (262144, 3.10)
+                            (524288, 5.88)
+                            (1048576, 11.48)
+                        };
+                    \addlegendentry{MLA}
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=10-pointed star,
+                        mark size=2pt,
+                        draw=orange!70,
+                    ] plot coordinates {
+                            (4096, 0.10)
+                            (16384, 0.09)
+                            (32768, 0.10)
+                            (65536, 0.15)
+                            (131072, 0.46)
+                            (262144, 0.65)
+                            (524288, 1.04)
+                            (1048576, 1.84)
+                        };
+                    \addlegendentry{GDN-H}
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+                    ] plot coordinates {
+                            (4096, 0.10)
+                            (8192, 0.09)
+                            (16384, 0.09)
+                            (32768, 0.10)
+                            (65536, 0.15)
+                            (131072, 0.46)
+                            (262144, 0.65)
+                            (524288, 1.05)
+                            (1048576, 1.84)
+                        };
+                    \addlegendentry{\text{Kimi Linear}}
+
+
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:1048576,1.84) -- (axis cs:1048576,11.48);
+                    \node[right, black] at (axis cs:1048576, 6.66) (1M) {\large${6.3\times}$};
+
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:524288,1.04) -- (axis cs:524288,5.88);
+                    \node[right, black] at (axis cs:524288, 3.46) (512K) {\large${5.7\times}$};
+
+                    \draw[<->,>={Straight Barb[length=6pt, width=6pt]}, line width=1.5pt, brickred] (axis cs:262144,0.65) -- (axis cs:262144,3.10);
+                    \node[right, black] at (axis cs:262144, 1.875) (512K) {\large${4.8\times}$};
+
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:decoding-best}
+    \end{subfigure}
+
+
+
+
+
+
+
+
+
+    \caption{
+        (\subref{fig:perf-speed}) Performance vs. acceleration. With strict fair comparisons with 1.4T training tokens, on MMLU-Pro (4k context length, red stars), Kimi Linear leads performance (51.0) at similar speed. On RULER (128k context length, blue circles), it is Pareto-optimal, achieving top performance (84.3) and $3.98\times$ acceleration.
+        (\subref{fig:decoding-best}) Time per output token (TPOT) vs. decoding length. 
+        Kimi Linear (blue line) maintains a low TPOT, matching GDN-H and outperforming MLA at long sequences. This enables larger batches, yielding a $6.3\times$ faster TPOT (1.84ms vs. 11.48ms) than MLA at 1M tokens.
+}
+\end{figure}

@@ -1,0 +1,46 @@
+
+
+
+
+
+\begin{table}[!ht]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.1}
+    \caption{Performance comparison of Kimi Linear with the full-attention MLA baseline and the hybrid GDN baseline, all after the same pretraining recipe. Kimi Linear consistently outperforms both MLA and GDN-H on short-context pretrain evaluations. Best per-column results are \textbf{bolded}.}
+    \setlength{\tabcolsep}{12pt}
+    \begin{tabular}{@{}r l c c c c}
+        \toprule
+                                               &    Type Base            & MLA           & GDN-H         & Kimi Linear   \\
+        \midrule
+                                               & Trained Tokens & 1.4T          & 1.4T          & 1.4T          \\
+        \midrule
+        \multirow{7}{*}{\textit{General}}
+                                               & HellaSwag      & 81.7          & 82.2          & \textbf{82.9} \\
+                                               & ARC-challenge  & 64.6          & 66.5          & \textbf{67.3} \\
+                                               & Winogrande     & 78.1          & 77.9          & \textbf{78.6} \\
+                                               & BBH            & 71.6          & 70.6          & \textbf{72.9} \\
+                                               & MMLU           & 71.6          & 72.2          & \textbf{73.8} \\
+                                               & MMLU-Pro       & 47.2          & 47.9          & \textbf{51.0} \\
+                                               & TriviaQA       & 68.9          & 70.1          & \textbf{71.7} \\
+        \midrule
+
+        \multirow{5}{*}{\textit{Math \& Code}} & GSM8K          & 83.7          & 81.7          & \textbf{83.9} \\
+                                               & MATH           & \textbf{54.7} & 54.1          & \textbf{54.7} \\
+                                               & EvalPlus       & 59.5          & \textbf{63.1} & 60.2          \\
+                                               & CRUXEval-I-cot & 51.6          & 56.0          & \textbf{56.6} \\
+                                               & CRUXEval-O-cot & 61.5          & 58.1          & \textbf{62.0} \\
+
+        \midrule
+        \multirow{2}{*}{\textit{Chinese}}      & CEval          & 79.3          & 79.1          & \textbf{79.5} \\
+                                               & CMMLU          & 79.5          & 80.7          & \textbf{80.8} \\
+
+        \bottomrule
+    \end{tabular}
+
+    \label{tab:pretrain}
+\end{table}
+
+
+
+

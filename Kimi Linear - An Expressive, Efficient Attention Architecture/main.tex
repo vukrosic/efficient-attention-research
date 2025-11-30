@@ -1,0 +1,194 @@
+\documentclass{article}
+\usepackage{footnote}
+\makesavenoteenv{figure}
+\usepackage{arxiv}
+\usepackage[font=small]{caption}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+
+\usepackage[dvipsnames]{xcolor}
+\definecolor{kimiblue}{rgb}{0.09,0.5,0.99}
+\usepackage[breaklinks,colorlinks,allcolors=kimiblue]{hyperref}
+
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}		% Can be removed after putting your text content
+\usepackage{graphicx}
+\usepackage{doi}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{threeparttable}
+
+\usepackage{mathrsfs}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath,amsfonts,bm}
+\usepackage{amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{adjustbox}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{makecell}
+
+\usepackage{wrapfig}
+\usepackage{ulem}
+\usepackage[
+    backend=biber,
+    citestyle=numeric,
+    bibstyle=numeric,
+    mincitenames=1,
+    maxcitenames=1,
+    maxbibnames=3,
+]{biblatex}
+
+\usepackage{tikz}
+\usepackage{color}
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage{geometry}
+\usepackage{mathtools}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage[frozencache,cachedir=.]{minted} % used for final submission
+
+\usepackage[most]{tcolorbox}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{fontawesome}
+
+
+
+
+\newtheorem{proposition}{Proposition}
+\usetikzlibrary{
+  arrows.meta,
+  positioning,
+  calc,
+  shapes.geometric,
+  shapes.misc,
+  decorations.text,
+  patterns,
+  patterns.meta,
+  fit,
+  backgrounds,
+  chains,
+  shadows,
+  math,
+  matrix,
+  circuits.ee.IEC,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.shapes,
+  decorations.pathreplacing,
+  calligraphy
+}
+
+\definecolor{brickred}{HTML}{b92622}
+\definecolor{midnightblue}{HTML}{005c7f}
+\definecolor{limegreen}{HTML}{97c65a}
+\definecolor{salmon}{HTML}{f1958d}
+\definecolor{darkcyan}{HTML}{008B8B}
+\definecolor{darkgrey}{rgb}{0.53,0.53,0.53}
+\definecolor{mygrey}{rgb}{0.9,0.9,0.9}
+
+
+\newcommand{\white}[1]{\textcolor{white}{#1}}
+\newcommand{\brickred}[1]{\textcolor{brickred}{#1}}
+\newcommand{\midnightblue}[1]{\textcolor{midnightblue}{#1}}
+
+\addbibresource{main.bib}
+
+\newcommand{\citep}[1]{\parencite{#1}}
+\newcommand{\github}{\raisebox{0pt}{\faGithub}}
+\newcommand{\envelope}{\faEnvelopeO}
+\newcommand{\huggingface}{\raisebox{-2pt}{\includegraphics[scale=0.038]{figures/hf-logo.png}}}
+
+\setlist[itemize,1]{leftmargin=\dimexpr 18pt}
+\setlist[enumerate,1]{leftmargin=\dimexpr 18pt}
+
+\title{
+\raisebox{-0.1\height}{
+\includegraphics[width=0.032\textwidth]{figures/logo.pdf}} %
+Kimi Linear:\\ An Expressive, Efficient Attention Architecture
+}
+
+
+\author{
+Kimi Team\\
+\github\,\,\url{https://github.com/MoonshotAI/Kimi-Linear}\\
+}
+
+\date{}
+
+\renewcommand{\headeright}{Technical Report}
+\renewcommand{\undertitle}{Technical Report of Kimi Linear}
+\renewcommand{\shorttitle}{\raisebox{-0.12\height}{\includegraphics[width=0.02\textwidth]{figures/logo.pdf}}
+Kimi Linear: An Expressive, Efficient Attention Architecture}
+\newcommand{\jl}[1]{{\color{Red}[JohnsonL: #1]}}
+\newcommand{\dylan}[1]{{\color{blue}[dylan: #1]}}
+\newcommand{\zxy}[1]{{\color{yellow}[zxy: zxy#1]}}
+\newcommand{\yuxin}[1]{{\color{yellow}[yuxin: #1]}}
+\newcommand{\hjx}[1]{{\color{gray}[hjx: #1]}}
+\newcommand{\kk}[1]{{\color{red}[kk: #1]}}
+\newcommand{\yxc}[1]{{\color{violet}[Yxc: #1]}}
+
+\newcommand{\sonta}[1]{{\color{pink}[sonta: #1]}}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+
+
+
+
+
+\begin{document}
+\maketitle
+
+\vspace{-15pt}
+\begin{abstract}
+We introduce Kimi Linear, a hybrid linear attention architecture that, for the first time, outperforms full attention under fair comparisons across various scenarios—including short-context, long-context, and reinforcement learning (RL) scaling regimes. At its core lies Kimi Delta Attention (KDA), an expressive linear attention module that extends Gated DeltaNet \citep{yang-2025-gdn} with a finer-grained gating mechanism, enabling more effective use of limited finite-state RNN memory. Our bespoke chunkwise algorithm achieves high hardware efficiency through a specialized variant of the \emph{Diagonal-Plus-Low-Rank} (DPLR) transition matrices, which substantially reduces computation compared to the general DPLR formulation while remaining more consistent with the classical delta rule.
+
+We pretrain a Kimi Linear model with 3B activated parameters and 48B total parameters, based on a layerwise hybrid of KDA and Multi-Head Latent Attention (MLA). Our experiments show that with an identical training recipe, Kimi Linear outperforms full MLA with a sizeable margin across all evaluated tasks, while reducing KV cache usage by up to 75\% and achieving up to $6\times$ decoding throughput for a 1M context. These results demonstrate that Kimi Linear can be a drop-in replacement for full attention architectures with superior performance and efficiency, including tasks with longer input and output lengths.
+
+
+
+
+To support further research, we open-source the KDA kernel and vLLM implementations \footnote{\github\,\,\url{https://github.com/fla-org/flash-linear-attention/tree/main/fla/ops/kda}}, and release the pre-trained and instruction-tuned model checkpoints. \footnote{\huggingface\,\,\url{https://huggingface.co/moonshotai/Kimi-Linear-48B-A3B-Instruct}}
+
+
+
+\end{abstract}
+
+\input{figures/mainfig}
+
+
+\input{1-intro}
+\input{2-preliminary}
+\input{3-kda}
+\input{4-model}
+\input{5-exp}
+\input{6-discuss}
+\input{7-related}
+\input{8-conclusion}
+
+
+\newpage
+\printbibliography[title={References}]
+
+\newpage
+\appendix
+\input{appendix/contribution}
+\input{appendix/parallelize}
+\input{appendix/proof}
+\input{appendix/code}
+\input{appendix/perf_compare}
+
+
+\end{document}

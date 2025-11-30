@@ -1,0 +1,79 @@
+\section{Derivations for Chunkwise Parallelism of KDA}
+
+We first recall the recurrent form of KDA:
+\begin{equation*}
+    \begin{aligned}
+        \mathbf{S}_{[t]}^r & = \underbrace{\left(\prod_{i=1}^r \left(\mathbf{I} - \beta_{[t]}^i \boldsymbol{k}_{[t]}^i \boldsymbol{k}_{[t]}^{i\top}\right) \brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^i)}\right)}_{:= \mathbf{P}_{[t]}^r} \cdot\mathbf{S}_{[t]}^{0} + \underbrace{\sum_{i=1}^{r} \left(\prod_{j=i+1}^r \left(\mathbf{I} - \beta_{[t]}^j \boldsymbol{k}_{[t]}^j \boldsymbol{k}_{[t]}^{j\top}\right)\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^j)}\right)\cdot\beta_{[t]}^i \boldsymbol{k}_{[t]}^i\boldsymbol{v}_{[t]}^{i\top}}_{:=\mathbf{H}_{[t]}^r} \\
+                     & = \mathbf{P}_{[t]}^r \cdot \mathbf{S}_{[t]}^0 + \mathbf{H}_{[t]}^r
+    \end{aligned}
+    \label{eq:state_update}
+\end{equation*}
+Our goal is to transform $\mathbf{P}_{[t]}^r$ and $\mathbf{H}_{[t]}^r$ into matrix forms suitable for parallel computation.
+
+We show that $\mathbf{P}_{[t]}^r$, which involves the cumulative product of generalized Householder matrices, can be optimized using the classic WY representation.
+
+\begin{proposition}
+    The matrix $\mathbf{P}_{[t]}^r$ can be expressed as:
+    \begin{equation}
+        \mathbf{P}_{[t]}^r = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r} \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r})} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top}
+        \label{eq:P_wy}
+    \end{equation}
+    where the auxiliary vector $\boldsymbol{w}_{[t]}^r \in \mathbb{R}^{d_k}$ is computed via the following recurrence relation:
+    \begin{equation}
+        \boldsymbol{w}_{[t]}^r = \beta_{[t]}^r \left( \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} \boldsymbol{k}_{[t]}^r - \sum_{i=1}^{r-1} \boldsymbol{w}_{[t]}^i\left( \boldsymbol{k}_{[t]}^{i\top}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r} \right)}\boldsymbol{k}_{[t]}^r \right)  \right)
+        \label{eq:w_recursion}
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    We proceed with a proof by mathematical induction.
+
+
+    \textbf{Inductive Step:} Assume the proposition holds for $r-1$, i.e., $\mathbf{P}_{[t]}^{r-1} = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^{r-1})} - \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r-1})} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top}$.
+    We now derive:
+    \begin{align*}
+        \mathbf{P}_{[t]}^r & = \left(\mathbf{I} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r \boldsymbol{k}_{[t]}^{r\top}\right)\brickred{\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^r)}}\mathbf{P}_{[t]}^{r-1}                                                            \\
+                       & = \left(\mathbf{I} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r \boldsymbol{k}_{[t]}^{r\top}\right)\brickred{\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^r)}}\left(\brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^{r-1})} - \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r-1}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top}\right)                                                                                                                                         \\
+                       & = \left(\mathbf{I} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r \boldsymbol{k}_{[t]}^{r\top}\right)\left(\brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top}\right)                                                                                                                                         \\
+                       & = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} -\sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{k}_{[t]}^{r\top} \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} + \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{k}_{[t]}^{r\top} \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top}                                                                                                                                    \\
+                       & = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top} - \boldsymbol{k}_{[t]}^r  \left(\beta_{[t]}^r \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)}\boldsymbol{k}_{[t]}^r  \right)^\top + \boldsymbol{k}_{[t]}^r  \left(\beta_{[t]}^r \sum_{i=1}^{r-1} \bm{w}^i_{[t]}  \left( \boldsymbol{k}_{[t]}^{i\top} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^r  \right)  \right)^\top                                                                                                          \\
+                       & = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top} - \boldsymbol{k}_{[t]}^r   \underbrace{\left(\beta_{[t]}^r \left( \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)}\boldsymbol{k}_{[t]}^r  - \sum_{i=1}^{r-1} \boldsymbol{w}_{[t]}^{i} \left( \boldsymbol{k}_{[t]}^{i\top} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^r  \right)  \right)\right)^\top}_{\boldsymbol{w}_{[t]}^r}  \\
+                       & = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top} - \boldsymbol{k}_{[t]}^r  \boldsymbol{w}_{[t]}^{r\top}                                                                                                                                                             \\
+                       & = \brickred{\operatorname{Diag}(\boldsymbol{\gamma}_{[t]}^r)} - \sum_{i=1}^{r} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{w}_{[t]}^{i\top}
+    \end{align*}
+    The inductive step holds.
+\end{proof}
+
+Similar to $\mathbf{P}_{[t]}^r$, $\mathbf{H}_{[t]}^r$ can also be expressed in a parallelizable form.
+
+\begin{proposition}
+    The matrix $\mathbf{H}_{[t]}^r$ can be expressed as:
+    \begin{equation}
+        \mathbf{H}_{[t]}^r = \sum_{i=1}^{r} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top}
+        \label{eq:H_wy}
+    \end{equation}
+    where the auxiliary vector $\boldsymbol{u}_{[t]}^r \in \mathbb{R}^{d_v}$ is computed via the following recurrence relation:
+    \begin{equation}
+        \boldsymbol{u}_{[t]}^r = \beta_{[t]}^r \left(\boldsymbol{v}_{[t]}^r - \sum_{i=1}^{r-1}\boldsymbol{u}_{[t]}^i \left(\boldsymbol{k}_{[t]}^{i\top} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^r\right)  \right)
+        \label{eq:u_recursion}
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    We again use mathematical induction.
+
+
+    \textbf{Inductive Step:} Assume the proposition holds for $r-1$.
+    \begin{align*}
+        \mathbf{H}_{[t]}^r & = \left(\mathbf{I} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{k}_{[t]}^{r\top}\right) \brickred{\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^r)}}\mathbf{H}_{[t]}^{r-1} +  \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{v}_{[t]}^{r\top}                                                                                                                                                                                             \\
+                       & = \left(\mathbf{I} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{k}_{[t]}^{r\top}\right) \brickred{\brickred{\operatorname{Diag}(\boldsymbol{\alpha}_{[t]}^r)}} \left(\sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r-1}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top}\right) +  \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{v}_{[t]}^{r\top}                                                                                \\
+                       & = \left(\mathbf{I} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{k}_{[t]}^{r\top}\right) \left(\sum_{i=1}^{r-1} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top}\right) +  \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{v}_{[t]}^{r\top}                                                                                \\
+                       & = \sum_{i=1}^{r-1}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}{\boldsymbol{k}}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top} - \beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{k}_{[t]}^{r\top} \sum_{i=1}^{r-1}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}\boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top} +\beta_{[t]}^r \boldsymbol{k}_{[t]}^r  \boldsymbol{v}_{[t]}^{r\top}                       \\
+                       & = \sum_{i=1}^{r-1}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}\boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top} - \boldsymbol{k}_{[t]}^r  \left( \beta_{[t]}^r \sum_{i=1}^{r-1} \left( \boldsymbol{k}_{[t]}^{r\top} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)} \boldsymbol{k}_{[t]}^i \right) \boldsymbol{u}_{[t]}^i \right)^\top +  \boldsymbol{k}_{[t]}^r \beta_{[t]}^r \boldsymbol{v}_{[t]}^{r\top} \\
+                       & = \sum_{i=1}^{r-1}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}\boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top} + \boldsymbol{k}_{[t]}^r  \left( \underbrace{\beta_{[t]}^r \left(\boldsymbol{v}_{[t]}^r - \sum_{i=1}^{r-1}\boldsymbol{u}_{[t]}^i\left(\boldsymbol{k}_{[t]}^{i\top}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}\boldsymbol{k}_{[t]}^r\right) \right)}_{\boldsymbol{u}_{[t]}^r} \right)^\top                 \\
+                       & = \sum_{i=1}^{r-1}\brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}\boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top} + \boldsymbol{k}_{[t]}^r  \boldsymbol{u}_{[t]}^{r\top}                                                                                                                                                   \\
+                       & = \sum_{i=1}^{r} \brickred{\operatorname{Diag}\left(\boldsymbol{\gamma}_{[t]}^{i\rightarrow r}\right)}\boldsymbol{k}_{[t]}^i \boldsymbol{u}_{[t]}^{i\top}
+    \end{align*}
+    The inductive step holds.
+\end{proof}
+

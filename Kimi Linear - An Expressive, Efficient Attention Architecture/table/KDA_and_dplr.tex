@@ -1,0 +1,99 @@
+\newenvironment{longlisting}{\captionsetup{type=listing,labelfont=bf}}{}
+\renewcommand{\theFancyVerbLine}{\ttfamily\textcolor[rgb]{0.5,0.5,0.5}{\scriptsize\arabic{FancyVerbLine}}}
+
+\setminted{
+    fontsize=\footnotesize,
+    fontfamily=tt,
+    linenos,
+    frame=lines,
+    breaklines,
+    numbersep=1.5pt,
+}
+\begin{figure}[h]
+\begin{subfigure}[t]{0.48\textwidth}
+\begin{minted}[
+    fontsize=\scriptsize,
+    highlightlines={6,13-16,25-27,31-32},
+    highlightcolor=red!5,
+    ]{python}
+def chunk_dplr(q, k, v, a, b, g, chunk_size):
+    B, H, T, K, V, BT = *q.shape, v.shape[-1], chunk_size
+    NT, S = T // BT, k.new_zeros(B, H, K, V)
+    q, k, v, a, b, g = map(lambda x: rearrange(x, 'b h (n c) d -> b h n c d', c=BT), [q, k, v, a, b, g])
+    gc = g.cumsum(-2)
+-   Aab, Aak, Aqb, Aqk = (torch.zeros(B, H, NT, BT, BT) for _ in range(4))
+
+    for i in range(BT):
+        a_i, q_i, g_i = (x[:,:,:,i,None] for x in (a, q, gc))
+        mask = (torch.arange(BT) <= i)[..., None]
+        s1_i = (g_i - gc).exp().where(mask, 0)
+        s2_i= (g_i - g[:,:,:,i,None] - gc).where(mask, 0)
+-       Aqk[..., i, :] = (q_i * k * s1_i).sum(-1)
+-       Aqb[..., i, :] = (q_i * b * s1_i).sum(-1)
+-       Aab[..., i, :] = (a_i * b * s2_i).sum(-1)
+-       Aak[..., i, :] = (a_i * k * s2_i).sum(-1)
+    for i in range(1, BT):
+        Aab[..., i, :i] = Aab[..., i, :i] + (Aab[..., i, :, None] * Aab[..., :, :i]).sum(-2)
+    Aab = Aab + torch.eye(BT)
+    u, w = Aab @ (Aak @ v), Aab @ ((gc-g).exp() * a)
+    o = torch.zeros_like(v)
+    mask = torch.triu(torch.ones(BT, BT), diagonal=1)
+    for i in range(0, NT):
+        q_i, k_i, v_i, u_i, w_i, b_i = (x[:, :, i] for x in (q, k, v, u, w, b))
+-       o1 = Aqk[:, :, i] @ v_i
+-       o2 = Aqb[:, :, i] @ (u_i + w_i @ S)
+-       o3 = (q_i * gkc[:, :, i].exp()) @ S
+        o[:, :, i] = o1 + o2 + o3
+        decay = (gc[:, :, i, -1, None] - gc[:, :, i]).exp()
+        S = S * gc[:,:,i,-1,:,None].exp()
+-       S +=(k_i * decay).transpose(-1,-2) @ v_i
+-       S +=(b_i * decay).transpose(-1,-2) @ (u_i + w_i @ S)
+    return o, S
+\end{minted}    
+\caption{PyTorch-style pseudo code for chunkwise DPLR. }
+\label{listing:dplr}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\begin{minted}[
+    fontsize=\scriptsize,
+    highlightlines={6,14-15,26,29},
+    highlightcolor=green!10,
+    ]{python}
+def chunk_kda(q, k, v, a, b, g, chunk_size):
+    B, H, T, K, V, BT = *q.shape, v.shape[-1], chunk_size
+    NT, S = T // BT, k.new_zeros(B, H, K, V)
+    q, k, v, g = map(lambda x: rearrange(x, 'b h (n c) ... -> b h n c ...', c=BT), [q, k, v, g])
+    gc = g.cumsum(-2)
++   Aqk, Akk = (torch.zeros(B, H, NT, BT, BT) for _ in range(2))
+
+    for i in range(BT):
+        k_i, q_i = k[:, :, :, i, None], q[:, :, :, i, None]
+        g_i = gc[...,i:i+1,:]
+        mask = (torch.arange(BT) <= i)[..., None]
+        s1_i = (g_i - gc).exp().where(mask, 0)
+        s2_i = (gc - g_i).exp()
++       Aqk[:, :, :, i, :] = (q_i * k * s1_i).sum(-1)
++       Akk[..., i] = (k_i * k * s2_i).sum(-1)
+    mask = torch.triu(torch.ones(BT, BT), diagonal=0)
+    A = -Akk.masked_fill(mask, 0)
+    for i in range(1, BT):
+        A[..., i, :i] = A[..., i, :i] + (A[..., i, :, None] * A[..., :, :i].clone()).sum(-2)
+    A = (A + torch.eye(BT))
+    w, u = A @ (gc.exp() * k), A @ v
+    o = torch.zeros_like(v)
+    mask = torch.triu(torch.ones(BT, BT), diagonal=1)
+    for i in range(0, NT):
+        q_i, k_i, u_i, g_i, w_i = (x[:, :, i] for x in (q, k, u, gc, w))
++       o[:,:,i]=(q_i *g_i.exp()) @ S + Aqk @(u_i-w_i @ S)
+        decay = (g_i[:,:,-1:] - g_i).exp()
+        S = S * g_i[:, :, -1, :, None].exp()
++       S += (k_i * decay).transpose(-1,-2) @ v_i
+    return o, S
+\end{minted}   
+\caption{PyTorch-style pseudo code for chunkwise KDA. }
+\label{listing:KDA} 
+\end{subfigure}
+\label{listing:KDA-dplr} 
+\captionsetup{labelformat=empty,labelsep=none}
+\end{figure} 

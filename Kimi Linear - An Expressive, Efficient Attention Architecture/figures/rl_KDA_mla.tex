@@ -1,0 +1,336 @@
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.33\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={Train},
+                        width=250pt, height=230pt,
+                        xmin=0,xmax=120,
+                        ymin=20, ymax=65,
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xtick={20,40,60,80,100},
+                        xticklabels={20,40,60,80,100},
+                        ytick={20,35,50,65},
+                        yticklabels={20,35,50,65},
+                        xlabel near ticks,
+                        ylabel=Accuracy,
+                        ylabel style={at={(0.02,0.5)}},
+                        axis line style={opacity=0},
+                        legend style={
+                                at={(0,1)},
+                                anchor=north west,
+                                legend cell align=left,
+                                font=\small,
+                            },
+                    ]
+
+                    \addplot[
+                        line width=1.5pt,
+                        dash pattern={on 4pt off 4pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+                    ] plot coordinates {
+                            (0, 21.48749977350235)
+                            (4, 25.36250054836273)
+                            (8, 28.37499976158142)
+                            (12, 30.84999918937683)
+                            (16, 36.399999260902405)
+                            (20, 36.675000190734863)
+                            (24, 38.112500309944153)
+                            (28, 39.675000309944153)
+                            (32, 38.749998807907104)
+                            (36, 42.787501215934753)
+                            (40, 39.637500047683716)
+                            (44, 42.03749895095825)
+                            (48, 43.412500619888306)
+                            (52, 46.024999022483826)
+                            (56, 45.899999141693115)
+                            (60, 48.08749854564667)
+                            (64, 47.6375013589859)
+                            (68, 48.612499237060547)
+                            (72, 49.76249933242798)
+                            (76, 49.97499883174896)
+                            (80, 48.56249988079071)
+                            (84, 50.36249756813049)
+                            (88, 49.84999895095825)
+                            (92, 48.08749854564667)
+                            (96, 50.53750276565552)
+                            (100, 50.43749809265137)
+                            (104, 51.92499756813049)
+                            (108, 52.02500224113464)
+                            (112, 52.49999761581421)
+                        };
+                    \addlegendentry{MLA@1.4T}
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+                    ] plot coordinates {
+                            (0, 22.02499955892563)
+                            (4, 28.40000092983246)
+                            (8, 34.462499618530273)
+                            (12, 35.40000021457672)
+                            (16, 35.12499928474426)
+                            (20, 40.549999475479126)
+                            (24, 41.13749861717224)
+                            (28, 45.06250023841858)
+                            (32, 43.88749897480011)
+                            (36, 44.65000033378601)
+                            (40, 46.912500262260437)
+                            (44, 48.73749911785126)
+                            (48, 48.07499945163727)
+                            (52, 47.450000047683716)
+                            (56, 50.16250014305115)
+                            (60, 51.74999833106995)
+                            (64, 53.23749780654907)
+                            (68, 51.93750262260437)
+                            (72, 55.75000047683716)
+                            (76, 53.03750038146973)
+                            (80, 52.91249752044678)
+                            (84, 56.05000257492065)
+                            (88, 54.61249947547913)
+                            (92, 56.11249804496765)
+                            (96, 56.65000081062317)
+                            (100, 56.11249804496765)
+                            (104, 57.67499804496765)
+                            (108, 60.31249761581421)
+                            (112, 59.02500152587891)
+                        };
+                    \addlegendentry{\text{Kimi Linear@1.4T}}
+
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:rl-train}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={MATH 500 Test},
+                        width=250pt, height=230pt,
+                        xmin=0,xmax=120,
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xtick={20,40,60,80,100},
+                        xticklabels={20,40,60,80,100},
+                        ymin=70, ymax=94,
+                        ytick={70,78,86,94},
+                        yticklabels={70,78,86,94},
+                        xlabel near ticks,
+                        ylabel=Accuracy,
+                        ylabel style={at={(0.02,0.5)}},
+                        axis line style={opacity=0},
+                        legend style={
+                                at={(0,1)},
+                                anchor=north west,
+                                legend cell align=left,
+                                font=\small,
+                            },
+                    ]
+
+                    \addplot[
+                        line width=1.5pt,
+                        dash pattern={on 4pt off 4pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+                    ] plot coordinates {
+                            (0, 72.60000109672546)
+                            (8, 76.99999809265137)
+                            (16, 79.00000214576721)
+                            (24, 84.20000076293945)
+                            (32, 81.99999928474426)
+                            (40, 84.20000076293945)
+                            (48, 84.60000157356262)
+                            (56, 85.00000238418579)
+                            (64, 84.20000076293945)
+                            (72, 85.79999804496765)
+                            (80, 84.60000157356262)
+                            (88, 83.20000171661377)
+                            (96, 84.3999981880188)
+                            (104, 83.39999914169312)
+                            (112, 84.60000157356262)
+                        };
+                    \addlegendentry{MLA@1.4T}
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+                    ] plot coordinates {
+                            (0, 72.39999771118164)
+                            (8, 77.60000228881836)
+                            (16, 84.60000157356262)
+                            (24, 86.00000143051147)
+                            (32, 85.19999980926514)
+                            (40, 84.60000157356262)
+                            (48, 87.00000047683716)
+                            (56, 86.19999885559082)
+                            (64, 87.99999952316284)
+                            (72, 86.79999709129333)
+                            (80, 84.60000157356262)
+                            (88, 86.59999966621399)
+                            (96, 88.40000033378601)
+                            (104, 88.20000290870667)
+                            (112, 86.40000224113464)
+                        };
+                    \addlegendentry{\text{Kimi Linear@1.4T}}
+
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:rl-math500}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.33\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{axis}[
+                        trim axis left,
+                        trim axis right,
+                        ymajorgrids=true,
+                        xmajorgrids=true,
+                        tickwidth=0pt,
+                        tick align=inside,
+                        xlabel={AIME 2025},
+                        width=250pt, height=230pt,
+                        xmin=0,xmax=120,
+                        ymin=10, ymax=25,
+                        scaled x ticks=false,
+                        scaled y ticks=false,
+                        xtick={20,40,60,80,100},
+                        xticklabels={20,40,60,80,100},
+                        ytick={10,15,20,25},
+                        yticklabels={10,15,20,25},
+                        xlabel near ticks,
+                        ylabel=Accuracy,
+                        ylabel style={at={(0.02,0.5)}},
+                        axis line style={opacity=0},
+                        legend style={
+                                at={(0,1)},
+                                anchor=north west,
+                                legend cell align=left,
+                                font=\small,
+                            },
+                    ]
+
+                    \addplot[
+                        line width=1.5pt,
+                        dash pattern={on 4pt off 4pt},
+                        mark=star,
+                        mark size=2pt,
+                        mark options={scale=1},
+                        color=darkcyan
+                    ] plot coordinates {
+                            (0, 10.833333432674408)
+                            (8, 10.833333432674408)
+                            (16, 12.083332985639572)
+                            (24, 17.499999701976776)
+                            (32, 19.583334028720856)
+                            (40, 17.083333432674408)
+                            (48, 15.416666865348816)
+                            (56, 17.083333432674408)
+                            (64, 16.66666716337204)
+                            (72, 18.75)
+                            (80, 17.499999701976776)
+                            (88, 17.083333432674408)
+                            (96, 18.75)
+                            (104, 16.249999403953552)
+                            (112, 19.166666269302368)
+                        };
+                    \addlegendentry{MLA@1.4T}
+
+                    \addplot[
+                        line width=1.5pt,
+                        mark=pentagon*,
+                        draw=blue!60,
+                        mark options={
+                                fill=blue!60,
+                                fill opacity=1.0,
+                                solid
+                            },
+                        mark size=1.5pt,
+                        opacity=1.0,
+                    ] plot coordinates {
+                            (0, 11.249999701976776)
+                            (8, 11.666666716337204)
+                            (16, 13.750000298023224)
+                            (24, 17.916665971279144)
+                            (32, 19.583334028720856)
+                            (40, 21.250000596046448)
+                            (48, 18.333333730697632)
+                            (56, 22.083333134651184)
+                            (64, 20.000000298023224)
+                            (72, 22.083333134651184)
+                            (80, 22.083333134651184)
+                            (88, 21.666666865348816)
+                            (96, 21.250000596046448)
+                            (104, 20.416666567325592)
+                            (112, 22.499999403953552)
+                        };
+                    \addlegendentry{\text{Kimi Linear@1.4T}}
+
+                    \draw [semithick, black] (axis description cs:0,0) -- (axis description cs:1,0); % This line adds a thick line at y=0
+                    \draw [semithick, black] (axis description cs:0,1) -- (axis description cs:1,1); % This line adds a thick line at y=1
+
+                \end{axis}
+
+            \end{tikzpicture}
+        }
+        \caption{}
+        \label{fig:rl-aime}
+    \end{subfigure}
+    \caption{
+        The training and test accuracy curves for Kimi Linear@1.4T and MLA@1.4T during Math RL training. Kimi Linear consistently outperforms the full attention baseline by a sizable margin during the whole RL process.
+    }
+    \label{fig:rl_compare}
+\end{figure}

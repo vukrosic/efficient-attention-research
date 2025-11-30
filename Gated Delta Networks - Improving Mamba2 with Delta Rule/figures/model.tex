@@ -1,0 +1,412 @@
+
+
+% \pgfplotsset{every tick label/.append style={font=\footnotesize}}
+% \pgfplotsset{compat=1.14}
+
+
+
+\definecolor{fgate_color}{RGB}{252,224,225}
+\definecolor{delta_color}{RGB}{242,243,193}
+\definecolor{swa_color}{RGB}{252,224,225}
+\definecolor{add_norm_color}{RGB}{252,226,187}
+\definecolor{glu_color}{RGB}{194,232,247}
+\definecolor{silu_color}{RGB}{203,231,207}
+\definecolor{linear_color}{RGB}{220,223,240}
+\definecolor{conv_color}{RGB}{252,224,225}
+\definecolor{l2_color}{RGB}{252,226,187}
+\definecolor{gray_bbox_color}{RGB}{243,243,244}
+\definecolor{oproj_color}{RGB}{220,223,240}
+\definecolor{operator_color}{RGB}{252,224,225}
+\begin{figure}[t!]
+\centering
+\scalebox{0.85}{
+\tikzset{
+model/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=gray_bbox_color,
+    minimum width=118pt,
+    rounded corners=10pt
+  },
+gdelta/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=gray_bbox_color,
+    % fill=delta_color,
+    minimum width=200pt,
+    minimum height=200pt,
+    rounded corners=10pt
+  },
+tokenmixer/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=delta_color!80,
+    minimum width=78pt,
+    minimum height=0.7cm,
+    rounded corners=3pt
+  },
+swa/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=swa_color!80,
+    minimum width=78pt,
+    minimum height=0.7cm,
+    rounded corners=3pt
+  },
+glu/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=glu_color!80,
+    minimum width=78pt,
+    minimum height=0.7cm,
+    rounded corners=3pt
+  },
+norm/.style={
+    draw=black,
+    very thick,
+    fill=add_norm_color!80,
+    minimum width=40pt,
+    % minimum height=1cm,
+    rounded corners=3pt,
+    align=center,
+  },
+linear/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=oproj_color!80,
+    minimum width=40pt,
+    % minimum height=1cm,
+    rounded corners=3pt
+  },
+stacked/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=linear_color!80,
+    minimum width=40pt,
+    minimum height=15pt,
+    rounded corners=3pt,
+    % trapezium, trapezium angle=100, draw,inner xsep=2pt,outer sep=0pt,
+  },
+    % Modified trapezoid style with rounded corners
+    trapezoid/.style={
+        trapezium,
+        trapezium left angle=110,
+        trapezium right angle=110,
+        rounded corners=3pt,
+        inner xsep=1pt,
+        outer sep=0pt,
+    },
+conv/.style={
+    draw=black,
+    very thick,
+    minimum width=30pt,
+    fill=conv_color!80,
+    rounded corners=3pt,
+    rectangle,
+    font=\small
+  },
+l2/.style={
+    draw=black,
+    very thick,
+    minimum width=30pt,
+    fill=l2_color!80,
+    rounded corners=3pt,
+    rectangle,
+    font=\small
+  },
+fgate/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=fgate_color!80,
+    minimum width=30pt,
+    minimum height=15pt,
+    rounded corners=3pt
+  },
+oproj/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=oproj_color!80,
+    minimum width=78pt,
+    % minimum height=1cm,
+    rounded corners=3pt
+  },
+silu/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=silu_color,
+    minimum width=1.1cm,
+    % minimum height=1cm,
+    rounded corners=3pt
+  },
+layerlink/.style={
+    -latex,
+    very thick,
+    % shorten >=1pt,
+    % shorten <=1pt
+  },
+modulelink/.style={
+    -latex,
+    very thick,
+    densely dashed,
+    shorten >=1pt,
+    shorten <=1pt,
+    rounded corners=3pt
+  },
+normlink/.style={
+    very thick,
+    % shorten >=1pt,
+    % shorten <=1pt
+  },
+residual/.style={
+    % -latex,
+    very thick,
+    rounded corners=5pt
+  },
+qf/.style={
+    -latex,
+    very thick,
+    rounded corners=5pt
+  },
+oplus/.style={
+    draw=black,
+    % thick,
+    line width=1pt,
+    circle,
+    minimum size=8pt,
+    inner sep=0pt,
+    outer sep=0pt,
+    path picture={
+        \draw (path picture bounding box.center) -- ++(0.3cm,0)
+        (path picture bounding box.center) -- ++(-0.3cm,0)
+        (path picture bounding box.center) -- ++(0,0.3cm)
+        (path picture bounding box.center) -- ++(0,-0.3cm);
+      },
+  },
+otimes/.style={
+    draw=black,
+    very thick,
+    circle,
+    minimum size=8pt,
+    inner sep=0pt,
+    outer sep=0pt,
+    path picture={
+        \draw (path picture bounding box.center) -- ++(0.25cm,0.25cm)
+        (path picture bounding box.center) -- ++(-0.25cm,-0.25cm)
+        (path picture bounding box.center) -- ++(-0.25cm,0.25cm)
+        (path picture bounding box.center) -- ++(0.25cm,-0.25cm);
+      }
+  },
+sigmoid/.style={
+    draw=black,
+    thick,
+    line width=1pt,
+    circle,
+    minimum size=8pt,
+    inner sep=0pt,
+    outer sep=0pt,
+    path picture={
+        \draw[domain=-1.5:0, samples=50, variable=\x, blue, thick]
+        plot ({\x}, {0});
+        \draw[domain=0:1.5, samples=50, variable=\x, blue, thick]
+        plot ({\x}, {\x});
+      }
+  },
+swish/.style={
+    draw=black,
+    thick,
+    line width=1pt,
+    circle,
+    minimum size=8pt,
+    inner sep=0pt,
+    outer sep=0pt,
+    path picture={
+        \draw[domain=-1.5:0, samples=50, variable=\x, blue, thick]
+        plot ({\x}, {0});
+        \draw[domain=0:1.5, samples=50, variable=\x, blue, thick]
+        plot ({\x}, {\x});
+      }
+  },
+kgdelta/.style={
+    draw=black,
+    very thick,
+    % ultra thick,
+    % line width=1.3pt,
+    fill=delta_color!50,
+    minimum width=115pt,
+    minimum height=0.8cm,
+    rounded corners=3pt
+  },
+}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}
+\centering
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GATED DELTANET H1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[model, minimum height=165pt] (model) at (0,0) {};
+\node[anchor=east,xshift=-2pt] at (model.west) (ntimes) {$N\times$};
+\node[tokenmixer, anchor=south, yshift=20pt] at (model.south) (gdelta1) {Gated DeltaNet};
+\draw[layerlink] ($(model.south) + (0,-12pt)$) -- (gdelta1.south);
+\node[glu, anchor=south, yshift=8pt] at (gdelta1.north) (mlp1) {MLP};
+\draw[normlink] (gdelta1.north) -- (mlp1.south);
+\node[oplus, anchor=south, yshift=4pt] at (mlp1.north) (oplus1) {};
+
+\node[swa, anchor=south, yshift=12pt] at (oplus1.north) (swa) {SWA};
+\draw[normlink] (mlp1.north) -- (oplus1.south);
+\draw[layerlink] (oplus1.north) -- (swa.south);
+\draw[residual] ([yshift=-10pt]gdelta1.south) -- ([xshift=-48pt,yshift=-10pt]gdelta1.south) -- ([xshift=-48pt]oplus1.center) -- (oplus1.center);
+\node[glu, anchor=south, yshift=8pt] at (swa.north) (mlp2) {MLP};
+\draw[normlink] (swa.north) -- (mlp2.south);
+\node[oplus, anchor=south, yshift=4pt] at (mlp2.north) (oplus2) {};
+
+\draw[normlink] (mlp2.north) -- (oplus2.south);
+\draw[residual] ([xshift=0pt,yshift=6pt]oplus1.center) -- ([xshift=-48pt,yshift=6pt]oplus1.center) -- ([xshift=-48pt]oplus2.center) -- (oplus2.center);
+% \node[linear, anchor=south, yshift=5pt] at (norm3.north) (linear) {Linear};
+% \draw[layerlink] (oplus2.north) -- (norm3.south);
+% \draw[normlink] (norm3.north) -- (linear.south);
+\node[above=12pt] at (model.north) (output) {\textcolor{white}{Outputs}};
+\draw[layerlink] (oplus2.north) -- (output.south);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GATED DELTANET H2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[model, minimum height=240pt, anchor=west, xshift=20pt] (model1) at (model.east) {};
+% \node[anchor=north, align=center] at (1.250000,-1.500000) {Inputs};
+\node[below=12pt] at (model1.south) (input) {Gated DeltaNet-H2};
+\node[] at (model |- input) (input0) {Gated DeltaNet-H1};
+
+\node[tokenmixer, anchor=south, yshift=20pt] at (model1.south) (mamba2) {Mamba2};
+\draw[layerlink] (input.north) -- (mamba2.south);
+\node[glu, anchor=south, yshift=8pt] at (mamba2.north) (mlp1) {MLP};
+\draw[normlink] (mamba2.north) -- (mlp1.south);
+\node[oplus, anchor=south, yshift=4pt] at (mlp1.north) (oplus1) {};
+
+\node[tokenmixer, anchor=south, yshift=12pt] at (oplus1.north) (gdelta2) {Gated DeltaNet};
+\draw[normlink] (mlp1.north) -- (oplus1.south);
+\draw[layerlink] (oplus1.north) -- (gdelta2.south);
+\draw[residual] ([yshift=-10pt]mamba2.south) -- ([xshift=-48pt,yshift=-10pt]mamba2.south) -- ([xshift=-48pt]oplus1.center) -- (oplus1.center);
+\node[glu, anchor=south, yshift=8pt] at (gdelta2.north) (mlp2) {MLP};
+\draw[normlink] (gdelta2.north) -- (mlp2.south);
+\node[oplus, anchor=south, yshift=4pt] at (mlp2.north) (oplus2) {};
+
+\node[swa, anchor=south, yshift=12pt] at (oplus2.north) (swa) {SWA};
+\draw[normlink] (mlp2.north) -- (oplus2.south);
+\draw[layerlink] (oplus2.north) -- (swa.south);
+\draw[residual] ([yshift=-10pt]gdelta2.south) -- ([xshift=-48pt,yshift=-10pt]gdelta2.south) -- ([xshift=-48pt]oplus2.center) -- (oplus2.center);
+\node[glu, anchor=south, yshift=8pt] at (swa.north) (mlp3) {MLP};
+\draw[normlink] (swa.north) -- (mlp3.south);
+\node[oplus, anchor=south, yshift=4pt] at (mlp3.north) (oplus3) {};
+  
+\draw[normlink] (mlp3.north) -- (oplus3.south);
+\draw[residual] ([xshift=0pt,yshift=6pt]oplus2.center) -- ([xshift=-48pt,yshift=6pt]oplus2.center) -- ([xshift=-48pt]oplus3.center) -- (oplus3.center);
+% \node[linear, anchor=south, yshift=5pt] at (norm3.north) (linear) {Linear};
+% \draw[layerlink] (oplus2.north) -- (norm3.south);
+% \draw[normlink] (norm3.north) -- (linear.south);
+\node[above=12pt] at (model1.north) (output) {\textcolor{white}{Outputs}};
+\draw[layerlink] (oplus3.north) -- (output.south);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BLOCK DESIGN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[gdelta, anchor=west,xshift=30pt, minimum width=220pt] (gdelta) at (model1.east)  {};
+\node[] at (gdelta |- input) (input1) {Block Design};
+
+
+\node[kgdelta, yshift=15pt,minimum width=150pt] at (gdelta.mid) (kernel) {Gated Delta Rule };
+\node[below=12pt] at (gdelta.south) (input) {\textcolor{white}{Inputs}};
+
+\node[stacked, trapezium, trapezium left angle=110, trapezium right angle=110, inner xsep=1pt, outer sep=0pt, minimum width=30pt, anchor=south, yshift=20pt] at (gdelta.south) (vproj) {Linear};
+\node[conv, anchor=south, yshift=8pt] at (vproj.north) (vconv) {Conv};
+\node[swish, anchor=south, yshift=4pt] at (vconv.north) (vsilu) {};
+\draw[layerlink] (vsilu.north) -- (vsilu|-kernel.south) node[pos=0.8, right] {$\boldsymbol{v}$};
+\draw[normlink] (vsilu.south) -- (vconv.north);
+\draw[normlink] (vconv.south) -- (vproj.north);
+\draw[residual] (input.north) -- (gdelta.south) -- (vproj.south);
+
+\node[stacked, trapezium, trapezium left angle=110, trapezium right angle=110, inner xsep=1pt, outer sep=0pt, minimum width=30pt, anchor=south, yshift=19pt, opacity=0.2] at ($(gdelta.south west)!0.27!(gdelta.south east)$) (kproj) {\textcolor{white}{Linear}};
+\node[conv, anchor=south, yshift=8pt, opacity=0.2] at (kproj.north) (kconv) {\textcolor{white}{Conv}};
+\node[swish, anchor=south, yshift=4pt, opacity=0.2] at (kconv.north) (ksilu) {};
+\node[l2, anchor=south, yshift=4pt, opacity=0.2] at (ksilu.north) (kl2) {\textcolor{white}{L2}};
+\draw[layerlink, opacity=0.2] (kl2.north) -- (kl2|-kernel.south);
+\node[right] at ($(kl2)+(0,20pt)$) {$\boldsymbol{k}$};
+\draw[normlink, opacity=0.2] (ksilu.north) -- (kl2.south);
+\draw[normlink, opacity=0.2] (ksilu.south) -- (kconv.north);
+\draw[normlink, opacity=0.2] (kconv.south) -- (kproj.north);
+\draw[residual, opacity=0.2] (input.north) -- (gdelta.south) |- ([xshift=-10pt,yshift=10pt]gdelta.south) -| (kproj.south);
+
+\node[stacked, trapezium, trapezium left angle=110, trapezium right angle=110, inner xsep=1pt, outer sep=0pt, minimum width=30pt, anchor=south, yshift=21pt] at ($(gdelta.south west)!0.24!(gdelta.south east)$) (qproj) {Linear};
+\node[conv, anchor=south, yshift=8pt] at (qproj.north) (qconv) {Conv};
+\node[swish, anchor=south, yshift=4pt] at (qconv.north) (qsilu) {};
+\node[l2, anchor=south, yshift=4pt] at (qsilu.north) (ql2) {L2};
+\draw[layerlink] (ql2) -- (ql2|-kernel.south) node[pos=0.55, left] {$\vq$};
+\draw[normlink] (qsilu.north) -- (ql2.south);
+\draw[normlink] (qsilu.south) -- (qconv.north);
+\draw[normlink] (qconv.south) -- (qproj.north);
+\draw[residual] (input.north) -- (gdelta.south) |- ([xshift=-10pt,yshift=10pt]gdelta.south) -| (qproj.south);
+
+
+% \node[swish, xshift=-40pt, yshift=50pt] at ($(gdelta.south west)!0.375!(gdelta.south east)$) (qsilu) {};
+% link between qsilu and qproj
+% \draw[normlink] (qsilu.south) -- (qsilu|-qproj.north);
+
+\node[stacked, isosceles triangle, isosceles triangle apex angle=105, draw=black, very thick,  inner sep=.75pt, anchor=south, yshift=22pt, shape border rotate=90] at ($(gdelta.south west)!0.68!(gdelta.south east)$) (fproj) {Lin.};
+\node[stacked,isosceles triangle, isosceles triangle apex angle=105, draw=black, very thick, fill=fgate_color!80, inner sep=.9pt, anchor=south, yshift=20pt, shape border rotate=90, opacity=0.2] at ($(gdelta.south west)!0.71!(gdelta.south east)$) (bproj) {\textcolor{white}{Lin.}};
+% \node[anchor=center] at ($(fproj.south)!0.4!(fproj.north)$) {\footnotesize Linear};
+\draw[qf] ($(fproj.north)-(0,2pt)$) -- (fproj.north|-kernel.south) node[pos=0.89, left] {${\alpha}$};
+\draw[qf, opacity=0.2] ($(bproj.north)-(0,2pt)$) -- (bproj.north|-kernel.south) node[opacity=1, pos=0.89, right] {${\beta}$};
+\draw[residual, opacity=0.2] (input.north) -- (gdelta.south) |- ([xshift=-10pt,yshift=10pt]gdelta.south) -| (bproj.south);
+
+\draw[residual] (input.north) -- (gdelta.south) |- ([xshift=10pt,yshift=10pt]gdelta.south) -| (fproj.south);
+
+\node[stacked, trapezium, trapezium left angle=110, trapezium right angle=110, inner xsep=1pt, outer sep=0pt, minimum width=30pt, anchor=south, yshift=20pt] at ($(gdelta.south west)!0.89!(gdelta.south east)$) (gproj) {Linear};
+\draw[residual] (input.north) -- (gdelta.south) |- ([xshift=10pt,yshift=10pt]gdelta.south) -| (gproj.south);
+\node[sigmoid, yshift=20pt] at (gproj.north) (sigmoid) {};
+\draw[normlink] (gproj.north) -- (sigmoid);
+
+\node[norm, anchor=south, yshift=10pt] at (kernel.north) (norm4) {Norm};
+\node[otimes, anchor=south, yshift=6pt] at (norm4.north) (otimes) {};
+\node[draw=black, very thick, fill=oproj_color!80, minimum width=78pt, minimum height=10pt, shape=trapezium, trapezium angle=45, rounded corners=3pt, anchor=south, yshift=6pt] at (otimes.north) (oproj) {Linear};
+\draw[layerlink] (kernel.north) -- (norm4.south);
+\draw[normlink] (norm4.north) -- (otimes.south);
+\draw[normlink] (otimes.north) -- (oproj.south);
+\draw[residual] (sigmoid) |- (otimes) node[pos=0.8, below] {};
+
+\node[above=12pt] at (gdelta.north) (output) {\textcolor{white}{Outputs}};
+\draw[layerlink] (oproj.north) -- (output.south);
+\draw[modulelink] (gdelta2.east) -| ([yshift=-10pt]$(model1.east)!0.5!(gdelta.west)$) |- (gdelta.west);
+% \draw[] (mlp1.south east) -- ($(gdelta.south west) + (-1pt, 5pt)$);
+% \draw[] (mlp1.north east) -- ($(gdelta.north west) + (-1pt, -5pt)$);
+\end{tikzpicture}
+}
+}
+\caption{\small
+Visualization of the (hybrid) architecture and block design of Gated DeltaNet models. Gated DeltaNet-H1 and H2 use Gated DeltaNet + SWA and Mamba2 + Gated DeltaNet + SWA patterns, respectively. In the block design, query/key paths consist of linear proj., shortconv., SiLU and L2 norm; value path includes linear proj., shortconv. and SiLU; alpha/beta use linear proj.; and output gate applies linear proj. with SiLU.
+}
+\label{fig:gated_deltanet_model}
+\end{figure}

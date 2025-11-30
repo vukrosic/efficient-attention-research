@@ -1,0 +1,30 @@
+
+
+
+\begin{table}[t]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.1}
+    \caption{
+        Ablation study on the hybrid ratio of KDA to MLA attention and other key components.
+        We list the training and validation perplexities (lower is better) for comparison.
+        The best-performing model, used in our final experiments, is highlighted in gray.
+    }
+    \setlength{\tabcolsep}{8pt}
+    \begin{tabular}{rrccc}
+        \toprule
+                                                                     &      & Training PPL ($\downarrow$) & Validation PPL ($\downarrow$) \\
+        \midrule
+        \rowcolor{gray!20} \multirow{5}{*}{Hybrid ratio}             & 3:1  & \textbf{9.23}               & \textbf{5.65}                 \\
+                                                                     & 0:1  & 9.45                        & 5.77                          \\
+                                                                     & 1:1  & 9.29                        & 5.66                          \\
+                                                                     & 7:1  & 9.23                        & 5.70                          \\
+                                                                     & 15:1 & 9.34                        & 5.82                          \\
+        \midrule
+        \multicolumn{2}{r}{\textit{w/o} output gate}                 & 9.25 & 5.67                                                        \\
+        \multicolumn{2}{r}{\textit{w/ $\mathrm{swish}$} output gate} & 9.43 & 5.81                                                        \\
+        \multicolumn{2}{r}{\textit{w/o} convolution layer}           & 9.29 & 5.70                                                        \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:ablation}
+\end{table}

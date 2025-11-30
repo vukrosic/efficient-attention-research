@@ -1,0 +1,106 @@
+\definecolor{kvcolor}{RGB}{241,140,74}
+\definecolor{americanrose}{rgb}{1.0, 0.01, 0.24}
+\definecolor{bubblegum}{rgb}{0.99, 0.76, 0.8}
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\begin{figure*}[h]
+    \centering
+    \begin{adjustbox}{width=0.6\textwidth,center}
+    \centering
+        \begin{tikzpicture}
+            \tikzset{
+                state/.style={
+                    matrix of nodes,
+                    nodes={
+                        minimum size=10pt,
+                        anchor=center,
+                        inner sep=0pt,
+                        font=\tiny
+                    },
+                    nodes in empty cells,
+                    inner sep=0pt,
+                    rounded corners=1pt
+                },
+                statelink/.style={
+                    dash pattern={on 4pt off 4pt},
+                    ->,
+                    >={Straight Barb[length=5pt, width=6pt]},
+                    line width=1.3pt,
+                    shorten >=8pt,
+                    shorten <=8pt,
+                },
+                seplink/.style={
+                    dash pattern={on 4pt off 4pt},
+                    line width=1pt,
+                    shorten >=8pt,
+                    shorten <=8pt,
+                },
+                kvlink/.style={
+                    ->,
+                    >={Straight Barb[length=5pt, width=6pt]},
+                    line width=1.3pt,
+                    shorten >=8pt,
+                    shorten <=8pt,
+                },
+            }
+            \matrix[state, anchor=west, left delimiter={[}, right delimiter={]}] (stp1) {
+            |[fill=white]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!10]| {} & |[fill=midnightblue!20]| {} \\
+            |[fill=midnightblue!60]| {} & |[fill=midnightblue!70]| {} & |[fill=white]| {} & |[fill=midnightblue!40]| {} \\
+            |[fill=white]| {} & |[fill=midnightblue!30]| {} & |[fill=midnightblue!50]| {} & |[fill=white]| {} \\
+            |[fill=midnightblue!50]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!50]| {} \\
+            };
+            \node[right=10pt of stp1] (eq) {\large $=$};
+            \matrix[state, right=10pt of eq.east, left delimiter={[}, right delimiter={]}] (decay) {
+            |[fill=brickred!80]| {} & |[fill=white]| {} & |[fill=white]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=brickred!70]| {} & |[fill=white]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=white]| {} & |[fill=brickred!50]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=white]| {} & |[fill=white]| {} & |[fill=brickred!60]| {} \\
+            };
+            \matrix[state, anchor=west, right=20pt of decay, left delimiter={[}, right delimiter={]}] (st) {
+            |[fill=midnightblue!20]| {} & |[fill=midnightblue!40]| {} & |[fill=midnightblue!60]| {} & |[fill=white]| {} \\
+            |[fill=midnightblue!90]| {} & |[fill=midnightblue!70]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!70]| {} \\
+            |[fill=midnightblue!30]| {} & |[fill=midnightblue!40]| {} & |[fill=midnightblue!60]| {} & |[fill=midnightblue!50]| {} \\
+            |[fill=midnightblue!10]| {} & |[fill=white]| {} & |[fill=midnightblue!80]| {} & |[fill=midnightblue!20]| {} \\
+            };
+            \node[right=10pt of st] (plus) {\large $+$};
+            \node[right=0pt of plus.east] (leftbracket) {\large $\Biggl($};
+            \matrix[state,
+            right=3pt of leftbracket
+            ]
+            (decay1)  {
+            |[fill=brickred!80]| {} &|[fill=brickred!50]| {} &|[fill=brickred!40]| {} \\
+            |[fill=brickred!70]| {} &|[fill=brickred!70]| {} &|[fill=brickred!80]| {} \\
+            |[fill=brickred!50]| {} &|[fill=brickred!90]| {} &|[fill=brickred!60]| {} \\
+            |[fill=brickred!60]| {} &|[fill=brickred!80]| {} &|[fill=brickred!90]| {} \\
+            };
+            \node[anchor=west, inner sep=2pt] (odot) at (decay1.east) {\large $\odot$};
+            \matrix[state,
+            anchor=west,
+            right=0pt of odot
+            ]
+            (kv)  {
+            |[fill=kvcolor!30]| {} &|[fill=kvcolor!30]| {} &|[fill=kvcolor!30]| {} \\
+            |[fill=kvcolor!50]| {} &|[fill=kvcolor!50]| {} &|[fill=kvcolor!50]| {} \\
+            |[fill=kvcolor!70]| {} &|[fill=kvcolor!70]| {} &|[fill=kvcolor!70]| {} \\
+            |[fill=kvcolor!90]| {} &|[fill=kvcolor!90]| {} &|[fill=kvcolor!90]| {} \\
+            };
+            \node[right=3pt of kv] (rightbracket) {\large $\Biggl)$};
+            \matrix[state,
+            anchor=west, 
+            ]
+            (kvt) at ($(kv.east)+(20pt,0)$) {
+            |[fill=kvcolor!30]| {} & |[fill=kvcolor!50]| {} & |[fill=kvcolor!70]| {} & |[fill=kvcolor!90]| {} \\
+            |[fill=kvcolor!30]| {} & |[fill=kvcolor!50]| {} & |[fill=kvcolor!70]| {} & |[fill=kvcolor!90]| {} \\
+            |[fill=kvcolor!30]| {} & |[fill=kvcolor!50]| {} & |[fill=kvcolor!70]| {} & |[fill=kvcolor!90]| {} \\
+            };
+            
+
+            
+            
+            
+        \end{tikzpicture}
+        \end{adjustbox}
+
+    \captionsetup{labelformat=empty,labelsep=none}
+    \label{fig:KDA-chunks}
+\end{figure*}
+

@@ -1,0 +1,143 @@
+\definecolor{kvcolor}{RGB}{241,140,74}
+\begin{figure*}[h!]
+    \centering
+    \begin{adjustbox}{width=0.9\textwidth}
+        \begin{tikzpicture}
+            \tikzset{
+                state/.style={
+                    matrix of nodes,
+                    nodes={
+                        minimum size=10pt,
+                        anchor=center,
+                        inner sep=0pt,
+                        font=\tiny
+                    },
+                    nodes in empty cells,
+                    inner sep=0pt,
+                    rounded corners=1pt
+                },
+                statelink/.style={
+                    dash pattern={on 4pt off 4pt},
+                    ->,
+                    >={Straight Barb[length=5pt, width=6pt]},
+                    line width=1.3pt,
+                    shorten >=8pt,
+                    shorten <=8pt,
+                },
+                seplink/.style={
+                    dash pattern={on 4pt off 4pt},
+                    line width=1pt,
+                    shorten >=8pt,
+                    shorten <=8pt,
+                },
+                kvlink/.style={
+                    ->,
+                    >={Straight Barb[length=5pt, width=6pt]},
+                    line width=1.3pt,
+                    shorten >=8pt,
+                    shorten <=8pt,
+                },
+            }
+            \matrix[state, anchor=west, left delimiter={[}, right delimiter={]}] (st) {
+            |[fill=white]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!10]| {} & |[fill=midnightblue!20]| {} \\
+            |[fill=midnightblue!60]| {} & |[fill=midnightblue!70]| {} & |[fill=white]| {} & |[fill=midnightblue!40]| {} \\
+            |[fill=white]| {} & |[fill=midnightblue!30]| {} & |[fill=midnightblue!50]| {} & |[fill=white]| {} \\
+            |[fill=midnightblue!50]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!50]| {} \\
+            };
+
+            \node[right=10pt of st] (eq) {\large $=$};
+            \node[right=0pt of eq.east] (leftbracket) {\large $\Biggl($};
+            \matrix[state, right=5pt of leftbracket, left delimiter={[}, right delimiter={]}] (identity) {
+            |[fill=black!50]| {} & |[fill=white]| {} & |[fill=white]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=black!50]| {} & |[fill=white]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=white]| {} & |[fill=black!50]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=white]| {} & |[fill=white]| {} & |[fill=black!50]| {} \\
+            };
+            \node[right=10pt of identity] (minus) {\large $-$};
+
+            \matrix[state,right=10pt of minus] (kvec)
+            {
+            |[fill=kvcolor!30]| {} \\
+            |[fill=kvcolor!50]| {} \\
+            |[fill=kvcolor!70]| {} \\
+            |[fill=kvcolor!90]| {} \\
+            };
+
+            \node[anchor=west, inner sep=0pt] at (kvec.east) {\large $\times$};
+            \matrix[state,
+            anchor=north west, baseline=0.3cm
+            ]
+            (kt) at ($(kvec.north east)+(10pt,0)$) {
+            |[fill=kvcolor!30]| {} & |[fill=kvcolor!50]| {} & |[fill=kvcolor!70]| {} & |[fill=kvcolor!90]| {} \\
+            |[fill=white, opacity=0, minimum size=0.05cm]| {} & |[fill=white, opacity=0, minimum size=0.05cm]| {} & |[fill=white, opacity=0, minimum size=0.05cm]| {} & |[fill=white, opacity=0, minimum size=0.05cm]| {} \\
+            };
+            \node[right=50pt of kvec] (rightbracket) {\large $\Biggl)$};
+
+
+
+            \matrix[state, right=5pt of rightbracket, left delimiter={[}, right delimiter={]}] (decay) {
+            |[fill=brickred!80]| {} & |[fill=white]| {} & |[fill=white]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=brickred!70]| {} & |[fill=white]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=white]| {} & |[fill=brickred!50]| {} & |[fill=white]| {} \\
+            |[fill=white]| {} & |[fill=white]| {} & |[fill=white]| {} & |[fill=brickred!60]| {} \\
+            };
+
+            \matrix[state, right=20pt of decay, left delimiter={[}, right delimiter={]}] (stm1) {
+            |[fill=midnightblue!20]| {} & |[fill=midnightblue!40]| {} & |[fill=midnightblue!60]| {} & |[fill=white]| {} \\
+            |[fill=midnightblue!90]| {} & |[fill=midnightblue!70]| {} & |[fill=midnightblue!20]| {} & |[fill=midnightblue!70]| {} \\
+            |[fill=midnightblue!30]| {} & |[fill=midnightblue!40]| {} & |[fill=midnightblue!60]| {} & |[fill=midnightblue!50]| {} \\
+            |[fill=midnightblue!10]| {} & |[fill=white]| {} & |[fill=midnightblue!80]| {} & |[fill=midnightblue!20]| {} \\
+            };
+
+            \node[right=10pt of stm1] (plus) {\large $+$};
+            \matrix[state,right=10pt of plus] (kvec)
+            {
+            |[fill=kvcolor!30]| {} \\
+            |[fill=kvcolor!50]| {} \\
+            |[fill=kvcolor!70]| {} \\
+            |[fill=kvcolor!90]| {} \\
+            };
+
+            \node[anchor=west, inner sep=0pt] at (kvec.east) {\large $\times$};
+            \matrix[state,
+            anchor=north west, baseline=0.3cm
+            ]
+            (kt) at ($(kvec.north east)+(10pt,0)$) {
+            |[fill=kvcolor!30]| {} & |[fill=kvcolor!50]| {} & |[fill=kvcolor!70]| {} & |[fill=kvcolor!90]| {} \\
+            |[fill=white, opacity=0, minimum size=0.05cm]| {} & |[fill=white, opacity=0, minimum size=0.05cm]| {} & |[fill=white, opacity=0, minimum size=0.05cm]| {} & |[fill=white, opacity=0, minimum size=0.05cm]| {} \\
+            };
+            
+            \draw[seplink] ($(kvec.north)+(70pt,16pt)$) -- ($(kvec.south)+(70pt,-16pt)$);
+            \matrix[state,right=80pt of kvec] (o)
+            {
+            |[fill=kvcolor!30]| {} \\
+            |[fill=kvcolor!50]| {} \\
+            |[fill=kvcolor!70]| {} \\
+            |[fill=kvcolor!90]| {} \\
+            };
+            
+            \node[right=5pt of o] (eq) {\large $=$};
+            \matrix[state, anchor=west, right=10pt of eq, left delimiter={[}, right delimiter={]}] (st) {
+            |[fill=white]| {}           & |[fill=midnightblue!60]| {} & |[fill=white]| {}           & |[fill=midnightblue!50]| {} \\
+            |[fill=midnightblue!20]| {} & |[fill=midnightblue!70]| {} & |[fill=midnightblue!30]| {} & |[fill=midnightblue!40]| {} \\
+            |[fill=midnightblue!10]| {} & |[fill=white]| {}           & |[fill=midnightblue!50]| {} & |[fill=midnightblue!20]| {} \\
+            |[fill=midnightblue!20]| {} & |[fill=midnightblue!20]| {} & |[fill=white]| {}           & |[fill=midnightblue!50]| {} \\
+            };
+            
+            \matrix[state,right=10pt of st] (q)
+            {
+            |[fill=kvcolor!30]| {} \\
+            |[fill=kvcolor!50]| {} \\
+            |[fill=kvcolor!70]| {} \\
+            |[fill=kvcolor!90]| {} \\
+            };
+
+        \end{tikzpicture}
+
+    \end{adjustbox}
+    \captionsetup{labelformat=empty,labelsep=none}
+    \label{fig:KDA-recurrent}
+\end{figure*}
+
+
+

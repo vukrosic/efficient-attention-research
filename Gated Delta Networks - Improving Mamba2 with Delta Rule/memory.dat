@@ -1,0 +1,160 @@
+Xfmr++    GLA      Mamba    GSA       GSA1
+35.9      36.2     37.4     38.0      41.4
+\centering
+\small
+% \begin{tabular}{lr}
+%   \toprule
+%                            & GiB   \\
+%   \midrule
+%   Xfmr++                   & 35.93 \\
+%   Mamba                    & 37.41 \\
+%   GLA                      & 36.16 \\
+%   \midrule
+%   \textsc{GSA}             & 37.99 \\
+%   \qquad w/o recomp.       & 41.37 \\
+%   \qquad naive torch impl. & >80   \\
+%   \bottomrule
+% \end{tabular}
+% \resizebox{\textwidth}{!}{
+\begin{tikzpicture}
+    \pgfplotstableread{memory.dat}\loadedtable
+    \begin{axis}[
+            footnotesize,
+            xmajorgrids,
+            xminorgrids,
+            % ymajorgrids,
+            % yminorgrids,
+            tick align=inside,
+            axis line style={opacity=0},
+            tickwidth=0pt,
+            xbar,  % Horizontal bars
+            width=5cm, height=5.5cm,  % Adjust dimensions
+            bar width=6pt,
+            xbar=2*\pgflinewidth,
+            symbolic y coords={{GSA w/ naive impl.}, {GSA w/o recomp.}, GSA, GLA, Mamba, Xfmr++},  % Categories for the y-axis
+            xtick=data,
+            xmin=0, xmax=45,
+            xtick={0,10,20,30,40},
+            xticklabels={0,10,20,30,40},
+            % ytick={10,40,70,100},
+            % ymin=0, ymax=110,
+            x tick label style={font=\scriptsize, align=center}, % Optional line to rotate x labels
+            y tick label style={font=\scriptsize, align=center},
+            ytick distance=1,
+            nodes near coords,
+            nodes near coords style={font=\scriptsize,align=center,anchor=east, text=black},
+            point meta=explicit symbolic,
+            % enlarge y limits=0.4,
+            xlabel={\scriptsize Memories (GiB)},  % Label for the x-axis
+            x dir=reverse,  % Reverse the x-axis direction
+            % axis y line*=none,  % Remove the y-axis line
+            yticklabel pos=right,  % Position y-axis labels to the right
+            y tick label style={
+                    at={(current axis.east)},
+                    anchor=west,
+                    rotate=-30
+                },
+            xticklabel style={rotate=0},
+        ]
+
+        \addplot[
+            draw=black,
+            % thick,
+            fill=brickred!20,
+            postaction={
+                    pattern={Lines[angle=45,distance={1.8pt/sqrt(2)},line width=.8pt]},
+                    pattern color=brickred,
+                }
+        ] table [
+        x=x,
+        y=y,
+        meta=label,
+        ] {
+        x       y                             label
+        35.9   Xfmr++                         {35.9}
+        37.4   Mamba                          {37.4}
+        36.2   GLA                            {36.2}
+        38.0   GSA                            {38.0}
+        41.4   {GSA w/o recomp.}        {41.4}
+        % 80     {GSA w/ naive impl.}  {>80}
+        };
+    \end{axis}
+\end{tikzpicture}
+% }
+\caption{
+    Memory consumptions (GiB) of each model with 1.3B parameters during training with batch size 8 and context length 2048.
+    ``GSA w/ naive impl.'' means implemented by torch without any kernel fusion.
+}
+\label{fig:memory}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.3\textwidth}
+    \centering
+    \scriptsize
+    % \begin{tabular}{lr}
+    %   \toprule
+    %                            & GiB   \\
+    %   \midrule
+    %   Xfmr++                   & 35.93 \\
+    %   Mamba                    & 37.41 \\
+    %   GLA                      & 36.16 \\
+    %   \midrule
+    %   \textsc{GSA}             & 37.99 \\
+    %   \qquad w/o recomp.       & 41.37 \\
+    %   \qquad naive torch impl. & >80   \\
+    %   \bottomrule
+    % \end{tabular}
+    \label{tab:inference}
+    \begin{tabular}{lcccc}
+        \toprule
+               & 2K            & 4K            & 8K             & 16K            \\
+        \midrule
+        Xfmr++ & 54.1          & 94.1          & 189.3          & 418.3          \\
+        Mamba  & 31.1          & 61.3          & 117.3          & 236.6          \\
+        RetNet & 44.9          & 86.5          & 172.0          & 347.8          \\
+        GLA    & 38.4          & 63.2          & 125.3          & 240.4          \\
+        GSA    & \textbf{29.4} & \textbf{55.3} & \textbf{112.8} & \textbf{211.0} \\
+        \bottomrule
+    \end{tabular}
+    \caption{
+        Memory consumptions (GiB) of each model with 1.3B parameters during training with batch size 8 and context length 2048.
+        ``GSA w/ naive impl.'' means implemented by torch without any kernel fusion.
+    }
+    \label{fig:memory}
+\end{subfigure}
+
+\end{figure}
+\input{exp/ablation}
+\input{exp/continual_pretraining}
+% \input{exp/length_extrapolation}
+\input{content/related}
+\input{content/limitations}
+\input{content/conclusions}
+
+\begin{ack}
+  % This work was conducted during internship at Tencent AI Lab under the mentorship of Wei Bi, with support from LuxiTech.
+  We would like to thank Qin Zhen for the insightful discussions and Houquan Zhou for his suggestions on paper writing.
+\end{ack}
+
+\medskip
+
+\bibliography{main}
+\bibliographystyle{abbrvnat}
+%
+\appendix
+
+\newpage
+\input{appendix/la}
+\input{appendix/alg}
+\input{appendix/synthetic}
+
+% Optionally include supplemental material (complete proofs, additional experiments and plots) in appendix.
+% All such materials \textbf{SHOULD be included in the main submission.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \newpage
+% \mbox{~}
+% \input{content/checklist}
+
+\end{document}

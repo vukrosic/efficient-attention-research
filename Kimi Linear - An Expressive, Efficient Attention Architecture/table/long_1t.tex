@@ -1,0 +1,29 @@
+
+
+
+\begin{table}[t]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.1}
+    \caption{
+        Comparisons of Kimi Linear with MLA, GDN-H, and Kimi Linear (RoPE) across long-context benchmarks.
+        The last column reports the overall average ($\uparrow$). All models is trained on 1.4T tokens. Best per-column results are \textbf{bolded}.
+    }
+    \label{tab:long_ctx}
+    \begin{adjustbox}{width=1\columnwidth, center}
+        \setlength{\tabcolsep}{7pt}
+        \begin{tabular}{lccccccccccccccc|c}
+            \toprule
+                               & \multirow{2}{*}{RULER} & \multirow{2}{*}{MRCR} & \multirow{2}{*}{HELMET-ICL} & \multirow{2}{*}{LongBench V2} & \multirow{2}{*}{Frames} & \multirow{2}{*}{RepoQA} & \multicolumn{2}{c}{Long Code Arena} & \multirow{2}{*}{Avg.}                 \\
+            \cmidrule{8-9}
+                               &                        &                       &                             &                               &                         &                         & Lib                                 & Commit                &               \\
+            \midrule
+            MLA                & 81.3                   & 22.6                  & 88.0                        & \textbf{36.1}                 & \textbf{60.5}           & 63.0                    & 32.8                                & \textbf{33.2}         & 52.2          \\
+            GDN-H              & 80.5                   & 23.9                  & 85.5                        & 32.6                          & 58.7                    & 63.0                    & 34.7                                & 30.5                  & 51.2          \\
+            Kimi Linear (RoPE) & 78.8                   & 22.0                  & 88.0                        & 35.4                          & 59.9                    & 66.5                    & 31.3                                & 32.5                  & 51.8          \\
+            \rowcolor{gray!15}
+            Kimi Linear        & \textbf{84.3}          & \textbf{29.6}         & \textbf{90.0}               & 35.0                          & 58.8                    & \textbf{68.5}           & \textbf{37.1}                       & 32.7                  & \textbf{54.5} \\
+            \bottomrule
+        \end{tabular}
+    \end{adjustbox}
+\end{table}
