@@ -17,25 +17,40 @@ The model converts this word into two main vectors:
 
 ---
 
-## 2. The Memory Matrix: Rows AND Columns
+## 2. The Memory Matrix: Rows vs. Columns
 
-Now, let's look at the **Memory Matrix ($\mathbf{S}$)**. It's a grid where:
-*   **ROWS** are defined by the **Key** (The "Trackers").
-*   **COLUMNS** are defined by the **Value** (The "Attributes").
+This is the hardest part to visualize, so let's be precise.
+The Memory Matrix $\mathbf{S}$ is a grid of **Trackers $\times$ Attributes**.
+
+### The Rows: "What are we tracking?" (The Keys)
+Think of the rows as **labeled folders** in a filing cabinet.
+*   **Row 1**: The "Subject" Folder.
+*   **Row 2**: The "Action" Folder.
+*   **Row 3**: The "Tone" Folder.
+
+### The Columns: "What do we know about it?" (The Values)
+Think of the columns as **checkboxes** on the paper inside the folder.
+*   **Column 1**: Is it Plural?
+*   **Column 2**: Is it Past Tense?
+*   **Column 3**: Is it Animate (Alive)?
+
+### Putting it together
+If **Row 1 (Subject)** has a high value in **Column 1 (Plural)**, it means:
+> *"The Subject of this sentence is Plural."*
+
+If **Row 2 (Action)** has a high value in **Column 2 (Past Tense)**, it means:
+> *"The Action of this sentence happened in the past."*
 
 $$
 \mathbf{S} = \begin{pmatrix}
-  & \text{Col 1} & \text{Col 2} & \text{Col 3} & \text{Col 4} \\
-  & \text{(Count)} & \text{(Type)} & \text{(Tense)} & \text{(Mood)} \\
-\text{Row 1 (Subject)} \rightarrow & \mathbf{0.9} & \mathbf{0.9} & 0.0 & 0.0 \\
-\text{Row 2 (Action)} \rightarrow & 0.0 & 0.0 & 0.0 & 0.0 \\
-\text{Row 3 (Object)} \rightarrow & 0.0 & 0.0 & 0.0 & 0.0 \\
-\text{Row 4 (Context)} \rightarrow & 0.0 & 0.0 & 0.0 & 0.0
+  & \text{Col 1} & \text{Col 2} & \text{Col 3} \\
+  & \text{(Plural?)} & \text{(Past?)} & \text{(Alive?)} \\
+\text{Row 1 (Subject)} \rightarrow & \mathbf{1.0} & 0.0 & \mathbf{1.0} \\
+\text{Row 2 (Action)} \rightarrow & 0.0 & \mathbf{1.0} & 0.0
 \end{pmatrix}
 $$
-
-*   **Cell (1,1)**: "Subject" $\times$ "Count". Value `0.9` means "The Subject is Plural".
-*   **Cell (1,2)**: "Subject" $\times$ "Type". Value `0.9` means "The Subject is Animate".
+*   **Row 1**: Subject is Plural (1.0) and Alive (1.0). $\rightarrow$ "The cats"
+*   **Row 2**: Action is Past Tense (1.0). $\rightarrow$ "sat"
 
 ---
 
@@ -338,3 +353,44 @@ $$ \begin{pmatrix} 10 & 10 \\ 5 & 5 \end{pmatrix} $$
 *   **Row 2 (Verb)**: Started at `[2, 2]`. Decayed to `[1, 1]`. Wiped to `[0, 0]`. Replaced by `[5, 5]`. **Updated.**
 
 This is how Kimi Linear manages its finite memory!
+
+---
+
+## 5. The Grand Finale: A Full Sentence Walkthrough
+
+Let's watch the memory evolve over a full story: **"The cat sat. The dog ran."**
+
+### Step 1: "The cat" (Setup)
+*   **Input**: "Cat" (Subject)
+*   **Action**: The model activates the **Subject Row** (Row 1).
+*   **Update**: It writes "Cat" into that row.
+*   **Memory State**:
+    $$ \begin{pmatrix} \text{Subject: Cat} \\ \text{Action: Empty} \end{pmatrix} $$
+
+### Step 2: "sat" (Addition)
+*   **Input**: "Sat" (Action)
+*   **Action**: The model activates the **Action Row** (Row 2).
+*   **Update**: It writes "Sit" into that row.
+*   **Memory State**:
+    $$ \begin{pmatrix} \text{Subject: Cat} \\ \text{Action: Sit} \end{pmatrix} $$
+    *(Now the model knows: "The cat is sitting".)*
+
+### Step 3: "The dog" (The Conflict)
+*   **Input**: "Dog" (New Subject)
+*   **Action**: The model activates the **Subject Row** (Row 1) again.
+*   **CRITICAL MOMENT**:
+    *   The **Eraser** ($\mathbf{I} - \mathbf{k}\mathbf{k}^\top$) wipes Row 1 clean, deleting "Cat".
+    *   The **Writer** ($\mathbf{k}\mathbf{v}^\top$) writes "Dog" into the now-empty Row 1.
+*   **Memory State**:
+    $$ \begin{pmatrix} \text{Subject: Dog} \\ \text{Action: Sit} \end{pmatrix} $$
+    *(Wait! The action is still "Sit". Ideally, the model should have decayed the Action row by now, or it will briefly think "The dog is sitting" until the next word arrives.)*
+
+### Step 4: "ran" (The Update)
+*   **Input**: "Ran" (New Action)
+*   **Action**: The model activates the **Action Row** (Row 2).
+*   **Update**: It erases "Sit" and writes "Run".
+*   **Memory State**:
+    $$ \begin{pmatrix} \text{Subject: Dog} \\ \text{Action: Run} \end{pmatrix} $$
+
+### Summary
+By using **Decay** (to fade old context) and **Erasers** (to resolve immediate conflicts), Kimi Linear can maintain a coherent state of the world using a fixed amount of memory, no matter how long the story gets.
